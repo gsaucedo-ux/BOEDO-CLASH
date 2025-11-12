@@ -20,7 +20,6 @@ body {
     
     
     background: linear-gradient(90deg, #002850, #0056a6);
-    
 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
     
@@ -31,7 +30,7 @@ body {
 }
 
 
-.bSuperiorCartas, .bSuperiorCreadorMazo, .bSuperiorSesion { 
+.bSuperiorCartas, .bSuperiorCreadorMazo, .bSuperiorSesion ,.bsuperiorcrearbatalla{ 
     width: 150px; 
     height: 45px;
     
@@ -50,19 +49,12 @@ body {
 }
 
 
-.bSuperiorCartas:hover, .bSuperiorCreadorMazo:hover, .bSuperiorSesion:hover {
+.bSuperiorCartas:hover, .bSuperiorCreadorMazo:hover, .bSuperiorSesion:hover , .bsuperiorcrearbatalla:hover{
     background: #ffd700; 
     color: #002850; 
     box-shadow: 0 0 10px #ffd700;
     transform: scale(1.05); 
 }
-
-.bBatalla {
-    
-    margin-top: 75px; 
-    padding: 20px;
-}
-
 .nav-logo {
     height: 140px; 
     width: auto;
@@ -74,13 +66,10 @@ body {
 
 
 .bSuperiorCartas {
-    
-    margin-left: 300px; 
-    
     margin-right: 20px; 
 }
 
 
-.bSuperiorCreadorMazo, .bSuperiorSesion {
+.bSuperiorCreadorMazo, .bSuperiorSesion , .bsuperiorcrearbatalla {
     margin-right: 20px; 
 }
