@@ -1,0 +1,40 @@
+.inferiorcontenido {
+        margin-top:20px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        height: 300px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        }
+        
+.inferiorcontenido div {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;  
+        border-radius: 12px;
+        margin-right:10px;
+}
+
+.camposmazos{
+        margin-bottom: 15px;
+}
+
+.margenarriba{
+        margin-top: 5px;
+}
+
+.comentarios_mazos{
+    border-radius: 12px;
+    transition: 0.3s;
+    text-align: center; 
+}
+
+.comentarios_mazos:hover{
+  background: #47d476; 
+    color: #002850; 
+    box-shadow: 0 0 10px #04e750;
+    transform: scale(1.05); 
+}
