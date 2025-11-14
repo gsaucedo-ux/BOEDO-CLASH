@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario - Boedo Clash</title>
+    <link rel="stylesheet" href="../STYLES/estiloPaginaCrearIniciar.css">
+    <style>
+        .contenedor-registro {
+            width: 100%;
+            max-width: 520px;
+            margin: 120px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 22px;
+            box-shadow: 0 0 18px rgba(255, 215, 0, 0.35);
+            color: white;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        input {
+            width: 92%;
+            padding: 16px;
+            margin-top: 20px;
+            border-radius: 12px;
+            border: none;
+            outline: none;
+            font-size: 1.1em;
+        }
+
+        .boton-crear {
+            width: 92%;
+            padding: 16px;
+            margin-top: 30px;
+            border-radius: 12px;
+            background: #ffd700;
+            border: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .boton-crear:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 12px #ffd700;
+        }
+
+        a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor-registro">
+        <h2>Crear Usuario</h2>
+
+        <input type="text" placeholder="Nuevo usuario">
+        <input type="email" placeholder="Correo electrónico">
+        <input type="password" placeholder="Contraseña">
+        <input type="password" placeholder="Repetir contraseña">
+
+        <button class="boton-crear">Crear cuenta</button>
+
+        <p style="margin-top:25px;">¿Ya tenés cuenta?
+            <a href="login.html">Iniciar sesión</a>
+        </p>
+    </div>
+
+</body>
+</html>
