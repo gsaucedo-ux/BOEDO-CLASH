@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batalla</title>
+    <link rel="stylesheet" href="../STYLES/estiloBatallas.css">
+</head>
+<body>
+    <div class="battle-container">
+
+    <h1>BATALLA EPICA DE MAZOS!!</h1>
+    
+    <div class="battle-grid-wrapper">
+        
+        <div class="opponent-deck opponent-1">
+            <h2>OPONENTE 1</h2>
+            
+            <div class="deck-grid">
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+            </div>
+
+            <button class="select-deck-button">
+                Escoger Mazo
+                <i class="arrow-down">▼</i>
+            </button>
+        </div>
+
+        <div class="vs-text">VS</div>
+
+        <div class="opponent-deck opponent-2">
+            <h2>OPONENTE 2</h2>
+            
+            <div class="deck-grid">
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+                <div class="card-slot"></div>
+            </div>
+            
+            <button class="select-deck-button">
+                Escoger Mazo
+                <i class="arrow-down">▼</i>
+            </button>
+        </div>
+
+    </div>
+    
+    <div class="control-area">
+        
+        <button id="simulate-button" class="action-button">
+            👑 SIMULAR BATALLA ⚔️
+        </button>
+        
+        <div id="battle-result" class="result-box">
+            Esperando Mazos...
+        </div>
+    </div>
+    
+</div>
+</body>
+</html>
