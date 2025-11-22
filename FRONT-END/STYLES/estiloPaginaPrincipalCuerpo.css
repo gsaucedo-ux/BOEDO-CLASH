@@ -44,9 +44,20 @@
     font-size: 16px;
  font-weight: bold;
 }
+#search-button {
+    padding: 8px 16px;
+    border: none;
+    background-color: #e7043d;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 0 8px 8px 0;
+    transition: background-color 0.3s;
+}
+
 .inferiorcontenido >div {
         width: 350px;
-        height:300px;
+        height:340px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -62,11 +73,50 @@
     box-shadow: 0 0 30px #e7043d;
     transform: scale(1.05); 
 }
+.cabecera_mazo{
+        width: 90%;
+        height: 60px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 15px;
+        margin-top: 0px;
+}
+.cabecera_mazo>p{
+        color:white;
+        font-size: 20px;
+        font-weight: bold;
+        text-align:center;
+}
+.costo_elixir{
 
-     
+        align-self: flex-start;
+        position:relative;
+        width: 45px;
+        height: 45px;
+        margin-left: 3px;
+        margin-top: 3px;
+
+}
+.costo_elixir > img{
+        position: absolute;
+        width:45px;
+        height: 45px;
+}
+
+.texto_superpuesto_elixir{
+        position: absolute;
+        top:10px;
+        left:10px;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2em;
+        pointer-events: none;
+        z-index:2;
+} 
 .comentarios_mazos{
         width: 50%;
-        height: 40px;
+        height: 30px;
         border:1px solid #080700;
     border-radius: 8px;
     text-align: center; 
@@ -96,14 +146,13 @@
 }
 .imagen_cartas>div{
         background: linear-gradient(90deg, #002850, #0056a6);
-      whidth: 80px;
       height: 80px;
       margin: 5px;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
       
 }
-img{
+.imagen_cartas>div img{
         width: 60px;
         height: auto;
         border-radius: 8px;
