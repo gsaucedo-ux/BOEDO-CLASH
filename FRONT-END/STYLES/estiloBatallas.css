@@ -77,6 +77,10 @@ body {
     cursor: pointer;
     transition: transform 0.2s;
     position: relative;
+    background-image: url('../../img/botonDeAgregar.png'); 
+    background-size: 70%;      
+    background-repeat: no-repeat;
+    background-position: center; 
 }
 
 .card-slot:hover {
