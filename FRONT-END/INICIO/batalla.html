@@ -247,6 +247,43 @@
   { eng:"suspicious-bush", esp:"Arbusto Sospechoso", rarity:"especial", elixir:"2", type:"estructura", attack:"terrestre", range:"corto", speed:"n/a", attackSpeed:"medio", hp:"baja", role:"support", combatRole:"M" }
 ];
     
+        // 2) LOGICA DE VISTAS Y SELECCION 
+        
+        function imageUrlFor(eng){
+          return `https://cdn.royaleapi.com/static/img/cards/${eng}.png?t=${Date.now()}`; 
+        }
+
+        // Funcion para cambiar a la vista de selección
+        function openCardSelector(slotId) {
+            currentSlotId = slotId;
+            currentSlotDisplay.textContent = slotId;
+            
+            battleView.classList.add('hidden-view');
+            selectorView.classList.remove('hidden-view');
+            
+            applyFilters(); // Renderiza las cartas al abrir el selector
+        }
+
+        // Funcion para volver a la vista de batalla
+        function closeCardSelector() {
+            currentSlotId = null;
+            selectorView.classList.add('hidden-view');
+            battleView.classList.remove('hidden-view');
+        }
+
+        // Funcion que coloca la carta seleccionada en el slot de batalla
+        function placeCardInSlot(cardData) {
+            if (!currentSlotId) 
+                return;
+
+            const slotElement = document.getElementById(currentSlotId);
+            const imageUrl = imageUrlFor(cardData.eng);
+            slotElement.style.backgroundImage = `url('${imageUrl}')`;
+            slotElement.classList.add('filled');
+            slotElement.setAttribute('data-card-id', cardData.eng);
+
+            closeCardSelector();
+        }
     </script>
 </body>
 </html>
