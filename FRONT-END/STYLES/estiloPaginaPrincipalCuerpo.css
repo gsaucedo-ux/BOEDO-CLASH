@@ -4,7 +4,13 @@
     justify-content: center; 
     align-items: flex-start;
     gap: 20px;
-
+    background: linear-gradient(
+        180deg,
+        #0A2A66 0%,
+        #1C5CCF 50%,
+        #4AA3FF 100%
+    );
+    border-radius: 20px;
     width: 90%;                   
     margin: 0 auto;               
 }
@@ -31,7 +37,7 @@
 .search-bar input:focus {
     outline: none;        /* saca el borde blanco/azul del navegador */
     box-shadow: none;     /* saca los brillos o sombras */
-    border: none;         /* opcional: quita el borde si el blanco viene de ahí */
+    border: none;         /* quita el borde si el blanco viene de ahí */
 }
 
 
