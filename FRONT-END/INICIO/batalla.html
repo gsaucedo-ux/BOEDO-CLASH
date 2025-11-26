@@ -73,8 +73,7 @@
         </div>
 
         <!-- VISTA DE SELECCION DE CARTAS -->
-        <div id="card-selector-view" class="hidden-view contenedor-cartas">
-
+        <div id="card-selector-view" class="hidden-view contenedor-cartas">          
 
             <div class="header-selector">
                 <button onclick="closeCardSelector()" class="select-deck-button" style="background-color: #555; margin-bottom: 20px;">
@@ -284,6 +283,79 @@
 
             closeCardSelector();
         }
+
+        // 3) FUNCIONES DE RENDERIZADO, FILTRADO y INICIALIZACION
+
+        function renderCards(list){
+          cardGrid.innerHTML = "";
+          list.forEach(c => {
+            const div = document.createElement('div');
+            div.className = 'carta';
+            
+            // Asigna el evento de clic para seleccionar y colocar la carta
+            div.onclick = () => placeCardInSlot(c); 
+
+            // Construccion del HTML de la carta 
+            const img = document.createElement('img');
+            img.src = imageUrlFor(c.eng);
+            img.alt = c.esp;
+            img.onerror = () => {
+              const fb = document.createElement('div');
+              fb.className = 'img-fallback';
+              fb.textContent = c.esp.substring(0,12);
+              img.replaceWith(fb);
+            };
+
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'nombre-carta';
+            nameDiv.textContent = c.esp;
+
+            const meta = document.createElement('div');
+            meta.className = 'meta';
+            meta.innerHTML = `Elixir: ${c.elixir} • ${c.rarity.charAt(0).toUpperCase() + c.rarity.slice(1)} • ${c.type}`;
+
+            div.appendChild(img);
+            div.appendChild(nameDiv);
+            div.appendChild(meta);
+            cardGrid.appendChild(div);
+          });
+        }
+
+        function applyFilters(){
+            const text = buscador.value.trim().toLowerCase();
+            const sel = {
+                rarity: selects.rarity.value,
+                elixir: selects.elixir.value,
+                type: selects.type.value,
+                attack: selects.attack.value,
+                role: selects.role.value
+            };
+
+            const filtered = cardsData.filter(c => {
+                const matchesText = !text || c.esp.toLowerCase().includes(text) || c.eng.toLowerCase().includes(text);
+                const matchRarity = sel.rarity === 'todas' || c.rarity === sel.rarity;
+                const matchType = sel.type === 'todas' || c.type === sel.type;
+                const matchAttack = sel.attack === 'todos' || c.attack === sel.attack;
+                const matchRole = sel.role === 'todos' || c.role === c.role;
+
+                let matchElixir = true;
+                if (sel.elixir !== 'todas') {
+                    if (sel.elixir === '8+') matchElixir = parseInt(c.elixir) >= 8 || c.elixir === 'variable';
+                    else matchElixir = c.elixir === sel.elixir;
+                }
+
+                return matchesText && matchRarity && matchType && matchAttack && matchRole && matchElixir;
+            });
+
+            renderCards(filtered);
+        }
+
+        window.onload = function() {
+            // Inicializa los listeners de filtro
+            buscador.addEventListener('input', applyFilters);
+            Object.values(selects).forEach(s => s.addEventListener('change', applyFilters));
+        }
+
     </script>
 </body>
 </html>
