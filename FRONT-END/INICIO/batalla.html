@@ -68,6 +68,52 @@
         </div>
     </div>
     
+    <div id="card-selector-view" class="hidden-view contenedor-cartas">
+            
+            <div class="header-selector">
+                <button onclick="closeCardSelector()" class="select-deck-button" style="background-color: #555; margin-bottom: 20px;">
+                     Volver a la Batalla
+                </button>
+                <p style="color: var(--cr-light); margin-bottom: 20px;">Selecciona una carta para el slot: <strong id="current-slot-id"></strong></p>
+            </div>
+
+            <h2>Cartas - Boedo Clash (121 oficiales)</h2>
+
+            <div class="controls">
+                <input id="buscador" class="buscador" placeholder="Buscar cartas (nombre en español)..." />
+
+                <select id="filtro-rarity"><option value="todas">Rareza (todas)</option>
+                    <option value="comun">Común</option><option value="especial">Especial</option>
+                    <option value="epica">Épica</option><option value="legendaria">Legendaria</option>
+                    <option value="campeon">Campeón</option>
+                </select>
+
+                <select id="filtro-elixir"><option value="todas">Elixir (todos)</option>
+                    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                    <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                    <option value="7">7</option><option value="8+">8+</option>
+                </select>
+
+                <select id="filtro-type"><option value="todas">Tipo (todas)</option>
+                    <option value="tropa">Tropa</option><option value="hechizo">Hechizo</option><option value="estructura">Estructura</option>
+                </select>
+
+                <select id="filtro-attack"><option value="todos">Ataque (todos)</option>
+                    <option value="terrestre">Terrestre</option><option value="aereo">Aéreo</option><option value="mixto">Ambos</option>
+                </select>
+
+                <select id="filtro-role"><option value="todos">Rol</option>
+                    <option value="wincondition">Win condition</option><option value="tank">Tank</option>
+                    <option value="support">Support</option><option value="swarm">Swarm</option>
+                    <option value="defense">Defense</option><option value="spell">Spell</option>
+                </select>
+            </div>
+
+            <div id="grid" class="grid-cartas"></div>
+        </div>
+
+    </div>
+
 </div>
 </body>
 </html>
