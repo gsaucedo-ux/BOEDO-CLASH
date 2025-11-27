@@ -62,8 +62,8 @@
 }
 
 .inferiorcontenido >div {
-        width: 350px;
-        height:340px;
+        width: 360px;
+        height:350px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -162,4 +162,22 @@
         width: 60px;
         height: auto;
         border-radius: 8px;
+}
+.pie_mazo{
+        width: 90%;
+        height: 40px;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+}
+.pie_mazo>div{
+        width: 100%;
+        height: 20px;
+       align-self: flex-start;
+       margin-left:25px;
+}
+.pie_mazo>div p{
+        color:white;
+        font-size: 14px;
+        font-weight: bold;
 }
