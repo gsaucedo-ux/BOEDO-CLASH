@@ -1,0 +1,138 @@
+body {
+    background-color: #0c1e2c;
+    font-family: Arial, sans-serif;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+/* CONTENEDOR PRINCIPAL */
+.perfil-contenedor {
+    width: 92%;
+    max-width: 1100px;
+    margin: 40px auto;
+}
+
+/* ENCABEZADO DEL PERFIL */
+.perfil-header {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    background: rgba(255,255,255,0.10);
+    padding: 22px;
+    border-radius: 18px;
+    box-shadow: 0 0 16px rgba(255,215,0,0.25);
+}
+
+.perfil-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #ffd700;
+}
+
+.perfil-info h1 {
+    margin: 0;
+    font-size: 2em;
+    color: #ffd700;
+    text-shadow: 2px 2px 4px black;
+}
+
+.perfil-info p {
+    margin: 4px 0;
+    font-size: 1.1em;
+}
+
+/* BOTÓN CREAR MAZO */
+.boton-crear-mazo {
+    width: 100%;
+    background: #ffd700;
+    border: none;
+    padding: 14px;
+    margin: 25px 0;
+    font-weight: bold;
+    font-size: 1.2em;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.boton-crear-mazo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 14px #ffd700;
+}
+
+/* SUBTÍTULO */
+.perfil-subtitulo {
+    font-size: 1.8em;
+    color: #ffd700;
+    text-align: center;
+    text-shadow: 2px 2px 4px black;
+    margin-bottom: 18px;
+}
+
+/* GRID DE PUBLICACIONES */
+.publicaciones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+    gap: 25px;
+}
+
+/* TARJETA DE PUBLICACIÓN */
+.publicacion {
+    background: rgba(255,255,255,0.10);
+    padding: 18px;
+    border-radius: 18px;
+    box-shadow: 0 0 14px rgba(255,215,0,0.20);
+    text-align: center;
+}
+
+.publicacion h3 {
+    color: #ffd700;
+    margin-bottom: 14px;
+    text-shadow: 2px 2px 4px black;
+}
+
+.publicacion-cartas {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.carta-m img {
+    width: 100%;
+    border-radius: 10px;
+    background: rgba(0,0,0,0.15);
+}
+
+/* BOTONES PUBLICACIÓN */
+.publicacion-botones {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.boton-priv, .boton-com {
+    flex: 1;
+    margin: 0 5px;
+    padding: 10px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    font-size: 1em;
+    transition: .22s;
+}
+
+.boton-priv {
+    background: #ffd700;
+}
+
+.boton-com {
+    background: #00aaff;
+}
+
+.boton-priv:hover, .boton-com:hover {
+    transform: scale(1.05);
+}
