@@ -91,7 +91,30 @@ a:hover {
     text-shadow: 0 0 8px #ffd700;
 }
 
-/* Responsivo para celular (No tengo idea de si esto funciona xd)*/
+/* BOTÓN VOLVER FIJO ABAJO CENTRADO */
+.boton-volver-fijo {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: transparent;
+    border: 2px solid #ffd700;
+    color: #ffd700;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.25s;
+}
+
+.boton-volver-fijo:hover {
+    background: #ffd700;
+    color: black;
+    box-shadow: 0 0 12px #ffd700;
+}
+
+/* Responsivo para celular */
 @media (max-width: 600px) {
     .contenedor-login,
     .contenedor-registro {
@@ -105,5 +128,11 @@ a:hover {
     .boton-crear {
         width: 95%;
         padding: 14px;
+    }
+
+    .boton-volver-fijo {
+        bottom: 15px;
+        font-size: 1em;
+        padding: 10px 18px;
     }
 }
