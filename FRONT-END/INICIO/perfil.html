@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Boedo Clash</title>
+
+    <link rel="stylesheet" href="../STYLES/estiloPerfil.css">
+</head>
+
+<body>
+
+<div class="perfil-contenedor">
+
+    <!-- ENCABEZADO DEL PERFIL -->
+    <div class="perfil-header">
+        <img src="../../img/LogoDefinitivo.jpg" class="perfil-avatar">
+
+        <div class="perfil-info">
+            <h1 id="nombreUsuario">Usuario</h1>
+            <p>Nivel: <span id="nivelUsuario">14</span></p>
+            <p>Trofeos: <span id="trofeosUsuario">5620</span></p>
+            <p>Años de servicio: <span id="aniosUsuario">3</span></p>
+        </div>
+    </div>
+
+    <button class="boton-crear-mazo" onclick="crearMazo()">+ Crear Mazo</button>
+
+    <h2 class="perfil-subtitulo">Tus Mazos</h2>
+
+    <!-- PUBLICACIONES -->
+    <div id="contenedorMazos" class="publicaciones-grid">
+        <!-- Se llenará con los mazos reales del usuario -->
+    </div>
+
+</div>
+
+<script>
+    // Cargar nombre del usuario logueado
+    const nombre = localStorage.getItem("usuario") || "Jugador";
+    document.getElementById("nombreUsuario").textContent = nombre;
+
+    // Cargar mazos del usuario (si hay)
+    const cont = document.getElementById("contenedorMazos");
+
+    function renderMazos() {
+        const mazos = JSON.parse(localStorage.getItem("mazosUsuario") || "[]");
+        cont.innerHTML = "";
+
+        if (mazos.length === 0) {
+            cont.innerHTML = `<p class="texto-vacio">Todavía no creaste ningún mazo.</p>`;
+            return;
+        }
+
+        mazos.forEach((m, index) => {
+            cont.innerHTML += `
+                <div class="publicacion">
+                    <h3>${m.titulo}</h3>
+
+                    <div class="publicacion-cartas">
+                        ${m.cartas.map(c => `
+                            <div class="carta-m">
+                                <img src="https://cdn.royaleapi.com/static/img/cards/${c}.png">
+                            </div>
+                        `).join("")}
+                    </div>
+
+                    <div class="publicacion-botones">
+                        <button onclick="togglePriv(${index})" class="boton-priv">
+                            ${m.publico ? "Público" : "Privado"}
+                        </button>
+                        <button onclick="verComentarios(${index})" class="boton-com">Comentarios</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function togglePriv(i) {
+        const mazos = JSON.parse(localStorage.getItem("mazosUsuario") || "[]");
+        mazos[i].publico = !mazos[i].publico;
+        localStorage.setItem("mazosUsuario", JSON.stringify(mazos));
+        renderMazos();
+    }
+
+    function verComentarios(i) {
+        window.location.href = "comentarios.html?mazo=" + i;
+    }
+
+    function crearMazo() {
+        window.location.href = "crearMazo.html";
+    }
+
+    // Render inicial
+    renderMazos();
+</script>
+
+</body>
+</html>

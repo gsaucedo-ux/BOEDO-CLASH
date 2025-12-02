@@ -1,149 +1,99 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Batalla</title>
-    <link rel="stylesheet" href="../STYLES/estiloBatallas.css">
+    <title>Crear Mazo - Boedo Clash</title>
+
+    <link rel="stylesheet" href="../STYLES/estiloCrearMazo.css">
 </head>
 
 <body>
 
-    <!-- CAJA DE BATALLA -->
-    <div class="main-wrapper">
-        <div id="battle-view" class="battle-container">
-            <h1>BATALLA EPICA DE MAZOS!!</h1>
-            <div class="battle-grid-wrapper">
-                
-                <div class="opponent-deck opponent-1">
-                    <h2>OPONENTE 1</h2>
-                    
-                    <div class="deck-grid">
-                        <div id="P1-S1" class="card-slot" onclick="openCardSelector('P1-S1')"></div>
-                        <div id="P1-S2" class="card-slot" onclick="openCardSelector('P1-S2')"></div>
-                        <div id="P1-S3" class="card-slot" onclick="openCardSelector('P1-S3')"></div>
-                        <div id="P1-S4" class="card-slot" onclick="openCardSelector('P1-S4')"></div>
-                        <div id="P1-S5" class="card-slot" onclick="openCardSelector('P1-S5')"></div>
-                        <div id="P1-S6" class="card-slot" onclick="openCardSelector('P1-S6')"></div>
-                        <div id="P1-S7" class="card-slot" onclick="openCardSelector('P1-S7')"></div>
-                        <div id="P1-S8" class="card-slot" onclick="openCardSelector('P1-S8')"></div>
-                    </div>
+<div class="crear-contenedor">
 
-                    <button class="select-deck-button">
-                        Escoger Mazo
-                        <i class="arrow-down">▼</i>
-                    </button>
-                </div>
+    <h1 class="titulo">Crear Nuevo Mazo</h1>
 
-                <div class="vs-text">VS</div>
+<!-- NOMBRE + PRIVACIDAD EN LA MISMA LÍNEA -->
+<div class="form-row">
+    <div class="form-grupo half">
+        <label>Nombre del mazo</label>
+        <input id="nombreMazo" type="text" placeholder="Ejemplo: Ciclo Monta 2.6">
+    </div>
+    
+    <div class="form-grupo half">
+        <label>Privacidad</label>
+        <select id="privacidad">
+            <option value="publico">Público</option>
+            <option value="privado">Privado</option>
+        </select>
+    </div>
+</div>
 
-                <div class="opponent-deck opponent-2">
-                    <h2>OPONENTE 2</h2>
-                    
-                    <div class="deck-grid">
-                        <div id="P2-S1" class="card-slot" onclick="openCardSelector('P2-S1')"></div>
-                        <div id="P2-S2" class="card-slot" onclick="openCardSelector('P2-S2')"></div>
-                        <div id="P2-S3" class="card-slot" onclick="openCardSelector('P2-S3')"></div>
-                        <div id="P2-S4" class="card-slot" onclick="openCardSelector('P2-S4')"></div>
-                        <div id="P2-S5" class="card-slot" onclick="openCardSelector('P2-S5')"></div>
-                        <div id="P2-S6" class="card-slot" onclick="openCardSelector('P2-S6')"></div>
-                        <div id="P2-S7" class="card-slot" onclick="openCardSelector('P2-S7')"></div>
-                        <div id="P2-S8" class="card-slot" onclick="openCardSelector('P2-S8')"></div>
-                    </div>
-                    
-                    <button class="select-deck-button">
-                        Escoger Mazo
-                        <i class="arrow-down">▼</i>
-                    </button>
-                </div>
+<h2 class="subtitulo">Cartas del Mazo (8)</h2>
 
-            </div>
-            
-            <div class="control-area">
-                
-                <button id="simulate-button" class="action-button">
-                    👑 SIMULAR BATALLA ⚔️
-                </button>
-                
-                <div id="battle-result" class="result-box">
-                    Esperando Mazos...
-                </div>
-            </div>
-        </div>
-
-        <!-- VISTA DE SELECCION DE CARTAS -->
-        <div id="card-selector-view" class="hidden-view contenedor-cartas">          
-
-            <div class="header-selector">
-                <button onclick="closeCardSelector()" class="select-deck-button" style="background-color: #555; margin-bottom: 20px;">
-                    Volver a la Batalla
-                </button>
-                <p style="color: var(--cr-light); margin-bottom: 20px;">Selecciona una carta para el slot: <strong id="current-slot-id"></strong></p>
-            </div>
-
-            <h2>Cartas - Boedo Clash</h2>
-
-            <div class="controls">
-                <input id="buscador" class="buscador" placeholder="Buscar cartas (nombre en español)..." />
-
-                <select id="filtro-rarity"><option value="todas">Rareza (todas)</option>
-                    <option value="comun">Común</option><option value="especial">Especial</option>
-                    <option value="epica">Épica</option><option value="legendaria">Legendaria</option>
-                    <option value="campeon">Campeón</option>
-                </select>
-
-                <select id="filtro-elixir"><option value="todas">Elixir (todos)</option>
-                    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-                    <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-                    <option value="7">7</option><option value="8+">8+</option>
-                </select>
-
-                <select id="filtro-type"><option value="todas">Tipo (todas)</option>
-                    <option value="tropa">Tropa</option><option value="hechizo">Hechizo</option><option value="estructura">Estructura</option>
-                </select>
-
-                <select id="filtro-attack"><option value="todos">Ataque (todos)</option>
-                    <option value="terrestre">Terrestre</option><option value="aereo">Aéreo</option><option value="mixto">Ambos</option>
-                </select>
-
-                <select id="filtro-role"><option value="todos">Rol</option>
-                    <option value="wincondition">Win condition</option><option value="tank">Tank</option>
-                    <option value="support">Support</option><option value="swarm">Swarm</option>
-                    <option value="defense">Defense</option><option value="spell">Spell</option>
-                </select>
-            </div>
-
-            <div id="grid" class="grid-cartas"></div>
-        </div>
-
+    <div class="deck-grid">
+        <div class="card-slot" data-slot="0"></div>
+        <div class="card-slot" data-slot="1"></div>
+        <div class="card-slot" data-slot="2"></div>
+        <div class="card-slot" data-slot="3"></div>
+        <div class="card-slot" data-slot="4"></div>
+        <div class="card-slot" data-slot="5"></div>
+        <div class="card-slot" data-slot="6"></div>
+        <div class="card-slot" data-slot="7"></div>
     </div>
 
-    <!-- LOGICA JAVASCRIPT -->
 
-    <script>
+    <!-- SELECTOR DE CARTAS -->
+    <div id="selectorCartas" class="selector oculto">
 
-        // 1) DATOS Y VARIABLES GLOBALES 
+        <div class="selector-header">
+            <h3>Elegí una carta</h3>
+            <button class="cerrar" onclick="cerrarSelector()">X</button>
+        </div>
 
-        let currentSlotId = null; 
+        <input id="buscador" class="buscador" placeholder="Buscar carta...">
 
-        // Referencias a los contenedores de vistas
-        const battleView = document.getElementById('battle-view');
-        const selectorView = document.getElementById('card-selector-view');
-        const currentSlotDisplay = document.getElementById('current-slot-id');
+        <div class="controls">
+            <select id="filtro-rarity"><option value="todas">Rareza (todas)</option>
+                <option value="comun">Común</option><option value="especial">Especial</option>
+                <option value="epica">Épica</option><option value="legendaria">Legendaria</option>
+                <option value="campeon">Campeón</option>
+            </select>
 
-        // Referencias del selector de cartas
-        const cardGrid = document.getElementById('grid');
-        const buscador = document.getElementById('buscador');
-        const selects = {
-            rarity: document.getElementById('filtro-rarity'),
-            elixir: document.getElementById('filtro-elixir'),
-            type: document.getElementById('filtro-type'),
-            attack: document.getElementById('filtro-attack'),
-            role: document.getElementById('filtro-role')
-        };
-        
-        const cardsData = [
+            <select id="filtro-elixir"><option value="todas">Elixir (todos)</option>
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                <option value="7">7</option><option value="8+">8+</option>
+            </select>
+
+            <select id="filtro-type"><option value="todas">Tipo (todas)</option>
+                <option value="tropa">Tropa</option><option value="hechizo">Hechizo</option><option value="estructura">Estructura</option>
+            </select>
+
+            <select id="filtro-attack"><option value="todos">Ataque (todos)</option>
+                <option value="terrestre">Terrestre</option><option value="aereo">Aéreo</option><option value="mixto">Ambos</option>
+            </select>
+
+            <select id="filtro-role"><option value="todos">Rol</option>
+                <option value="wincondition">Win condition</option><option value="tank">Tank</option>
+                <option value="support">Support</option><option value="swarm">Swarm</option>
+                <option value="defense">Defense</option><option value="spell">Spell</option>
+            </select>
+        </div>
+
+        <div id="gridCartas" class="selector-grid"></div>
+    </div>
+
+    <!-- BOTÓN FINAL -->
+    <button class="boton-guardar" onclick="guardarMazo()">Guardar Mazo</button>
+
+</div>
+
+
+<script>
+    // --- BASE DE CARTAS (COPIADA Y ADAPTADA DE BATALLA.HTML) ---
+    const cardsData = [
   // Tropas (T, B, DM, DS, AS, TS, EM, HD, M)
   { eng:"knight", esp:"Caballero", rarity:"comun", elixir:"3", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"media", role:"tank", combatRole:"T" },
   { eng:"archers", esp:"Arqueras", rarity:"comun", elixir:"3", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"baja", role:"support", combatRole:"TS" },
@@ -245,117 +195,142 @@
   { eng:"goblin-drill", esp:"Excavadora de Duendes", rarity:"epica", elixir:"4", type:"estructura", attack:"terrestre", range:"corto", speed:"n/a", attackSpeed:"medio", hp:"media", role:"wincondition", combatRole:"B" },
   { eng:"suspicious-bush", esp:"Arbusto Sospechoso", rarity:"especial", elixir:"2", type:"estructura", attack:"terrestre", range:"corto", speed:"n/a", attackSpeed:"medio", hp:"baja", role:"support", combatRole:"M" }
 ];
-    
-        // 2) LOGICA DE VISTAS Y SELECCION 
-        
-        function imageUrlFor(eng){
-          return `https://cdn.royaleapi.com/static/img/cards/${eng}.png?t=${Date.now()}`; 
-        }
 
-        // Funcion para cambiar a la vista de selección
-        function openCardSelector(slotId) {
-            currentSlotId = slotId;
-            currentSlotDisplay.textContent = slotId;
-            
-            battleView.classList.add('hidden-view');
-            selectorView.classList.remove('hidden-view');
-            
-            applyFilters(); // Renderiza las cartas al abrir el selector
-        }
+    let slotActual = null;
+    const deck = [null, null, null, null, null, null, null, null];
 
-        // Funcion para volver a la vista de batalla
-        function closeCardSelector() {
-            currentSlotId = null;
-            selectorView.classList.add('hidden-view');
-            battleView.classList.remove('hidden-view');
-        }
+    const selector = document.getElementById("selectorCartas");
+    const gridCartas = document.getElementById("gridCartas");
 
-        // Funcion que coloca la carta seleccionada en el slot de batalla
-        function placeCardInSlot(cardData) {
-            if (!currentSlotId) 
-                return;
+    // Referencias a los elementos de filtro
+    const buscador = document.getElementById('buscador');
+    const selects = {
+        rarity: document.getElementById('filtro-rarity'),
+        elixir: document.getElementById('filtro-elixir'),
+        type: document.getElementById('filtro-type'),
+        attack: document.getElementById('filtro-attack'),
+        role: document.getElementById('filtro-role')
+    };
 
-            const slotElement = document.getElementById(currentSlotId);
-            const imageUrl = imageUrlFor(cardData.eng);
-            slotElement.style.backgroundImage = `url('${imageUrl}')`;
-            slotElement.classList.add('filled');
-            slotElement.setAttribute('data-card-id', cardData.eng);
+    function abrirSelector(){
+        selector.classList.remove("oculto");
+        applyFilters(); // Renderiza las cartas al abrir
+    }
 
-            closeCardSelector();
-        }
+    function cerrarSelector(){
+        selector.classList.add("oculto");
+    }
 
-        // 3) FUNCIONES DE RENDERIZADO, FILTRADO y INICIALIZACION
+    // Función para renderizar las cartas en el selector (imitando batalla.html)
+    function renderSelector(list) {
+        gridCartas.innerHTML = "";
+        list.forEach(c => {
+            const div = document.createElement("div");
+            div.className = "card-item";
 
-        function renderCards(list){
-          cardGrid.innerHTML = "";
-          list.forEach(c => {
-            const div = document.createElement('div');
-            div.className = 'carta';
-            
-            // Asigna el evento de clic para seleccionar y colocar la carta
-            div.onclick = () => placeCardInSlot(c); 
-
-            // Construccion del HTML de la carta 
             const img = document.createElement('img');
-            img.src = imageUrlFor(c.eng);
+            img.src = `https://cdn.royaleapi.com/static/img/cards/${c.eng}.png?t=${Date.now()}`;
             img.alt = c.esp;
             img.onerror = () => {
-              const fb = document.createElement('div');
-              fb.className = 'img-fallback';
-              fb.textContent = c.esp.substring(0,12);
-              img.replaceWith(fb);
+                const fb = document.createElement('div');
+                fb.className = 'img-fallback';
+                fb.textContent = c.esp.substring(0,12);
+                img.replaceWith(fb);
             };
 
-            const nameDiv = document.createElement('div');
-            nameDiv.className = 'nombre-carta';
-            nameDiv.textContent = c.esp;
-
-            const meta = document.createElement('div');
-            meta.className = 'meta';
-            meta.innerHTML = `Elixir: ${c.elixir} • ${c.rarity.charAt(0).toUpperCase() + c.rarity.slice(1)} • ${c.type}`;
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = c.esp;
 
             div.appendChild(img);
-            div.appendChild(nameDiv);
-            div.appendChild(meta);
-            cardGrid.appendChild(div);
-          });
+            div.appendChild(nameSpan);
+
+            div.onclick = () => seleccionarCarta(c);
+
+            gridCartas.appendChild(div);
+        });
+    }
+
+    // Función para aplicar filtros (copiada y adaptada de batalla.html)
+    function applyFilters() {
+        const text = buscador.value.trim().toLowerCase();
+        const sel = {
+            rarity: selects.rarity.value,
+            elixir: selects.elixir.value,
+            type: selects.type.value,
+            attack: selects.attack.value,
+            role: selects.role.value
+        };
+
+        const filtered = cardsData.filter(c => {
+            const matchesText = !text || c.esp.toLowerCase().includes(text) || c.eng.toLowerCase().includes(text);
+            const matchRarity = sel.rarity === 'todas' || c.rarity === sel.rarity;
+            const matchType = sel.type === 'todas' || c.type === sel.type;
+            const matchAttack = sel.attack === 'todos' || c.attack === sel.attack;
+            const matchRole = sel.role === 'todos' || c.role === sel.role;
+
+            let matchElixir = true;
+            if (sel.elixir !== 'todas') {
+                if (sel.elixir === '8+') matchElixir = parseInt(c.elixir) >= 8 || c.elixir === 'variable';
+                else matchElixir = c.elixir === sel.elixir;
+            }
+
+            return matchesText && matchRarity && matchType && matchAttack && matchRole && matchElixir;
+        });
+
+        renderSelector(filtered);
+    }
+
+    // Elegir carta (actualizada para consistencia)
+    function seleccionarCarta(carta){
+        if (slotActual !== null) {
+            deck[slotActual] = carta;
+            const slotElement = document.querySelector(`[data-slot="${slotActual}"]`);
+            const imageUrl = `https://cdn.royaleapi.com/static/img/cards/${carta.eng}.png?t=${Date.now()}`;
+            slotElement.innerHTML = `<img src="${imageUrl}" alt="${carta.esp}">`;
         }
+        cerrarSelector();
+    }
 
-        function applyFilters(){
-            const text = buscador.value.trim().toLowerCase();
-            const sel = {
-                rarity: selects.rarity.value,
-                elixir: selects.elixir.value,
-                type: selects.type.value,
-                attack: selects.attack.value,
-                role: selects.role.value
-            };
-
-            const filtered = cardsData.filter(c => {
-                const matchesText = !text || c.esp.toLowerCase().includes(text) || c.eng.toLowerCase().includes(text);
-                const matchRarity = sel.rarity === 'todas' || c.rarity === sel.rarity;
-                const matchType = sel.type === 'todas' || c.type === sel.type;
-                const matchAttack = sel.attack === 'todos' || c.attack === sel.attack;
-                const matchRole = sel.role === 'todos' || c.role === c.role;
-
-                let matchElixir = true;
-                if (sel.elixir !== 'todas') {
-                    if (sel.elixir === '8+') matchElixir = parseInt(c.elixir) >= 8 || c.elixir === 'variable';
-                    else matchElixir = c.elixir === sel.elixir;
-                }
-
-                return matchesText && matchRarity && matchType && matchAttack && matchRole && matchElixir;
-            });
-
-            renderCards(filtered);
+    // Abrir selector al clicar slot
+    document.querySelectorAll(".card-slot").forEach(slot => {
+        slot.onclick = () => {
+            slotActual = parseInt(slot.dataset.slot);
+            abrirSelector();
         }
+    });
 
-        window.onload = function() {
-            // Inicializa los listeners de filtro
-            buscador.addEventListener('input', applyFilters);
-            Object.values(selects).forEach(s => s.addEventListener('change', applyFilters));
-        }
+    // Guardar el mazo
+    function guardarMazo(){
+        const nombre = document.getElementById("nombreMazo").value;
+        const priv = document.getElementById("privacidad").value;
 
-    </script>
+        if (!nombre) return alert("Poné un nombre para el mazo.");
+        if (deck.includes(null)) return alert("Faltan cartas en el mazo.");
+
+        const nuevoMazo = {
+            titulo: nombre,
+            publico: priv === "publico",
+            cartas: deck.map(c => c.eng)
+        };
+
+        // Guardar en localStorage
+        const mazosExistentes = JSON.parse(localStorage.getItem("mazosUsuario") || "[]");
+
+        mazosExistentes.push(nuevoMazo);
+
+        localStorage.setItem("mazosUsuario", JSON.stringify(mazosExistentes));
+
+        alert("Mazo guardado!");
+        window.location.href = "perfil.html";
+    }
+
+    // Inicializa listeners para filtros y búsqueda
+    buscador.addEventListener('input', applyFilters);
+    Object.values(selects).forEach(s => s.addEventListener('change', applyFilters));
+
+    // Render inicial al cargar (opcional, pero para consistencia)
+    applyFilters();
+</script>
+
 </body>
 </html>
