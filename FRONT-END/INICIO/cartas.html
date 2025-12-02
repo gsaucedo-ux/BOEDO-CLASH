@@ -2,32 +2,12 @@
 <html lang="es">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Cartas - Boedo Clash (121 cartas)</title>
 
-<link rel="stylesheet" href="../STYLES/estiloLogin.css">
+<!-- CSS EXTERNO -->
+<link rel="stylesheet" href="../STYLES/estiloCartas.css">
 
-<style>
-  body { background-color: #0c1e2c; font-family: Arial, sans-serif; color: white; }
-  .contenedor-cartas { width: 95%; margin: 40px auto; text-align: center; }
-  h2 { color: #ffd700; font-size: 2.2em; margin-bottom: 10px; text-shadow: 2px 2px 4px black; }
-  .controls { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin: 18px 0 28px; }
-  .buscador { width: 60%; min-width: 240px; padding: 12px; border-radius: 12px; border: none; font-size: 1.05em; }
-  select { padding: 10px; font-size: 1em; border-radius: 10px; border: none; background: rgba(255,255,255,0.95); cursor:pointer; min-width: 160px; }
-  .grid-cartas { display:grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap:18px; margin-top:18px; }
-  .carta { background: rgba(255,255,255,0.10); border-radius: 14px; padding:10px; text-align:center; box-shadow:0 0 12px rgba(255,215,0,0.22); cursor: pointer; transition: .18s; }
-  .carta:hover { transform: scale(1.05); box-shadow: 0 0 18px #ffd700; }
-  .carta img{ width:100%; border-radius:10px; display:block; margin:0 auto; background: rgba(0,0,0,0.12); }
-  .img-fallback { width:100%; height:180px; display:flex; align-items:center; justify-content:center; background: rgba(0,0,0,0.2); border-radius:10px; color:#bbb; font-size:0.9em; }
-  .nombre-carta{ margin-top:8px; font-weight:700; color:#ffd700; text-shadow:1px 1px 2px black; }
-  .meta { font-size:0.85em; color:#eee; margin-top:6px; text-transform:capitalize; }
-  .badges { display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-top:8px; }
-  .badge { background: rgba(0,0,0,0.35); padding:4px 8px; border-radius:8px; font-size:0.75em; color:#fff; }
-  @media (max-width:600px){
-    .buscador { width: 95%; }
-    select { min-width: 140px; }
-  }
-</style>
 </head>
 <body>
 
@@ -35,33 +15,50 @@
   <h2>Cartas - Boedo Clash (121 oficiales)</h2>
 
   <div class="controls">
+
     <input id="buscador" class="buscador" placeholder="Buscar cartas (nombre en español)..." />
 
-    <select id="filtro-rarity"><option value="todas">Rareza (todas)</option>
-      <option value="comun">Común</option><option value="especial">Especial</option>
-      <option value="epica">Épica</option><option value="legendaria">Legendaria</option>
+    <select id="filtro-rarity">
+      <option value="todas">Rareza (todas)</option>
+      <option value="comun">Común</option>
+      <option value="especial">Especial</option>
+      <option value="epica">Épica</option>
+      <option value="legendaria">Legendaria</option>
       <option value="campeon">Campeón</option>
     </select>
 
-    <select id="filtro-elixir"><option value="todas">Elixir (todos)</option>
-      <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-      <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+    <select id="filtro-elixir">
+      <option value="todas">Elixir (todos)</option>
+      <option value="1">1</option><option value="2">2</option>
+      <option value="3">3</option><option value="4">4</option>
+      <option value="5">5</option><option value="6">6</option>
       <option value="7">7</option><option value="8+">8+</option>
     </select>
 
-    <select id="filtro-type"><option value="todas">Tipo (todas)</option>
-      <option value="tropa">Tropa</option><option value="hechizo">Hechizo</option><option value="estructura">Estructura</option>
+    <select id="filtro-type">
+      <option value="todas">Tipo (todas)</option>
+      <option value="tropa">Tropa</option>
+      <option value="hechizo">Hechizo</option>
+      <option value="estructura">Estructura</option>
     </select>
 
-    <select id="filtro-attack"><option value="todos">Ataque (todos)</option>
-      <option value="terrestre">Terrestre</option><option value="aereo">Aéreo</option><option value="mixto">Ambos</option>
+    <select id="filtro-attack">
+      <option value="todos">Ataque (todos)</option>
+      <option value="terrestre">Terrestre</option>
+      <option value="aereo">Aéreo</option>
+      <option value="mixto">Ambos</option>
     </select>
 
-    <select id="filtro-role"><option value="todos">Rol</option>
-      <option value="wincondition">Win condition</option><option value="tank">Tank</option>
-      <option value="support">Support</"..."></option><option value="swarm">Swarm</option>
-      <option value="defense">Defense</option><option value="spell">Spell</option>
+    <select id="filtro-role">
+      <option value="todos">Rol</option>
+      <option value="wincondition">Win condition</option>
+      <option value="tank">Tank</option>
+      <option value="support">Support</option>
+      <option value="swarm">Swarm</option>
+      <option value="defense">Defense</option>
+      <option value="spell">Spell</option>
     </select>
+
   </div>
 
   <div id="grid" class="grid-cartas"></div>
@@ -130,7 +127,7 @@ const cardsData = [
   { eng:"flying-machine", esp:"Máquina Voladora", rarity:"especial", elixir:"4", type:"tropa", attack:"mixto", range:"medio", speed:"rapido", attackSpeed:"medio", hp:"media", role:"support", combatRole:"AS" },
   { eng:"royal-recruits", esp:"Reclutas Reales", rarity:"comun", elixir:"7", type:"tropa", attack:"terrestre", range:"medio", speed:"medio", attackSpeed:"medio", hp:"alta", role:"swarm", combatRole:"T" },
   { eng:"electro-dragon", esp:"Dragón Eléctrico", rarity:"epica", elixir:"5", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"M" },
-  // Campeones (AS, B, T, M, HD)
+  // Campeones 
   { eng:"archer-queen", esp:"Reina Arquera", rarity:"campeon", elixir:"5", type:"tropa", attack:"mixto", range:"largo", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"AS" },
   { eng:"golden-knight", esp:"Caballero Dorado", rarity:"campeon", elixir:"4", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"B" },
   { eng:"skeleton-king", esp:"Rey Esqueleto", rarity:"campeon", elixir:"5", type:"tropa", attack:"terrestre", range:"medio", speed:"medio", attackSpeed:"medio", hp:"alta", role:"support", combatRole:"T" },
@@ -140,7 +137,7 @@ const cardsData = [
   { eng:"goblin-machine", esp:"Máquina de Duendes", rarity:"legendaria", elixir:"5", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"alta", role:"support", combatRole:"TS" },
   { eng:"goblin-demolisher", esp:"Duende Demoledor", rarity:"epica", elixir:"4", type:"tropa", attack:"terrestre", range:"medio", speed:"medio", attackSpeed:"medio", hp:"media", role:"wincondition", combatRole:"DM" },
   { eng:"boss-bandit", esp:"Bandida Líder", rarity:"campeon", elixir:"6", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"medio", hp:"alta", role:"wincondition", combatRole:"B" },
-  // Hechizos (DM, DS, M)
+  // Hechizos 
   { eng:"goblin-barrel", esp:"Barril de Duendes", rarity:"epica", elixir:"3", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"DS" },
   { eng:"graveyard", esp:"Cementerio", rarity:"legendaria", elixir:"5", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"DS" },
   { eng:"freeze", esp:"Congelar", rarity:"epica", elixir:"4", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"M" },
@@ -156,7 +153,7 @@ const cardsData = [
   { eng:"rage", esp:"Furia", rarity:"epica", elixir:"2", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"M" },
   { eng:"barbarian-barrel", esp:"Barril de Bárbaro", rarity:"epica", elixir:"2", type:"hechizo", attack:"mixto", range:"corto", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"TS" },
   { eng:"earthquake", esp:"Terremoto", rarity:"especial", elixir:"3", type:"hechizo", attack:"terrestre", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"DS" },
-  // Estructuras (E, HD, TS, M, EM)
+  // Estructuras 
   { eng:"cannon", esp:"Cañón", rarity:"comun", elixir:"3", type:"estructura", attack:"terrestre", range:"medio", speed:"n/a", attackSpeed:"medio", hp:"media", role:"defense", combatRole:"E" },
   { eng:"mortar", esp:"Mortero", rarity:"comun", elixir:"4", type:"estructura", attack:"terrestre", range:"largo", speed:"n/a", attackSpeed:"medio", hp:"media", role:"defense", combatRole:"E" },
   { eng:"inferno-tower", esp:"Torre Infernal", rarity:"especial", elixir:"5", type:"estructura", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"rampa", hp:"alta", role:"defense", combatRole:"HD" },
