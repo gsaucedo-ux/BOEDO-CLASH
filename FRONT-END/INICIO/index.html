@@ -83,9 +83,15 @@
                         <div><p>jugador</p></div>
                         <div> <p>victorias</p></div>
                          </div>
-                        <div class="comentarios_mazos"> 
+                        <div class="comentarios_mazos">
                 <p>comentarios</p>
                 </div>
+                 <div class="comentarios_contenedor" style="display:none;">
+        <textarea class="textarea" placeholder="Escribe un comentario..."></textarea>
+        <button class="button is-link publicar-comentario">Publicar</button>
+
+        <div class="lista_comentarios"></div>
+</div>
                 </div>
 
 
@@ -410,6 +416,38 @@
                 </div>
                 </div>
         </div>
+
+<script>
+document.querySelectorAll(".comentarios_mazos").forEach(boton => {
+    boton.addEventListener("click", () => {
+        const contenedor = boton.nextElementSibling;
+
+        // Toggle mostrar/ocultar
+        if (contenedor.style.display === "none") {
+            contenedor.style.display = "block";
+        } else {
+            contenedor.style.display = "none";
+        }
+    });
+});
+
+// Publicar comentarios sin backend todavía
+document.querySelectorAll(".publicar-comentario").forEach(boton => {
+    boton.addEventListener("click", () => {
+        const contenedor = boton.parentElement;
+        const textarea = contenedor.querySelector("textarea");
+        const lista = contenedor.querySelector(".lista_comentarios");
+
+        if (textarea.value.trim() !== "") {
+            const nuevoComentario = document.createElement("p");
+            nuevoComentario.textContent = textarea.value;
+            lista.appendChild(nuevoComentario);
+
+            textarea.value = "";
+        }
+    });
+});
+</script>
 
 </body>
 </html>
