@@ -12,3 +12,6 @@
     backdrop-filter: blur(4px);
     z-index: 1000;
 }
+.selector_comentarios {
+    display: none;
+}
