@@ -8,6 +8,7 @@
     bottom:0;
     padding: 20px;
     display: flex;
+    flex-direction: column;
     backdrop-filter: blur(4px);
     z-index: 1000;
 }
@@ -15,6 +16,13 @@
 /*.selector_comentarios {
     display: none;
 }*/
+.barra_salida_comentarios {
+    width: 100%;
+    height: 30px;
+}
+.barra_salida_comentarios >p{
+        text-align: center;
+}
 .contenedor_comentarios{
         border: solid 2px #0413e7;
         height: 90%;
@@ -25,14 +33,36 @@
 }
 .comentarios{
         width:100%;
-        height:80%;
+        height:90%;
         display: flex;
         flex-direction: column;
 }
 
 .nuevo_comentario{
         width: 100%;
-        height: 20%;
-        background-color: black;
+        height: 10%;
         margin-right: 10px;
+        display: flex;
+        flex-direction: row;
+}
+.comentar{
+        flex:1;
+        margin-bottom: 10px;
+        width: 100%;
+        height: 50%;
+        align-self: flex-end;
+}
+.imagen_usuario{
+        align-self: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+}
+.comentario{
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 10px;
+        width: 90%;
+        height: 30px;
 }
