@@ -84,9 +84,9 @@
                         <div><p>jugador</p></div>
                         <div> <p>victorias</p></div>
                          </div>
-                        <div class="comentarios_mazos"> 
-                <p>comentarios</p>
-                </div>
+                        <button class="comentarios_mazos"> 
+                comentarios
+                        </button>
                 </div>
 
 
@@ -130,9 +130,9 @@
                         <div><p>jugador</p></div>
                         <div> <p>victorias</p></div>
                          </div>
-                        <div class="comentarios_mazos"> 
-                <p>comentarios</p>
-                </div>
+                               <button class="comentarios_mazos"> 
+                comentarios
+                        </button>
                 </div>
                 
                 <div class="mazo-publicado">
@@ -174,9 +174,9 @@
                         <div><p>jugador</p></div>
                         <div> <p>victorias</p></div>
                          </div>
-                        <div class="comentarios_mazos"> 
-                <p>comentarios</p>
-                </div>
+                               <button class="comentarios_mazos"> 
+                comentarios
+                        </button>
                 </div>
 
 
@@ -221,9 +221,9 @@
                         <div><p>jugador</p></div>
                         <div> <p>victorias</p></div>
                          </div>
-                        <div class="comentarios_mazos"> 
-                <p>comentarios</p>
-                </div>
+                               <button class="comentarios_mazos"> 
+                comentarios
+                        </button>
                 </div>
 
 
@@ -269,9 +269,9 @@
                         <div><p>jugador</p></div>
                         <div> <p>victorias</p></div>
                          </div>
-                        <div class="comentarios_mazos"> 
-                <p>comentarios</p>
-                </div>
+                               <button class="comentarios_mazos"> 
+                comentarios
+                        </button>
                 </div>
               
 
@@ -315,9 +315,9 @@
                         <div><p>jugador</p></div>
                         <div> <p>victorias</p></div>
                          </div>
-                        <div class="comentarios_mazos"> 
-                <p>comentarios</p>
-                </div>
+                               <button class="comentarios_mazos"> 
+                comentarios
+                        </button>
 
                 </div>
 
@@ -361,9 +361,9 @@
                         <div><p>jugador</p></div>
                         <div> <p>victorias</p></div>
                          </div>
-                        <div class="comentarios_mazos"> 
-                <p>comentarios</p>
-                </div>
+                               <button class="comentarios_mazos"> 
+                comentarios
+                        </button>
                 </div>
         
 
@@ -406,13 +406,13 @@
                         <div><p>jugador</p></div>
                         <div> <p>victorias</p></div>
                          </div>
-                        <div class="comentarios_mazos"> 
-                <p>comentarios</p>
-                </div>
+                               <button class="comentarios_mazos"> 
+                comentarios
+                        </button>
                 </div>
         </div>
        <!-- contenedor oculto -->
-      <div class="contenedor_oculto selector_comentarios">
+      <div id="ventana_comentarios" class="contenedor_oculto selector_comentarios">
         <div class="barra_salida_comentarios"><p>---------</p></div>
         <div class="contenedor_comentarios">
                 <div class="comentarios">
@@ -432,6 +432,14 @@
 
       </div>
       </div>
-
+      <script>
+        const ventana=document.getElementById("ventana_comentarios");
+        const botones_comentarios=document.querySelectorAll(".comentarios_mazos")
+        botones_comentarios.forEach(boton=>{
+                boton.onclick=()=>{
+                        ventana.classList.remove("selector_comentarios");
+                }
+        });
+      </script>
 </body>
 </html>

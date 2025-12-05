@@ -15,9 +15,9 @@
     z-index: 1000;
 }
 /* estilo para ocultar el contenedor */
-/*.selector_comentarios {
+.selector_comentarios {
     display: none;
-}*/
+}
 .barra_salida_comentarios {
     width: 100%;
     height: 30px;
