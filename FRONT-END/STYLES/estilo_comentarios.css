@@ -100,4 +100,7 @@
 .caja_comentario .comentario::placeholder {
     color: #bbb;             /* placeholder clarito */
 }
-
+.comentarios{
+        overflow-y: auto;        /* barra de desplazamiento vertical */
+        word-wrap: break-word;   /* para que las palabras largas se ajusten */
+}
