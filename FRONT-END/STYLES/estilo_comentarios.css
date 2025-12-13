@@ -19,12 +19,13 @@
     display: none;
 }
 .salida_comentarios {
-    width: 100%;
+    width: 80%;
     height: 80px;
     display: flex;
      align-items: center;
     flex-direction: column;
-
+     border:solid 2px #0413e7;
+    border-radius: 20px;
 }
 .contenedor_comentarios{
         border: solid 2px #0413e7;
