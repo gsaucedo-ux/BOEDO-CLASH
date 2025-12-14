@@ -142,7 +142,13 @@
 }
 .comentarios_mazos:hover{
     box-shadow: 0 0 10px #e6acba;
-    transform: scale(1.05); 
+    transform: scale(1.05);
+   background: linear-gradient(
+        10deg,
+        #0A2A66 20%,
+        #cf1c49 50%,
+        #ff4a68 100%
+    );
 }
 .imagen_cartas{
         width: 90%;
@@ -196,10 +202,7 @@
         margin-left: 70px;
 }
 .informacion_grupo{
-        color:white;
-        font-size: 16px;
-        font-weight: bold;
-        margin-right:50px;
+        margin-right: 20px;
 }
 .lista_redes_sociales{
         display:flex;

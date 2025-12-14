@@ -19,7 +19,7 @@
     display: none;
 }
 .salida_comentarios {
-    width: 80%;
+    width: 77%;
     height: 80px;
     display: flex;
      align-items: center;
@@ -37,6 +37,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin-top:10px;
 }
 .comentarios{
         width:100%;
