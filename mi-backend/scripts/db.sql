@@ -46,3 +46,6 @@ CREATE TABLE comentarios (
     texto TEXT NOT NULL,
     puntuacion INT CHECK (puntuacion >= 1 AND puntuacion <= 5)
 );
+
+INSERT INTO usuario (nombre, correo, contraseña, nivel, trofeos, alias, carta_favorita)
+VALUES ('STG', 'hola@gmail.com', '12345', 11, 15000, 'LaLeyenda', 'Platense');
