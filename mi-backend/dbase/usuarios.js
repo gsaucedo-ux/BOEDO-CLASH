@@ -11,6 +11,12 @@ async function getallusuarios() { // al poner async esperamos una promesa(la res
        const respuesta=await dbclient.query('SELECT * FROM usuario');
        return respuesta.rows;
 };
+
+async function getusuario(id) {
+        const respuesta=await dbclient.query('SELECT * FROM usuario WHERE id=$1', [id]);
+        return respuesta.rows[0];
+};
+
 module.exports={
-        getallusuarios,
+        getallusuarios,getusuario,
 };
