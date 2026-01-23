@@ -2,6 +2,7 @@ const express = require('express');//se imoporta express
 const app = express();//aca tengo mi aplicacion
 const cors = require('cors'); 
 const port = 3000; //puerto donde va a correr mi aplicacion
+const {getallusuarios} = require ('./dbase/usuarios');//importa todas las funcionesque estanen esa ruta
 app.use(express.json());
 app.use(cors()); // <--- CORS reubicado aquí
 
@@ -13,16 +14,8 @@ app.get("/", (req, res) => {
 // Ruta para obtener todos los usuarios
 app.get("/usuarios", async (req, res) => {
     try {
-        res.json({
-  "id": 1,
-  "nombre": "fede herrera",
-  "correo": "fde@example.com",
-  "contraseña": "hashed_password_123",
-  "nivel": 1,
-  "trofeos": 0,
-  "alias": "BoedoKing",
-  "carta_favorita": "Dragón Rojo"
-});
+        const usuarios = await getallusuarios();
+        res.json(usuarios);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "DB error", details: err.message });
