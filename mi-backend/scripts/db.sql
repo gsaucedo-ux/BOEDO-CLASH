@@ -28,17 +28,15 @@ CREATE TABLE mazos (
     usuario_id INT REFERENCES usuario(id) ON DELETE CASCADE,
     nombre VARCHAR(100) NOT NULL,
     promedio_elixir DECIMAL(3,2),
-    victorias_totales INT DEFAULT 0,
-    carta_1 INT REFERENCES cartas(carta_id),
-    carta_2 INT REFERENCES cartas(carta_id),
-    carta_3 INT REFERENCES cartas(carta_id),
-    carta_4 INT REFERENCES cartas(carta_id),
-    carta_5 INT REFERENCES cartas(carta_id),
-    carta_6 INT REFERENCES cartas(carta_id),
-    carta_7 INT REFERENCES cartas(carta_id),
-    carta_8 INT REFERENCES cartas(carta_id)
+    victorias_totales INT DEFAULT 0
 );
-
+CREATE TABLE mazo_cartas (
+    mazo_id INT REFERENCES mazos(mazo_id) ON DELETE CASCADE,
+    carta_id INT REFERENCES cartas(carta_id),
+    posicion INT CHECK (posicion BETWEEN 1 AND 8),
+    PRIMARY KEY (mazo_id, carta_id),
+    UNIQUE (mazo_id, posicion)
+);
 CREATE TABLE comentarios (
     comentario_id SERIAL PRIMARY KEY,
     mazo_id INT REFERENCES mazos(mazo_id) ON DELETE CASCADE,
