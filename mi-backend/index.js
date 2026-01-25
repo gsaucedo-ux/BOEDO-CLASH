@@ -2,7 +2,15 @@ const express = require('express');//se imoporta express
 const app = express();//aca tengo mi aplicacion
 const cors = require('cors'); 
 const port = 3000; //puerto donde va a correr mi aplicacion
-const {getallusuarios,getusuario,create_usuario,update_usuario,verificacion_correo,verificacion_correo_otros,alias_usuario,alias_usuario_otros} = require ('./dbase/usuarios');//importa todas las funcionesque estanen esa ruta
+const {getallusuarios,
+        getusuario,
+        create_usuario,
+        update_usuario,
+        verificacion_correo,
+        verificacion_correo_otros,
+        alias_usuario,
+        alias_usuario_otros,
+remove_usuario} = require ('./dbase/usuarios');//importa todas las funcionesque estanen esa ruta
 app.use(express.json());
 app.use(cors()); // <--- CORS reubicado aquí
 
@@ -68,7 +76,7 @@ if (carta_favorita === undefined) {
   try {
     // 3️⃣ Verificar si ya existe el correo
     const existe_correo=await verificacion_correo(correo);
-    const usuario=await alias_usuario_otros(alias,id_usuario);
+    const usuario=await alias_usuario_otros(alias);
     if (existe_correo.rowCount !== 0) {
       return res.status(409).send("ya existe un usuario con ese correo");
     }
@@ -146,6 +154,19 @@ if (carta_favorita === undefined) {
     res.status(500).send("error interno del servidor");
   }
 });
+app.delete('/usuario/:id', async(req, res) => {
+        const id_usuario=req.params.id;
+        let usuario=await getusuario(id_usuario);
+        if(usuario==undefined){
+         return res.sendStatus(404);
+         };
+         try{remove_usuario(id_usuario);
+        res.json(usuario);
+        }catch{
+         console.error(error);
+    res.status(500).send("error interno del servidor");
+        }
+ });
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor corriendo en http://localhost:" + PORT);

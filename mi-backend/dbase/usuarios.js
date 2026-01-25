@@ -51,7 +51,13 @@ async function update_usuario(id_usuario, nombre, correo, contraseña, alias, ca
         }
         return respuesta.rows[0];
 }
-
+async function remove_usuario(id_usuario){
+        const respuesta=await dbclient.query('DELETE FROM usuario WHERE id=$1 RETURNING *', [id_usuario]);
+        if (respuesta.rowCount===0){
+                return undefined;
+        }
+        return respuesta.rows[0];
+}
 module.exports={
-        getallusuarios,getusuario,create_usuario,update_usuario,verificacion_correo,verificacion_correo_otros,alias_usuario,alias_usuario_otros,
+        getallusuarios,getusuario,create_usuario,update_usuario,verificacion_correo,verificacion_correo_otros,alias_usuario,alias_usuario_otros,remove_usuario,
 };
