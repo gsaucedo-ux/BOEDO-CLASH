@@ -167,6 +167,40 @@ app.delete('/usuario/:id', async(req, res) => {
     res.status(500).send("error interno del servidor");
         }
  });
+
+// ENDPOINTS DE LAS CARTAS:
+
+app.get("/cartas", async (req, res) => {
+    try {
+        const cartas = await getallcartas();
+        res.json(cartas);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Error al obtener cartas" });
+    }
+});
+
+// obtener una carta especifica
+app.get("/cartas/:id", async (req, res) => {
+    try {
+        const carta = await getcarta(req.params.id);
+        if (!carta) return res.status(404).send("Carta no encontrada");
+        res.json(carta);
+    } catch (err) {
+        res.status(500).json({ error: "Error de servidor" });
+    }
+});
+
+// filtrar cartas por calidad
+app.get("/cartas/calidad/:tipo", async (req, res) => {
+    try {
+        const cartas = await getcartasbycalidad(req.params.tipo);
+        res.json(cartas);
+    } catch (err) {
+        res.status(500).json({ error: "Error al filtrar" });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor corriendo en http://localhost:" + PORT);
