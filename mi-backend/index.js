@@ -2,6 +2,13 @@ const express = require('express');//se imoporta express
 const app = express();//aca tengo mi aplicacion
 const cors = require('cors'); 
 const port = 3000; //puerto donde va a correr mi aplicacion
+
+const {getallcartas,
+     getcarta,
+     getcartasbycalidad,
+     create_carta,
+      } = require ('./dbase/cartas');
+
 const {getallusuarios,
         getusuario,
         create_usuario,
@@ -11,6 +18,7 @@ const {getallusuarios,
         alias_usuario,
         alias_usuario_otros,
 remove_usuario} = require ('./dbase/usuarios');//importa todas las funcionesque estanen esa ruta
+
 app.use(express.json());
 app.use(cors()); // <--- CORS reubicado aquí
 
@@ -181,7 +189,7 @@ app.get("/cartas", async (req, res) => {
 });
 
 // obtener una carta especifica
-app.get("/cartas/:id", async (req, res) => {
+app.get("/carta/:id", async (req, res) => {
     try {
         const carta = await getcarta(req.params.id);
         if (!carta) return res.status(404).send("Carta no encontrada");

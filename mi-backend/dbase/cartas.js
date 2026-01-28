@@ -34,5 +34,5 @@ module.exports = {
     getallcartas,
     getcarta,
     getcartasbycalidad,
-    create_carta
+    create_carta,
 };
