@@ -9,10 +9,10 @@
 <body>
 
 <div class="contenedor-cartas">
-    <h2>Cartas - Boedo Clash (Desde Base de Datos)</h2>
+    <h2>Cartas - Boedo Clash</h2>
 
     <div class="controls">
-        <input id="buscador" class="buscador" placeholder="Buscar por nombre..." />
+        <input id="buscador" class="buscador" placeholder="Buscar por nombre de carta..." />
 
         <select id="filtro-rarity">
             <option value="todas">Rareza (todas)</option>
@@ -21,6 +21,19 @@
             <option value="epica">Épica</option>
             <option value="legendaria">Legendaria</option>
             <option value="campeon">Campeón</option>
+        </select>
+
+        <select id="filtro-rol">
+            <option value="todos">Rol de Combate (todos)</option>
+            <option value="T">Tanque (T)</option>
+            <option value="B">Tanque Rápido (B)</option>
+            <option value="DM">Daño de Muerte (DM)</option>
+            <option value="DS">Daño Sostenido (DS)</option>
+            <option value="AS">Soporte Aéreo (AS)</option>
+            <option value="TS">Tirador (TS)</option>
+            <option value="EM">Enjambre (EM)</option>
+            <option value="HD">Caza Tanques (HD)</option>
+            <option value="M">Control/Mecánica (M)</option>
         </select>
 
         <select id="filtro-elixir">
@@ -36,34 +49,32 @@
 </div>
 
 <script>
-let cardsData = []; // Aquí se guardarán las cartas que vienen de la DB
+let cardsData = []; 
 const grid = document.getElementById('grid');
 
-// 1. FUNCIÓN PARA BUSCAR LOS DATOS EN TU BACKEND
+// 1. OBTENCIÓN DE DATOS DESDE EL BACKEND
 async function cargarCartasDesdeDB() {
     try {
-        // Esta es la ruta que creaste en tu index.js
-        const respuesta = await fetch('http://localhost:3000/cartas');
+        const respuesta = await fetch('http://localhost:3000/cartas'); // Endpoint de tu index.js
         if (!respuesta.ok) throw new Error("Error en la respuesta de la red");
         
-        cardsData = await respuesta.json();
-        renderCards(cardsData); // Dibujar las cartas recibidas
+        cardsData = await respuesta.json(); // Se cargan los datos de la DB
+        renderCards(cardsData); 
     } catch (error) {
         console.error("Error al conectar con el servidor:", error);
-        grid.innerHTML = "<p style='color:red'>Error: Asegúrate de que el backend (index.js) esté corriendo.</p>";
+        grid.innerHTML = "<p style='color:red; grid-column: 1/-1;'>Error: Asegúrate de que el backend esté corriendo.</p>";
     }
 }
 
-// 2. FUNCIÓN PARA DIBUJAR LAS CARTAS EN EL HTML
+// 2. RENDERIZADO DE CARTAS
 function renderCards(list) {
     grid.innerHTML = "";
     list.forEach(c => {
         const div = document.createElement('div');
         div.className = 'carta';
         
-        // Usamos los nombres exactos de tu tabla SQL: nombre, calidad, costo_elixir, imagen
         const img = document.createElement('img');
-        img.src = c.imagen; 
+        img.src = c.imagen; // URL de imagen de tu SQL
         img.alt = c.nombre;
         img.onerror = () => { img.src = 'https://via.placeholder.com/150?text=No+Image'; };
 
@@ -73,7 +84,8 @@ function renderCards(list) {
 
         const meta = document.createElement('div');
         meta.className = 'meta';
-        meta.innerHTML = `Elixir: ${c.costo_elixir} • ${c.calidad} • ${c.rol_combate}`;
+        // Muestra costo, calidad y rol de combate
+        meta.innerHTML = `Elixir: ${c.costo_elixir} • ${c.calidad} • ${c.rol_combate || 'N/A'}`;
 
         div.appendChild(img);
         div.appendChild(nameDiv);
@@ -82,38 +94,53 @@ function renderCards(list) {
     });
 }
 
-// 3. LOGICA DE FILTROS (Adaptada a los nombres de tu SQL)
+// 3. LÓGICA DE FILTRADO REFORZADA
 const buscador = document.getElementById('buscador');
 const filtroRarity = document.getElementById('filtro-rarity');
 const filtroElixir = document.getElementById('filtro-elixir');
+const filtroRol = document.getElementById('filtro-rol');
 
 function aplicarFiltros() {
-    const texto = buscador.value.toLowerCase();
+    const texto = buscador.value.trim().toLowerCase(); // Búsqueda más limpia
     const rareza = filtroRarity.value;
     const elixir = filtroElixir.value;
+    const rol = filtroRol.value;
 
     const filtradas = cardsData.filter(c => {
+        // Solo busca coincidencias en el nombre de la carta
         const coincideNombre = c.nombre.toLowerCase().includes(texto);
+        
+        // Filtra por calidad (común, épica, etc.)
         const coincideRareza = rareza === 'todas' || c.calidad.toLowerCase() === rareza;
         
+        // Filtra por rol de combate (T, AS, EM, etc.)
+        const coincideRol = rol === 'todos' || c.rol_combate === rol;
+        
+        // Filtra por costo de elixir
         let coincideElixir = true;
         if (elixir !== 'todas') {
             if (elixir === '8+') coincideElixir = c.costo_elixir >= 8;
             else coincideElixir = c.costo_elixir.toString() === elixir;
         }
 
-        return coincideNombre && coincideRareza && coincideElixir;
+        return coincideNombre && coincideRareza && coincideElixir && coincideRol;
     });
 
-    renderCards(filtradas);
+    // Manejo de resultados vacíos
+    if (filtradas.length === 0) {
+        grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>No se encontraron cartas.</p>";
+    } else {
+        renderCards(filtradas);
+    }
 }
 
-// Eventos para que los filtros funcionen al escribir o cambiar select
+// Escucha de eventos para actualizaciones en tiempo real
 buscador.addEventListener('input', aplicarFiltros);
 filtroRarity.addEventListener('change', aplicarFiltros);
 filtroElixir.addEventListener('change', aplicarFiltros);
+filtroRol.addEventListener('change', aplicarFiltros);
 
-// INICIAR CARGA AL ABRIR LA PÁGINA
+// Carga inicial
 cargarCartasDesdeDB();
 </script>
 
