@@ -176,7 +176,9 @@ app.delete('/usuario/:id', async(req, res) => {
         }
  });
 
-// ENDPOINTS DE LAS CARTAS:
+// ----------------------------------------------------
+// endpoints de cartas
+// ----------------------------------------------------
 
 app.get("/cartas", async (req, res) => {
     try {
@@ -208,6 +210,11 @@ app.get("/cartas/calidad/:tipo", async (req, res) => {
         res.status(500).json({ error: "Error al filtrar" });
     }
 });
+
+
+// ----------------------------------------------------
+// endpoints de comentarios
+// ----------------------------------------------------
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

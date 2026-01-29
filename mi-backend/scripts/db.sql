@@ -41,7 +41,8 @@ CREATE TABLE comentarios (
     mazo_id INT REFERENCES mazos(mazo_id) ON DELETE CASCADE,
     usuario_id INT REFERENCES usuario(id) ON DELETE SET NULL,
     texto TEXT NOT NULL,
-    puntuacion INT CHECK (puntuacion >= 1 AND puntuacion <= 5)
+    puntuacion INT CHECK (puntuacion >= 1 AND puntuacion <= 5),
+    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO cartas (nombre, imagen, calidad, costo_elixir, tipo_ataque, tipo_carta, puntos_de_vida, daño, rol_combate)
