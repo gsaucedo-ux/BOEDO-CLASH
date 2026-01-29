@@ -1,0 +1,119 @@
+:root {
+    --cr-dark: #222; 
+    --cr-gold: #FFD700; 
+    --cr-light: #F0F0F0; 
+    --cr-red: #D32F2F; 
+}
+
+body {
+    background-color: #0c1e2c; 
+    color: var(--cr-light);
+    font-family: Arial, sans-serif; 
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.crear-contenedor {
+    width: 100%;
+    max-width: 1000px; /* Reducido un poco para mayor armonía */
+    background-color: #333;
+    border: 5px solid var(--cr-gold);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+    box-sizing: border-box;
+}
+
+.titulo {
+    color: var(--cr-gold);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px #000;
+}
+
+.subtitulo {
+    color: var(--cr-gold);
+    font-size: 1.3em;
+    margin: 20px 0 10px 0;
+    text-shadow: 1px 1px 3px black;
+    border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+    display: inline-block;
+}
+
+.form-row {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 15px;
+}
+
+.form-grupo.half {
+    flex: 1;
+    text-align: left;
+}
+
+.inner-row {
+    display: flex;
+    gap: 10px;
+}
+
+label {
+    display: block;
+    color: var(--cr-gold);
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: white;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+input:focus, select:focus {
+    outline: 3px solid var(--cr-gold);
+}
+
+.boton-guardar {
+    background-color: #007bff; 
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: bold;
+    width: 100%;
+    margin-top: 20px;
+    transition: 0.2s;
+}
+
+.boton-guardar:hover {
+    background-color: #0056b3;
+    transform: scale(1.01);
+}
+
+.boton-volver-estilizado {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    color: var(--cr-gold);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* Evitar flechas en inputs numéricos */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
