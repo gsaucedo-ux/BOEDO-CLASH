@@ -151,6 +151,7 @@ VALUES
 -- 11. EA (Enjambre Aéreo): Hordas voladoras
 ('Esbirros', 'https://cdn.royaleapi.com/static/img/cards/minions.png', 'comun', 3, 'mixto', 'tropa', 190, 84, 'EA'),
 ('Horda de Esbirros', 'https://cdn.royaleapi.com/static/img/cards/minion-horde.png', 'comun', 5, 'mixto', 'tropa', 190, 84, 'EA'),
+('Murciélagos', 'https://cdn.royaleapi.com/static/img/cards/bats.png', 'comun', 2, 'mixto', 'tropa', 67, 67, 'EA'),
 
 -- 12. ED (Estructura Daño Área): Defensa de salpicadura
 ('Torre Bombardera', 'https://cdn.royaleapi.com/static/img/cards/bomb-tower.png', 'especial', 4, 'terrestre', 'estructura', 1100, 180, 'ED'),
