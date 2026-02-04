@@ -71,24 +71,24 @@ body {
 }
 
 .bSuperiorCrearBatalla {
-    position: relative;
-    display: flex;         
-    width: 300px;           
-    height: 90px;           
-    margin: 0 auto;         
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); 
+    width: 300px;
+    height: 90px; 
+    display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    text-decoration: none;
-    overflow: hidden;       
-    
+    z-index: 101; 
 }
 
 .imagen-boton-batalla {
     display: block;
-    width: 100%;            
+    width: 100%;
     height: auto;
-    pointer-events: none;   
+    pointer-events: none; 
 }
 
 .texto-superpuesto-batalla {
