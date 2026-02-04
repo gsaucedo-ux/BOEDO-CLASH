@@ -8,7 +8,8 @@ const {getallcartas,
      getcartasbycalidad,
      create_carta,
       } = require ('./dbase/cartas');
-
+const {getallcomentarios,
+      } = require ('./dbase/comentarios');
 const {getallusuarios,
         getusuario,
         create_usuario,
@@ -215,6 +216,16 @@ app.get("/cartas/calidad/:tipo", async (req, res) => {
 // ----------------------------------------------------
 // endpoints de comentarios
 // ----------------------------------------------------
+app.get('/mazos/:id/comentarios', async (req, res) => {
+  const mazoId = req.params.id;
+try{
+        const comentarios= await getallcomentarios(mazoId);
+        res.json(comentarios);
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener comentarios' });
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

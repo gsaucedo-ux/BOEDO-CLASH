@@ -36,6 +36,7 @@ CREATE TABLE mazo_cartas (
     PRIMARY KEY (mazo_id, carta_id),
     UNIQUE (mazo_id, posicion)
 );
+
 CREATE TABLE comentarios (
     comentario_id SERIAL PRIMARY KEY,
     mazo_id INT REFERENCES mazos(mazo_id) ON DELETE CASCADE,
@@ -44,6 +45,15 @@ CREATE TABLE comentarios (
     puntuacion INT CHECK (puntuacion >= 1 AND puntuacion <= 5),
     creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+INSERT INTO usuario (
+    nombre, correo, contraseña, alias, carta_favorita
+) VALUES
+('Juan Pérez', 'juan.perez@mail.com', '1234', 'Juancito', 'Gigante'),
+('María Gómez', 'maria.gomez@mail.com', '1234', 'MariCR', 'Mosquetera'),
+('Lucas Fernández', 'lucas.fernandez@mail.com', '1234', 'Lucho', 'Bola de Fuego'),
+('Ana López', 'ana.lopez@mail.com', '1234', 'AnitaPro', 'Príncipe'),
+('Carlos Ruiz', 'carlos.ruiz@mail.com', '1234', 'Carlitos', 'Arqueras');
+
 
 INSERT INTO cartas (nombre, imagen, calidad, costo_elixir, tipo_ataque, tipo_carta, puntos_de_vida, daño, rol_combate)
 VALUES 
@@ -173,3 +183,35 @@ VALUES
 ('Choza de Duendes', 'https://cdn.royaleapi.com/static/img/cards/goblin-hut.png', 'especial', 5, 'mixto', 'estructura', 800, 0, 'EG'),
 ('Lápida', 'https://cdn.royaleapi.com/static/img/cards/tombstone.png', 'especial', 3, 'terrestre', 'estructura', 440, 0, 'EG'),
 ('Excavadora de Duendes', 'https://cdn.royaleapi.com/static/img/cards/goblin-drill.png', 'epica', 4, 'terrestre', 'estructura', 950, 0, 'EG');
+INSERT INTO mazos (usuario_id, nombre, promedio_elixir)
+VALUES (1, 'Tanques Pesados', 5.6),
+       (2, 'Ataque Rápido', 4.2),
+       (3, 'Defensa Sólida', 5.0),
+       (4, 'Control de Mapa', 4.8),
+       (5, 'Enjambre Aéreo', 3.5);
+INSERT INTO mazo_cartas (mazo_id, carta_id, posicion)
+VALUES
+  (1, 2, 1),  -- Gigante
+  (1, 4, 2),  -- Gólem
+  (1, 5, 3),  -- Mega Caballero
+  (1, 3, 4),  -- Gigante Noble
+  (1, 6, 5),  -- Esqueleto Gigante
+  (1, 7, 6),  -- Rey Esqueleto
+  (1, 8, 7),  -- Monje
+  (1, 1, 8),  -- Caballero
+ (2, 10, 1),  -- Gigante
+  (2, 4, 2),  -- Gólem
+  (2, 5, 3),  -- Mega Caballero
+  (2, 3, 4),  -- Gigante Noble
+  (2, 6, 5),  -- Esqueleto Gigante
+  (2, 7, 6),  -- Rey Esqueleto
+  (2, 8, 7),  -- Monje
+  (2, 1, 8);  -- Caballero
+
+INSERT INTO comentarios (mazo_id, usuario_id, texto, puntuacion)
+VALUES
+(1, 2, '¡Me encanta este mazo de tanques! Muy sólido en defensa y ataque.', 5),
+(1, 3, 'Funciona bien, pero a veces me cuesta contra mazos rápidos.', 4),
+(1, 1, 'El Montapuercos es mi carta favorita, ¡gran elección!', 5),
+(2, 4, 'Me gusta la velocidad de este mazo, pero me falta algo de defensa.', 4),
+(3, 5, 'Este mazo me ha salvado en muchas partidas',5);
