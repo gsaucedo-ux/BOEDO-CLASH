@@ -8,93 +8,95 @@
 </head>
 <body>
 
-<div class="crear-contenedor">
-    <h1 class="titulo">Nueva Carta</h1>
-    
-    <form id="formCrearCarta">
-        <h3 class="subtitulo">Información General</h3>
-        <div class="form-row">
-            <div class="form-grupo half">
-                <label>Nombre</label>
-                <input type="text" name="nombre" placeholder="Ej: Montapuercos" required>
+    <div class="crear-contenedor">
+        <h1 class="titulo">Nueva Carta</h1>
+        
+        <form id="formCrearCarta">
+            <h3 class="subtitulo">Información General</h3>
+            <div class="form-row">
+                <div class="form-grupo half">
+                    <label>Nombre</label>
+                    <input type="text" name="nombre" placeholder="Ej: Montapuercos" required>
+                </div>
+                <div class="form-grupo half">
+                    <label>Imagen (URL)</label>
+                    <input type="url" name="imagen" placeholder="https://cdn.royaleapi.com/...">
+                </div>
             </div>
-            <div class="form-grupo half">
-                <label>Imagen (URL)</label>
-                <input type="url" name="imagen" placeholder="https://cdn.royaleapi.com/...">
-            </div>
-        </div>
 
-        <div class="form-row">
-            <div class="form-grupo half">
-                <label>Calidad</label>
-                <select name="calidad" required>
-                    <option value="">Seleccionar Calidad</option>
-                    <option value="comun">Común</option>
-                    <option value="especial">Especial</option>
-                    <option value="epica">Épica</option>
-                    <option value="legendaria">Legendaria</option>
-                    <option value="campeon">Campeón</option>
-                </select>
-            </div>
-            <div class="form-grupo half">
-                <label>Costo de Elixir</label>
-                <input type="number" name="costo_elixir" min="0" max="10" placeholder="0 - 10" required>
-            </div>
-        </div>
-
-        <h3 class="subtitulo">Atributos de Combate</h3>
-        <div class="form-row">
-            <div class="form-grupo half">
-                <label>Ataque y Tipo</label>
-                <div class="inner-row">
-                    <select name="tipo_ataque" required>
-                        <option value="">Ataque</option>
-                        <option value="terrestre">Terrestre</option>
-                        <option value="aereo">Aéreo</option>
-                        <option value="mixto">Mixto</option>
-                        <option value="hechizo">Hechizo</option>
+            <div class="form-row">
+                <div class="form-grupo half">
+                    <label>Calidad</label>
+                    <select name="calidad" required>
+                        <option value="">Seleccionar Calidad</option>
+                        <option value="comun">Común</option>
+                        <option value="especial">Especial</option>
+                        <option value="epica">Épica</option>
+                        <option value="legendaria">Legendaria</option>
+                        <option value="campeon">Campeón</option>
                     </select>
-                    <select name="tipo_carta" required>
-                        <option value="">Tipo</option>
-                        <option value="tropa">Tropa</option>
-                        <option value="hechizo">Hechizo</option>
-                        <option value="estructura">Estructura</option>
+                </div>
+                <div class="form-grupo half">
+                    <label>Costo de Elixir</label>
+                    <input type="number" name="costo_elixir" min="0" max="10" placeholder="0 - 10" required>
+                </div>
+            </div>
+
+            <h3 class="subtitulo">Atributos de Combate</h3>
+            <div class="form-row">
+                <div class="form-grupo half">
+                    <label>Ataque y Tipo</label>
+                    <div class="inner-row">
+                        <select name="tipo_ataque" required>
+                            <option value="">Ataque</option>
+                            <option value="terrestre">Terrestre</option>
+                            <option value="aereo">Aéreo</option>
+                            <option value="mixto">Mixto</option>
+                            <option value="hechizo">Hechizo</option>
+                        </select>
+                        <select name="tipo_carta" required>
+                            <option value="">Tipo</option>
+                            <option value="tropa">Tropa</option>
+                            <option value="hechizo">Hechizo</option>
+                            <option value="estructura">Estructura</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-grupo half">
+                    <label>Estadísticas</label>
+                    <div class="inner-row">
+                        <input type="number" name="puntos_de_vida" placeholder="Vida" min="0" required>
+                        <input type="number" name="daño" placeholder="Daño" min="0" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-grupo half">
+                    <label>Rol de Combate</label>
+                    <select name="rol_combate" required>
+                        <option value="">Seleccionar Rol</option>
+                        <option value="T">Tanque (T)</option>
+                        <option value="B">Tanque Rápido (B)</option>
+                        <option value="DM">Daño de Muerte (DM)</option>
+                        <option value="DS">Daño Sostenido (DS)</option>
+                        <option value="AS">Soporte Aéreo (AS)</option>
+                        <option value="TS">Tirador (TS)</option>
+                        <option value="EM">Enjambre (EM)</option>
+                        <option value="HD">Caza Tanques (HD)</option>
+                        <option value="M">Control/Mecánica (M)</option>
                     </select>
                 </div>
             </div>
             
-            <div class="form-grupo half">
-                <label>Estadísticas</label>
-                <div class="inner-row">
-                    <input type="number" name="puntos_de_vida" placeholder="Vida" min="0" required>
-                    <input type="number" name="daño" placeholder="Daño" min="0" required>
-                </div>
-            </div>
-        </div>
+            <button type="submit" class="boton-guardar">Registrar Carta</button>
+        </form>
+    </div>
 
-        <div class="form-row">
-            <div class="form-grupo half">
-                <label>Rol de Combate</label>
-                <select name="rol_combate" required>
-                    <option value="">Seleccionar Rol</option>
-                    <option value="T">Tanque (T)</option>
-                    <option value="B">Tanque Rápido (B)</option>
-                    <option value="DM">Daño de Muerte (DM)</option>
-                    <option value="DS">Daño Sostenido (DS)</option>
-                    <option value="AS">Soporte Aéreo (AS)</option>
-                    <option value="TS">Tirador (TS)</option>
-                    <option value="EM">Enjambre (EM)</option>
-                    <option value="HD">Caza Tanques (HD)</option>
-                    <option value="M">Control/Mecánica (M)</option>
-                </select>
-            </div>
-        </div>
-
-        <button type="submit" class="boton-guardar">Registrar Carta</button>
-    </form>
-</div>
-
-<a href="index.html" class="boton-volver-estilizado">⮜ Volver</a>
+    <div class="contenedor-volver">
+        <a href="index.html" class="boton-volver-centrado">⮜ Volver al Inicio</a>
+    </div>
 
 </body>
 </html>
