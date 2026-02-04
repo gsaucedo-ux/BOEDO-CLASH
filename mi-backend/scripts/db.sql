@@ -183,6 +183,7 @@ VALUES
 ('Choza de Duendes', 'https://cdn.royaleapi.com/static/img/cards/goblin-hut.png', 'especial', 5, 'mixto', 'estructura', 800, 0, 'EG'),
 ('Lápida', 'https://cdn.royaleapi.com/static/img/cards/tombstone.png', 'especial', 3, 'terrestre', 'estructura', 440, 0, 'EG'),
 ('Excavadora de Duendes', 'https://cdn.royaleapi.com/static/img/cards/goblin-drill.png', 'epica', 4, 'terrestre', 'estructura', 950, 0, 'EG');
+
 INSERT INTO mazos (usuario_id, nombre, promedio_elixir)
 VALUES (1, 'Tanques Pesados', 5.6),
        (2, 'Ataque Rápido', 4.2),

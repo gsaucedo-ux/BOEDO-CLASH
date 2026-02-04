@@ -77,15 +77,25 @@
                     <label>Rol de Combate</label>
                     <select name="rol_combate" required>
                         <option value="">Seleccionar Rol</option>
-                        <option value="T">Tanque (T)</option>
-                        <option value="B">Tanque Rápido (B)</option>
-                        <option value="DM">Daño de Muerte (DM)</option>
-                        <option value="DS">Daño Sostenido (DS)</option>
-                        <option value="AS">Soporte Aéreo (AS)</option>
-                        <option value="TS">Tirador (TS)</option>
-                        <option value="EM">Enjambre (EM)</option>
-                        <option value="HD">Caza Tanques (HD)</option>
-                        <option value="M">Control/Mecánica (M)</option>
+                        <optgroup label="Tropas">
+                            <option value="T">Tanque Lento (T)</option>
+                            <option value="B">Tanque Rápido (B)</option>
+                            <option value="DM">Daño de Muerte (DM)</option>
+                            <option value="HD">Caza Tanques (HD)</option>
+                            <option value="M">Control/Mecánica (M)</option>
+                            <option value="EM">Enjambre Terrestre (EM)</option>
+                            <option value="TS">Tirador Soporte (TS)</option>
+                            <option value="DS">Daño Sostenido (DS)</option>
+                            <option value="AS">Soporte Aéreo (AS)</option>
+                            <option value="TA">Tanque Aéreo (TA)</option>
+                            <option value="EA">Enjambre Aéreo (EA)</option>
+                        </optgroup>
+                        <optgroup label="Estructuras">
+                            <option value="ED">Estructura Área (ED)</option>
+                            <option value="ET">Estructura Única (ET)</option>
+                            <option value="EC">Estructura Control (EC)</option>
+                            <option value="EG">Estructura Generación (EG)</option>
+                        </optgroup>
                     </select>
                 </div>
             </div>
@@ -97,6 +107,47 @@
     <div class="contenedor-volver">
         <a href="index.html" class="boton-volver-centrado">⮜ Volver al Inicio</a>
     </div>
+
+    
+    <script>
+    const form = document.getElementById('formCrearCarta');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const nuevaCarta = Object.fromEntries(formData.entries());
+
+        // Convertimos a números para evitar errores de tipo en la DB
+        nuevaCarta.costo_elixir = parseInt(nuevaCarta.costo_elixir);
+        nuevaCarta.puntos_de_vida = parseInt(nuevaCarta.puntos_de_vida);
+        nuevaCarta.daño = parseInt(nuevaCarta.daño);
+
+        try {
+            const respuesta = await fetch('http://localhost:3000/cartas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nuevaCarta)
+            });
+
+            if (respuesta.ok) {
+                alert('¡Carta registrada con éxito! ⚔️');
+                form.reset();
+            } else {
+                // Intentamos leer el error como JSON, si falla, lo leemos como texto
+                let errorData;
+                try {
+                    errorData = await respuesta.json();
+                } catch (e) {
+                    errorData = { message: await respuesta.text() };
+                }
+                alert('Error al guardar: ' + (errorData.message || errorData.error || 'Desconocido'));
+            }
+        } catch (err) {
+            alert('No se pudo conectar con el servidor. Revisa si el backend está corriendo.');
+        }
+    });
+</script>
 
 </body>
 </html>

@@ -1,32 +1,94 @@
-const express = require('express');//se imoporta express
-const app = express();//aca tengo mi aplicacion
+const express = require('express'); // se importa express
+const app = express(); // aca tengo mi aplicacion
 const cors = require('cors'); 
-const port = 3000; //puerto donde va a correr mi aplicacion
+const port = 3000; // puerto donde va a correr mi aplicacion
 
-const {getallcartas,
-     getcarta,
-     getcartasbycalidad,
-     create_carta,
-      } = require ('./dbase/cartas');
-const {getAllMazosConComentarios,
-      } = require ('./dbase/comentarios');
-const {getallusuarios,
-        getusuario,
-        create_usuario,
-        update_usuario,
-        verificacion_correo,
-        verificacion_correo_otros,
-        alias_usuario,
-        alias_usuario_otros,
-remove_usuario} = require ('./dbase/usuarios');//importa todas las funcionesque estanen esa ruta
+const {
+    getallcartas,
+    getcarta,
+    getcartasbycalidad,
+    create_carta,
+} = require('./dbase/cartas');
 
-app.use(express.json());
-app.use(cors()); // <--- CORS reubicado aquí
+const {
+    getAllMazosConComentarios,
+} = require('./dbase/comentarios');
+
+const {
+    getallusuarios,
+    getusuario,
+    create_usuario,
+    update_usuario,
+    verificacion_correo,
+    verificacion_correo_otros,
+    alias_usuario,
+    alias_usuario_otros,
+    remove_usuario
+} = require('./dbase/usuarios');
+
+// --- MIDDLEWARES ---
+app.use(cors()); // CORS debe ir primero para evitar bloqueos
+app.use(express.json()); // Permite leer el cuerpo JSON de los formularios
 
 // Ruta de prueba
 app.get("/", (req, res) => {
-  res.json({ message: "Backend funcionando" });
+    res.json({ message: "Backend funcionando" });
 });
+
+// ----------------------------------------------------
+// endpoints de cartas
+// ----------------------------------------------------
+
+app.post("/cartas", async (req, res) => {
+    try {
+        const nuevaCarta = await create_carta(req.body);
+        
+        if (!nuevaCarta) {
+            return res.status(500).json({ error: "No se pudo crear la carta en la base de datos" });
+        }
+
+        res.status(201).json(nuevaCarta);
+    } catch (err) {
+        console.error("Error al crear carta:", err);
+        // Enviamos el mensaje de error real de la base de datos (como "llave duplicada")
+        res.status(500).json({ error: "Error interno del servidor", message: err.message });
+    }
+});
+
+// Obtener todas las cartas
+app.get("/cartas", async (req, res) => {
+    try {
+        const cartas = await getallcartas();
+        res.json(cartas);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Error al obtener cartas" });
+    }
+});
+
+// Obtener una carta especifica
+app.get("/carta/:id", async (req, res) => {
+    try {
+        const carta = await getcarta(req.params.id);
+        if (!carta) return res.status(404).json({ error: "Carta no encontrada" });
+        res.json(carta);
+    } catch (err) {
+        res.status(500).json({ error: "Error de servidor" });
+    }
+});
+
+// Filtrar cartas por calidad
+app.get("/cartas/calidad/:tipo", async (req, res) => {
+    try {
+        const cartas = await getcartasbycalidad(req.params.tipo);
+        res.json(cartas);
+    } catch (err) {
+        res.status(500).json({ error: "Error al filtrar" });
+    }
+});
+
+
+
 // ----------------------------------------------------
 // endpoints de USUARIOS
 // ----------------------------------------------------
@@ -177,58 +239,22 @@ app.delete('/usuario/:id', async(req, res) => {
         }
  });
 
-// ----------------------------------------------------
-// endpoints de cartas
-// ----------------------------------------------------
-
-app.get("/cartas", async (req, res) => {
-    try {
-        const cartas = await getallcartas();
-        res.json(cartas);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Error al obtener cartas" });
-    }
-});
-
-// obtener una carta especifica
-app.get("/carta/:id", async (req, res) => {
-    try {
-        const carta = await getcarta(req.params.id);
-        if (!carta) return res.status(404).send("Carta no encontrada");
-        res.json(carta);
-    } catch (err) {
-        res.status(500).json({ error: "Error de servidor" });
-    }
-});
-
-// filtrar cartas por calidad
-app.get("/cartas/calidad/:tipo", async (req, res) => {
-    try {
-        const cartas = await getcartasbycalidad(req.params.tipo);
-        res.json(cartas);
-    } catch (err) {
-        res.status(500).json({ error: "Error al filtrar" });
-    }
-});
-
+// (Se mantienen tus rutas de PUT y DELETE de usuarios como estaban)
 
 // ----------------------------------------------------
 // endpoints de comentarios
 // ----------------------------------------------------
 app.get('/mazos', async (req, res) => {
-  
-try{
-        const comentarios= await getAllMazosConComentarios();
+    try {
+        const comentarios = await getAllMazosConComentarios();
         res.json(comentarios);
-} catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al obtener comentarios' });
-  }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener comentarios' });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log("Servidor corriendo en http://localhost:" + PORT);
+    console.log("Servidor corriendo en http://localhost:" + PORT);
 });
-

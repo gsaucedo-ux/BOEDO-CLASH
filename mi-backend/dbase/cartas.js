@@ -18,13 +18,28 @@ async function getcartasbycalidad(calidad) {
     return respuesta.rows;
 }
 
-// crear carta
+// Crear carta 
 async function create_carta(datos) {
-    const { nombre, imagen, calidad, costo_elixir, tipo_ataque, tipo_carta, puntos_de_vida, daño, fuerte_contra, debil_contra } = datos;
+    const { 
+        nombre, imagen, calidad, costo_elixir, 
+        tipo_ataque, tipo_carta, puntos_de_vida, daño, 
+        rol_combate 
+    } = datos;
+
     const query = `
-        INSERT INTO cartas (nombre, imagen, calidad, costo_elixir, tipo_ataque, tipo_carta, puntos_de_vida, daño, fuerte_contra, debil_contra) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`;
-    const valores = [nombre, imagen, calidad, costo_elixir, tipo_ataque, tipo_carta, puntos_de_vida, daño, fuerte_contra, debil_contra];
+        INSERT INTO cartas (
+            nombre, imagen, calidad, costo_elixir, 
+            tipo_ataque, tipo_carta, puntos_de_vida, daño, 
+            rol_combate
+        ) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+        RETURNING *`;
+
+    const valores = [
+        nombre, imagen, calidad, costo_elixir, 
+        tipo_ataque, tipo_carta, puntos_de_vida, daño, 
+        rol_combate
+    ];
     
     const respuesta = await dbclient.query(query, valores);
     return respuesta.rows[0];
