@@ -12,10 +12,10 @@
     <div class="perfil-header">
         <img src="../../img/LogoDefinitivo.jpg" class="perfil-avatar">
         <div class="perfil-info">
-            <h1 id="nombreUsuario">Usuario</h1>
-            <p>Nivel: <span id="nivelUsuario">14</span></p>
-            <p>Trofeos: <span id="trofeosUsuario">5620</span></p>
-        </div>
+            <h1 id="nombreUsuario">Cargando...</h1>
+            <p>Nivel: <span id="nivelUsuario">--</span></p>
+            <p>Trofeos: <span id="trofeosUsuario">--</span></p>
+            <p>Carta Favorita: <span id="cartaFavoritaUsuario">--</span></p> </div>
     </div>
 
     <button class="boton-crear-mazo" onclick="crearMazo()">+ Crear Mazo</button>
@@ -23,42 +23,48 @@
     <div id="contenedorMazos" class="publicaciones-grid"></div>
 </div>
 
-<script>
-    const usuarioId = 1; // El ID de Juancito en Docker
+<a href="index.html" style="position: fixed; bottom: 20px; left: 20px; color: gold; text-decoration: none;">⮜ Volver al Inicio</a>
 
-    // 1. CARGAR DATOS DEL USUARIO (Esta es la que te faltaba)
+<script>
+    // CAPTURAMOS EL ID REAL DEL LOGIN
+    const usuarioId = localStorage.getItem("usuarioId");
+
+    // SEGURIDAD: Si no hay ID, mandarlo a loguearse
+    if (!usuarioId) {
+        window.location.href = "iniciarSesion.html";
+    }
+
     async function cargarDatosUsuario() {
         try {
-            const response = await fetch(`http://localhost:3000/usuarios/${usuarioId}`);
+            // Usamos la ruta que ya tenés en index.js
+            const response = await fetch(`http://localhost:3000/usuario/${usuarioId}`);
             if (!response.ok) throw new Error("Error al obtener usuario");
             
             const data = await response.json();
             
-            // Actualizamos el HTML con los datos REALES de tu tabla 'usuario'
-            document.getElementById("nombreUsuario").textContent = data.alias || data.nombre;
+            // Llenamos con los datos de tu tabla 'usuario'
+            document.getElementById("nombreUsuario").textContent = data.alias;
             document.getElementById("nivelUsuario").textContent = data.nivel;
             document.getElementById("trofeosUsuario").textContent = data.trofeos;
+            document.getElementById("cartaFavoritaUsuario").textContent = data.carta_favorita || "Ninguna";
             
-            // Guardamos en localStorage para persistencia rápida
-            localStorage.setItem("usuario", data.alias || data.nombre);
         } catch (e) {
-            console.error("Error cargando datos de usuario:", e);
-            // Si falla, al menos ponemos el nombre que tengamos en localStorage
-            document.getElementById("nombreUsuario").textContent = localStorage.getItem("usuario") || "Jugador";
+            console.error("Error cargando datos:", e);
+            document.getElementById("nombreUsuario").textContent = "Error al cargar";
         }
     }
 
-    // 2. RENDERIZAR MAZOS (Tu función, mejorada para ser más robusta)
     async function renderMazos() {
         const cont = document.getElementById("contenedorMazos");
         try {
+            // Traemos solo los mazos de ESTE usuario
             const response = await fetch(`http://localhost:3000/usuarios/${usuarioId}/mazos`);
             const mazos = await response.json();
             
             cont.innerHTML = "";
 
-            if (mazos.length === 0) {
-                cont.innerHTML = `<p class="texto-vacio">Todavía no tienes mazos en la base de datos.</p>`;
+            if (!mazos || mazos.length === 0) {
+                cont.innerHTML = `<p style="color:white; grid-column: 1/-1;">Aún no has creado mazos. ¡Anímate!</p>`;
                 return;
             }
 
@@ -67,33 +73,31 @@
                     <div class="publicacion">
                         <h3>${m.nombre}</h3>
                         <div class="publicacion-cartas">
-                            ${m.cartas.map(c => `
-                                <div class="carta-m">
-                                    <img src="${c.imagen}" alt="${c.nombre}" title="${c.nombre}">
-                                </div>
-                            `).join("")}
+                            ${m.cartas && m.cartas.length > 0 
+                                ? m.cartas.map(c => `<div class="carta-m"><img src="${c.imagen}" title="${c.nombre}"></div>`).join("")
+                                : '<p>Sin cartas</p>'}
                         </div>
                         <div class="publicacion-botones">
-                            <button onclick="togglePriv(${m.id}, ${m.es_publico})" class="boton-priv ${m.es_publico ? '' : 'privado'}">
+                            <button onclick="togglePriv(${m.mazo_id}, ${m.es_publico})" class="boton-priv ${m.es_publico ? '' : 'privado'}">
                                 ${m.es_publico ? "Público" : "Privado"}
                             </button>
-                            <button onclick="verComentarios(${m.id})" class="boton-com">Comentarios</button>
+                            <button onclick="verComentarios(${m.mazo_id})" class="boton-com">Comentarios</button>
                         </div>
                     </div>
                 `;
             });
         } catch (e) {
-            console.error("Error cargando mazos desde DB:", e);
-            cont.innerHTML = "<p>Error al conectar con el servidor.</p>";
+            console.error("Error cargando mazos:", e);
+            cont.innerHTML = "<p style='color:white;'>Error al cargar tus mazos.</p>";
         }
     }
 
-    // 3. CAMBIAR VISIBILIDAD
+    // Usamos la función que agregamos a usuarios.js
     async function togglePriv(idMazo, estadoActual) {
         try {
             const nuevoEstado = !estadoActual;
             const response = await fetch(`http://localhost:3000/mazos/${idMazo}/visibilidad`, {
-                method: 'PATCH',
+                method: 'PUT', // Cambiamos a PUT que es más estándar para actualizar
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ es_publico: nuevoEstado })
             });
@@ -104,13 +108,12 @@
         }
     }
 
-    // NAVEGACIÓN
     function verComentarios(idMazo) { window.location.href = "comentarios.html?mazo=" + idMazo; }
     function crearMazo() { window.location.href = "crearMazo.html"; }
 
-    // EJECUCIÓN AL CARGAR LA PÁGINA
-    cargarDatosUsuario(); // <-- Ahora sí llamamos a la función del usuario
-    renderMazos();        // <-- Y a la de los mazos
+    // Ejecución
+    cargarDatosUsuario();
+    renderMazos();
 </script>
 </body>
 </html>

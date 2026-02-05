@@ -81,9 +81,7 @@ app.post('/usuario', async (req, res) => {
   if (alias === undefined) {
     return res.status(400).send("no se ha proveído el alias");
   }
-if (carta_favorita === undefined) {
-    return res.status(400).send("no se ha proveído la carta favorita");
-  }
+
   try {
     // 3️⃣ Verificar si ya existe el correo
     const existe_correo=await verificacion_correo(correo);
@@ -178,6 +176,30 @@ app.delete('/usuario/:id', async(req, res) => {
     res.status(500).send("error interno del servidor");
         }
  });
+
+const { validar_login } = require('./dbase/usuarios'); 
+
+app.post('/login', async (req, res) => {
+    const { correo, contraseña } = req.body;
+    
+    try {
+        const usuario = await validar_login(correo, contraseña);
+        
+        if (usuario) {
+            // Si existe, mandamos los datos del usuario logueado
+            res.json({ 
+                message: "Login exitoso", 
+                usuarioId: usuario.id,
+                alias: usuario.alias 
+            });
+        } else {
+            res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Error en el servidor" });
+    }
+});
 
 // ----------------------------------------------------
 // endpoints de cartas

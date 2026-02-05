@@ -58,15 +58,55 @@
     <div class="contenedor-login">
         <h2>Iniciar Sesión</h2>
 
-        <input type="text" placeholder="Nombre de usuario">
-        <input type="password" placeholder="Contraseña">
+        <input type="email" id="loginCorreo" placeholder="Correo electrónico">
+        <input type="password" id="loginPass" placeholder="Contraseña">
 
-        <button class="boton-login">Ingresar</button>
+        <button class="boton-login" onclick="hacerLogin()">Ingresar</button>
+
+        <p id="mensaje" style="margin-top:15px; font-size: 0.8em; color: #ffd700;"></p>
 
         <p style="margin-top:25px;">¿No tenés cuenta?
             <a href="crearUsuario.html">Crear usuario</a>
         </p>
     </div>
     <a href="index.html" class="boton-volver-fijo">⮜ Volver</a>
+
+    <script>
+        async function hacerLogin() {
+            const correo = document.getElementById('loginCorreo').value;
+            const contraseña = document.getElementById('loginPass').value;
+            const mensaje = document.getElementById('mensaje');
+
+            if (!correo || !contraseña) {
+                mensaje.innerText = "⚠️ Completa todos los campos.";
+                return;
+            }
+
+            try {
+                // Llamamos a la nueva ruta /login que creamos en index.js
+                const response = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ correo, contraseña })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Guardamos la identidad en el navegador
+                    localStorage.setItem("usuarioId", data.usuarioId);
+                    localStorage.setItem("usuarioAlias", data.alias);
+                    
+                    alert("¡Bienvenido de nuevo, " + data.alias + "!");
+                    window.location.href = "index.html"; // Volvemos al foro
+                } else {
+                    mensaje.innerText = "❌ " + (data.error || "Credenciales incorrectas");
+                }
+            } catch (err) {
+                console.error(err);
+                mensaje.innerText = "🔌 Error de conexión con el servidor.";
+            }
+        }
+    </script>
 </body>
 </html>

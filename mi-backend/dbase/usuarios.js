@@ -67,7 +67,16 @@ async function update_visibilidad_mazo(mazo_id, estado) {
     return respuesta.rows[0];
 }
 
+async function validar_login(correo, contraseña) {
+    const respuesta = await dbclient.query(
+        'SELECT id, alias, correo FROM usuario WHERE correo = $1 AND contraseña = $2',
+        [correo, contraseña]
+    );
+    return respuesta.rows[0]; // Devuelve el usuario si coincide, o undefined si no
+}
+
 module.exports={
         getallusuarios,getusuario,create_usuario,update_usuario,verificacion_correo,verificacion_correo_otros,alias_usuario,alias_usuario_otros,remove_usuario,
-        update_visibilidad_mazo // La agregamos a la exportación
+        update_visibilidad_mazo,
+        validar_login
 };
