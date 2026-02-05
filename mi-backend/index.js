@@ -1,94 +1,34 @@
-const express = require('express'); // se importa express
-const app = express(); // aca tengo mi aplicacion
+const express = require('express');//se imoporta express
+const app = express();//aca tengo mi aplicacion
 const cors = require('cors'); 
-const port = 3000; // puerto donde va a correr mi aplicacion
+const { dbclient } = require('./db');
+const port = 3000; //puerto donde va a correr mi aplicacion
 
-const {
-    getallcartas,
-    getcarta,
-    getcartasbycalidad,
-    create_carta,
-} = require('./dbase/cartas');
+const {getallcartas,
+     getcarta,
+     getcartasbycalidad,
+     create_carta,
+      } = require ('./dbase/cartas');
+const {getAllMazosConComentarios,
+      } = require ('./dbase/comentarios');
+const {getallusuarios,
+        getusuario,
+        create_usuario,
+        update_usuario,
+        verificacion_correo,
+        verificacion_correo_otros,
+        alias_usuario,
+        alias_usuario_otros,
+remove_usuario,
+update_visibilidad_mazo} = require ('./dbase/usuarios');//importa todas las funcionesque estanen esa ruta
 
-const {
-    getAllMazosConComentarios,
-} = require('./dbase/comentarios');
-
-const {
-    getallusuarios,
-    getusuario,
-    create_usuario,
-    update_usuario,
-    verificacion_correo,
-    verificacion_correo_otros,
-    alias_usuario,
-    alias_usuario_otros,
-    remove_usuario
-} = require('./dbase/usuarios');
-
-// --- MIDDLEWARES ---
-app.use(cors()); // CORS debe ir primero para evitar bloqueos
-app.use(express.json()); // Permite leer el cuerpo JSON de los formularios
+app.use(express.json());
+app.use(cors()); // <--- CORS reubicado aquí
 
 // Ruta de prueba
 app.get("/", (req, res) => {
-    res.json({ message: "Backend funcionando" });
+  res.json({ message: "Backend funcionando" });
 });
-
-// ----------------------------------------------------
-// endpoints de cartas
-// ----------------------------------------------------
-
-app.post("/cartas", async (req, res) => {
-    try {
-        const nuevaCarta = await create_carta(req.body);
-        
-        if (!nuevaCarta) {
-            return res.status(500).json({ error: "No se pudo crear la carta en la base de datos" });
-        }
-
-        res.status(201).json(nuevaCarta);
-    } catch (err) {
-        console.error("Error al crear carta:", err);
-        // Enviamos el mensaje de error real de la base de datos (como "llave duplicada")
-        res.status(500).json({ error: "Error interno del servidor", message: err.message });
-    }
-});
-
-// Obtener todas las cartas
-app.get("/cartas", async (req, res) => {
-    try {
-        const cartas = await getallcartas();
-        res.json(cartas);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Error al obtener cartas" });
-    }
-});
-
-// Obtener una carta especifica
-app.get("/carta/:id", async (req, res) => {
-    try {
-        const carta = await getcarta(req.params.id);
-        if (!carta) return res.status(404).json({ error: "Carta no encontrada" });
-        res.json(carta);
-    } catch (err) {
-        res.status(500).json({ error: "Error de servidor" });
-    }
-});
-
-// Filtrar cartas por calidad
-app.get("/cartas/calidad/:tipo", async (req, res) => {
-    try {
-        const cartas = await getcartasbycalidad(req.params.tipo);
-        res.json(cartas);
-    } catch (err) {
-        res.status(500).json({ error: "Error al filtrar" });
-    }
-});
-
-
-
 // ----------------------------------------------------
 // endpoints de USUARIOS
 // ----------------------------------------------------
@@ -147,7 +87,7 @@ if (carta_favorita === undefined) {
   try {
     // 3️⃣ Verificar si ya existe el correo
     const existe_correo=await verificacion_correo(correo);
-    const usuario=await alias_usuario_otros(alias);
+    const usuario=await alias_usuario(alias); // Corregido: para registro nuevo se usa alias_usuario
     if (existe_correo.rowCount !== 0) {
       return res.status(409).send("ya existe un usuario con ese correo");
     }
@@ -206,7 +146,7 @@ if (carta_favorita === undefined) {
   try {
     // 3️⃣ Verificar si ya existe el correo
     const existe_correo=await verificacion_correo_otros(correo, id_usuario);
-    const usuario=await alias_usuario(alias);
+    const usuario=await alias_usuario_otros(alias, id_usuario);
     if (existe_correo.rowCount !== 0) {
       return res.status(409).send("ya existe un usuario con ese correo");
     }
@@ -239,22 +179,189 @@ app.delete('/usuario/:id', async(req, res) => {
         }
  });
 
-// (Se mantienen tus rutas de PUT y DELETE de usuarios como estaban)
+// ----------------------------------------------------
+// endpoints de cartas
+// ----------------------------------------------------
+
+app.get("/cartas", async (req, res) => {
+    try {
+        const cartas = await getallcartas();
+        res.json(cartas);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Error al obtener cartas" });
+    }
+});
+
+// obtener una carta especifica
+app.get("/carta/:id", async (req, res) => {
+    try {
+        const carta = await getcarta(req.params.id);
+        if (!carta) return res.status(404).send("Carta no encontrada");
+        res.json(carta);
+    } catch (err) {
+        res.status(500).json({ error: "Error de servidor" });
+    }
+});
+
+// filtrar cartas por calidad
+app.get("/cartas/calidad/:tipo", async (req, res) => {
+    try {
+        const cartas = await getcartasbycalidad(req.params.tipo);
+        res.json(cartas);
+    } catch (err) {
+        res.status(500).json({ error: "Error al filtrar" });
+    }
+});
+
 
 // ----------------------------------------------------
 // endpoints de comentarios
 // ----------------------------------------------------
 app.get('/mazos', async (req, res) => {
-    try {
-        const comentarios = await getAllMazosConComentarios();
+  
+try{
+        const comentarios= await getAllMazosConComentarios();
         res.json(comentarios);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al obtener comentarios' });
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener comentarios' });
+  }
+});
+
+// endpoint para cambiar visibilidad del mazo
+app.patch('/mazos/:id/visibilidad', async (req, res) => {
+    const id = req.params.id;
+    const es_publico = req.body.es_publico;
+
+    try {
+        const mazoActualizado = await update_visibilidad_mazo(id, es_publico);
+        if (!mazoActualizado) {
+            return res.status(404).json({ error: "Mazo no encontrado" });
+        }
+        res.json(mazoActualizado);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error al actualizar visibilidad");
+    }
+});
+app.post('/mazos', async (req, res) => {
+    const { nombre, usuario_id, es_publico, cartas } = req.body;
+    console.log("Recibido:", nombre);
+
+    try {
+        await dbclient.query('BEGIN');
+
+        // 1. Buscamos los IDs de las cartas basándonos en sus nombres
+        const idsCartas = [];
+        for (const nombreCarta of cartas) {
+            const resCarta = await dbclient.query('SELECT carta_id FROM cartas WHERE nombre = $1', [nombreCarta]);
+            if (resCarta.rows.length > 0) {
+                idsCartas.push(resCarta.rows[0].carta_id);
+            }
+        }
+
+        if (idsCartas.length !== 8) {
+            throw new Error(`Solo encontramos ${idsCartas.length} de las 8 cartas. ¡Revisá los nombres!`);
+        }
+
+        // 2. Insertar mazo (OJO: Asegurate que el ID de usuario exista)
+        // Usamos un ID que sepamos que existe (cambia el 1 por el que encontraste en el Paso A)
+        const mazoQuery = 'INSERT INTO mazos (nombre, usuario_id, es_publico) VALUES ($1, $2, $3) RETURNING mazo_id';
+        const mazoResult = await dbclient.query(mazoQuery, [nombre, usuario_id || 1, es_publico]);
+        const nuevoMazoId = mazoResult.rows[0].mazo_id;
+
+        // 3. Insertar en mazo_cartas
+        for (let i = 0; i < idsCartas.length; i++) {
+            await dbclient.query(
+                'INSERT INTO mazo_cartas (mazo_id, carta_id, posicion) VALUES ($1, $2, $3)',
+                [nuevoMazoId, idsCartas[i], i + 1]
+            );
+        }
+
+        await dbclient.query('COMMIT');
+        res.status(201).json({ message: "¡Mazo guardado!" });
+
+    } catch (err) {
+        await dbclient.query('ROLLBACK');
+        console.error("ERROR REAL:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Obtener mazos de un usuario con sus cartas
+app.get('/usuarios/:id/mazos', async (req, res) => {
+    const usuario_id = req.params.id;
+    try {
+        const query = `
+            SELECT 
+                m.mazo_id, 
+                m.nombre AS mazo_nombre, 
+                m.es_publico,
+                c.nombre AS carta_nombre, 
+                c.imagen, 
+                mc.posicion
+            FROM mazos m
+            JOIN mazo_cartas mc ON m.mazo_id = mc.mazo_id
+            JOIN cartas c ON mc.carta_id = c.carta_id
+            WHERE m.usuario_id = $1
+            ORDER BY m.mazo_id, mc.posicion;
+        `;
+        const result = await dbclient.query(query, [usuario_id]);
+        
+        // Agrupamos las cartas por mazo para que el Front lo lea fácil
+        const mazos = result.rows.reduce((acc, row) => {
+            const { mazo_id, mazo_nombre, es_publico, carta_nombre, imagen, posicion } = row;
+            if (!acc[mazo_id]) {
+                acc[mazo_id] = { id: mazo_id, nombre: mazo_nombre, es_publico, cartas: [] };
+            }
+            acc[mazo_id].cartas.push({ nombre: carta_nombre, imagen, posicion });
+            return acc;
+        }, {});
+
+        res.json(Object.values(mazos));
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error al obtener los mazos del perfil");
+    }
+});
+
+// Ruta para cambiar la visibilidad del mazo (Público/Privado)
+app.patch('/mazos/:id/visibilidad', async (req, res) => {
+    const { id } = req.params;
+    const { es_publico } = req.body;
+
+    try {
+        const query = 'UPDATE mazos SET es_publico = $1 WHERE mazo_id = $2';
+        await dbclient.query(query, [es_publico, id]);
+        
+        console.log(`Mazo ${id} actualizado a: ${es_publico ? 'Público' : 'Privado'}`);
+        res.json({ message: "Visibilidad actualizada correctamente" });
+    } catch (err) {
+        console.error("Error al actualizar visibilidad:", err.message);
+        res.status(500).json({ error: "No se pudo actualizar la visibilidad" });
+    }
+});
+
+// Obtener datos básicos de un usuario
+app.get('/usuarios/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const query = 'SELECT nombre, nivel, trofeos, alias, carta_favorita FROM usuario WHERE id = $1';
+        const result = await dbclient.query(query, [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error("Error al obtener usuario:", err.message);
+        res.status(500).json({ error: "Error del servidor" });
     }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log("Servidor corriendo en http://localhost:" + PORT);
+  console.log("Servidor corriendo en http://localhost:" + PORT);
 });

@@ -6,7 +6,7 @@ CREATE TABLE usuario (
     nivel INT DEFAULT 1,
     trofeos INT DEFAULT 0,
     alias VARCHAR(100) NOT NULL,
-    carta_favorita VARCHAR(100)
+    carta_favorita VARCHAR(100),
 );
 
 CREATE TABLE cartas (
@@ -27,8 +27,10 @@ CREATE TABLE mazos (
     usuario_id INT REFERENCES usuario(id) ON DELETE CASCADE,
     nombre VARCHAR(100) NOT NULL,
     promedio_elixir DECIMAL(3,2),
-    victorias_totales INT DEFAULT 0
+    victorias_totales INT DEFAULT 0,
+    es_publico BOOLEAN DEFAULT TRUE 
 );
+
 CREATE TABLE mazo_cartas (
     mazo_id INT REFERENCES mazos(mazo_id) ON DELETE CASCADE,
     carta_id INT REFERENCES cartas(carta_id),
@@ -45,15 +47,6 @@ CREATE TABLE comentarios (
     puntuacion INT CHECK (puntuacion >= 1 AND puntuacion <= 5),
     creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-INSERT INTO usuario (
-    nombre, correo, contraseña, alias, carta_favorita
-) VALUES
-('Juan Pérez', 'juan.perez@mail.com', '1234', 'Juancito', 'Gigante'),
-('María Gómez', 'maria.gomez@mail.com', '1234', 'MariCR', 'Mosquetera'),
-('Lucas Fernández', 'lucas.fernandez@mail.com', '1234', 'Lucho', 'Bola de Fuego'),
-('Ana López', 'ana.lopez@mail.com', '1234', 'AnitaPro', 'Príncipe'),
-('Carlos Ruiz', 'carlos.ruiz@mail.com', '1234', 'Carlitos', 'Arqueras');
-
 
 INSERT INTO cartas (nombre, imagen, calidad, costo_elixir, tipo_ataque, tipo_carta, puntos_de_vida, daño, rol_combate)
 VALUES 
