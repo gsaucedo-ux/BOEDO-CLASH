@@ -6,7 +6,7 @@ CREATE TABLE usuario (
     nivel INT DEFAULT 1,
     trofeos INT DEFAULT 0,
     alias VARCHAR(100) NOT NULL,
-    carta_favorita VARCHAR(100),
+    carta_favorita VARCHAR(100)
 );
 
 CREATE TABLE cartas (
