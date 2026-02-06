@@ -189,7 +189,7 @@ app.post('/login', async (req, res) => {
             // Si existe, mandamos los datos del usuario logueado
             res.json({ 
                 message: "Login exitoso", 
-                usuarioId: usuario.id,
+                id: usuario.id,
                 alias: usuario.alias 
             });
         } else {

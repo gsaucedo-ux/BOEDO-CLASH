@@ -72,48 +72,54 @@
     <a href="index.html" class="boton-volver-fijo">⮜ Volver</a>
 
     <script>
-        async function registrar() {
-            const nombre = document.getElementById('regNombre').value;
-            const alias = document.getElementById('regAlias').value;
-            const correo = document.getElementById('regCorreo').value;
-            const pass = document.getElementById('regPass').value;
-            const pass2 = document.getElementById('regPass2').value;
-            const mensaje = document.getElementById('mensaje');
+    async function registrar() {
+        const nombre = document.getElementById('regNombre').value;
+        const alias = document.getElementById('regAlias').value;
+        const correo = document.getElementById('regCorreo').value;
+        const pass = document.getElementById('regPass').value;
+        const pass2 = document.getElementById('regPass2').value;
+        const mensaje = document.getElementById('mensaje');
 
-            if (!nombre || !alias || !correo || !pass) {
-                mensaje.innerText = "⚠️ Por favor, completa todos los campos.";
-                return;
-            }
-
-            if (pass !== pass2) {
-                mensaje.innerText = "❌ Las contraseñas no coinciden.";
-                return;
-            }
-
-            try {
-                const response = await fetch('http://localhost:3000/usuario', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        nombre,
-                        alias,
-                        correo,
-                        contraseña: pass,
-                        carta_favorita: "Ninguna" // Valor por defecto
-                    })
-                });
-
-                if (response.ok) {
-                    alert("¡Cuenta creada! Ya podés iniciar sesión.");
-                    window.location.href = "iniciarSesion.html";
-                } else {
-                    const errorMsg = await response.text();
-                    mensaje.innerText = "Error: " + errorMsg;
-                }
-            } catch (err) {
-                mensaje.innerText = "🔌 Error de conexión con el servidor.";
-            }
+        // 1. Validaciones locales
+        if (!nombre || !alias || !correo || !pass) {
+            mensaje.innerText = "⚠️ Por favor, completa todos los campos.";
+            return;
         }
-    </script>
+
+        if (pass !== pass2) {
+            mensaje.innerText = "❌ Las contraseñas no coinciden.";
+            return;
+        }
+
+        try {
+            // 2. Llamada al servidor (Puerto 3000)
+            const response = await fetch('http://localhost:3000/usuario', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nombre,
+                    alias,
+                    correo,
+                    contraseña: pass,
+                    carta_favorita: "Ninguna" // Valor por defecto requerido por tu index.js
+                })
+            });
+
+            // 3. Manejo de respuesta JSON para evitar errores de comunicación
+            const data = await response.json(); // Cambiamos .text() por .json()
+
+            if (response.ok) {
+                alert("¡Cuenta creada con éxito! Bienvenido, " + alias);
+                window.location.href = "iniciarSesion.html";
+            } else {
+                // Mostramos el mensaje de error que configuramos en el backend
+                mensaje.innerText = "❌ " + (data.error || "Error al crear la cuenta");
+            }
+        } catch (err) {
+            console.error(err);
+            mensaje.innerText = "🔌 Error de conexión con el servidor.";
+        }
+    }
+</script>
 </body>
 </html>

@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil - Boedo Clash</title>
     <link rel="stylesheet" href="../STYLES/estiloPerfil.css">
+    <style>
+        /* Estilo rápido para el nuevo botón de cerrar sesión */
+        .boton-logout {
+            background-color: #d32f2f;
+            color: white;
+            border: 2px solid #fff;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .boton-logout:hover {
+            background-color: #b71c1c;
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 <body>
 
@@ -15,7 +33,9 @@
             <h1 id="nombreUsuario">Cargando...</h1>
             <p>Nivel: <span id="nivelUsuario">--</span></p>
             <p>Trofeos: <span id="trofeosUsuario">--</span></p>
-            <p>Carta Favorita: <span id="cartaFavoritaUsuario">--</span></p> </div>
+            <p>Carta Favorita: <span id="cartaFavoritaUsuario">--</span></p> 
+            <button class="boton-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+        </div>
     </div>
 
     <button class="boton-crear-mazo" onclick="crearMazo()">+ Crear Mazo</button>
@@ -26,23 +46,26 @@
 <a href="index.html" style="position: fixed; bottom: 20px; left: 20px; color: gold; text-decoration: none;">⮜ Volver al Inicio</a>
 
 <script>
-    // CAPTURAMOS EL ID REAL DEL LOGIN
     const usuarioId = localStorage.getItem("usuarioId");
 
-    // SEGURIDAD: Si no hay ID, mandarlo a loguearse
     if (!usuarioId) {
+        window.location.href = "iniciarSesion.html";
+    }
+
+    // FUNCIÓN PARA CERRAR SESIÓN
+    function cerrarSesion() {
+        localStorage.removeItem("usuarioId");
         window.location.href = "iniciarSesion.html";
     }
 
     async function cargarDatosUsuario() {
         try {
-            // Usamos la ruta que ya tenés en index.js
             const response = await fetch(`http://localhost:3000/usuario/${usuarioId}`);
             if (!response.ok) throw new Error("Error al obtener usuario");
             
             const data = await response.json();
             
-            // Llenamos con los datos de tu tabla 'usuario'
+            // Datos mapeados de tu tabla 'usuario'
             document.getElementById("nombreUsuario").textContent = data.alias;
             document.getElementById("nivelUsuario").textContent = data.nivel;
             document.getElementById("trofeosUsuario").textContent = data.trofeos;
@@ -57,7 +80,6 @@
     async function renderMazos() {
         const cont = document.getElementById("contenedorMazos");
         try {
-            // Traemos solo los mazos de ESTE usuario
             const response = await fetch(`http://localhost:3000/usuarios/${usuarioId}/mazos`);
             const mazos = await response.json();
             
@@ -78,9 +100,6 @@
                                 : '<p>Sin cartas</p>'}
                         </div>
                         <div class="publicacion-botones">
-                            <button onclick="togglePriv(${m.mazo_id}, ${m.es_publico})" class="boton-priv ${m.es_publico ? '' : 'privado'}">
-                                ${m.es_publico ? "Público" : "Privado"}
-                            </button>
                             <button onclick="verComentarios(${m.mazo_id})" class="boton-com">Comentarios</button>
                         </div>
                     </div>
@@ -92,26 +111,9 @@
         }
     }
 
-    // Usamos la función que agregamos a usuarios.js
-    async function togglePriv(idMazo, estadoActual) {
-        try {
-            const nuevoEstado = !estadoActual;
-            const response = await fetch(`http://localhost:3000/mazos/${idMazo}/visibilidad`, {
-                method: 'PUT', // Cambiamos a PUT que es más estándar para actualizar
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ es_publico: nuevoEstado })
-            });
-            
-            if (response.ok) renderMazos(); 
-        } catch(err) { 
-            console.error("Error al cambiar visibilidad"); 
-        }
-    }
-
     function verComentarios(idMazo) { window.location.href = "comentarios.html?mazo=" + idMazo; }
     function crearMazo() { window.location.href = "crearMazo.html"; }
 
-    // Ejecución
     cargarDatosUsuario();
     renderMazos();
 </script>
