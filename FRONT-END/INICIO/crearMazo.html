@@ -122,13 +122,23 @@
     }
 
     function seleccionarCarta(carta) {
-        if (slotActual !== null) {
-            deck[slotActual] = carta;
-            document.querySelector(`[data-slot="${slotActual}"]`).innerHTML = 
-                `<img src="${carta.imagen}">`;
-        }
-        cerrarSelector();
+    // 1. REVISIÓN DE DUPLICADOS
+    const yaEstaEnElMazo = Object.values(deck).some(c => c && c.carta_id === carta.carta_id);
+
+    if (yaEstaEnElMazo) {
+        alert("⚠️ ¡Esta carta ya está en tu mazo! Elegí una diferente.");
+        cerrarSelector(); 
+        return;
     }
+    // 2. TU LÓGICA ORIGINAL
+    if (slotActual !== null) {
+        deck[slotActual] = carta; // Guardamos el objeto de la carta en el slot
+        document.querySelector(`[data-slot="${slotActual}"]`).innerHTML = 
+            `<img src="${carta.imagen}">`;
+    }
+    cerrarSelector();
+    }
+
 
     function abrirSelector() { document.getElementById("selectorCartas").classList.remove("oculto"); }
     function cerrarSelector() { document.getElementById("selectorCartas").classList.add("oculto"); }
