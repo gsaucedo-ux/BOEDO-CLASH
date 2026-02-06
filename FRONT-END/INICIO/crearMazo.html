@@ -145,7 +145,6 @@
 
     async function guardarMazo() {
         const nombre = document.getElementById("nombreMazo").value;
-        const priv = document.getElementById("privacidad").value;
         const usuarioId = localStorage.getItem("usuarioId") || 1; 
 
         if (!nombre || deck.includes(null)) return alert("Completa el nombre y las 8 cartas.");
@@ -153,7 +152,6 @@
         const mazoData = {
             nombre: nombre,
             usuario_id: parseInt(usuarioId),
-            es_publico: priv === "publico",
             cartas: deck.map(c => c.nombre) // Guardamos nombres o IDs
         };
 
