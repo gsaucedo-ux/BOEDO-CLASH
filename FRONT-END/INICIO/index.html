@@ -73,7 +73,8 @@
         </div>
     </div>
 
-    <script>
+     <script>
+            let mazoActual = null;
         document.addEventListener('DOMContentLoaded', () => {
             const idLogueado = localStorage.getItem("usuarioId");
             const btnSesion = document.getElementById("btnSesion");
@@ -141,10 +142,42 @@
         const ventana = document.getElementById("ventana_comentarios");
         const barra_salida = document.querySelector(".salida_comentarios");
 
-        function abrirComentarios(mazoId) {
-            ventana.classList.remove("selector_comentarios");
-            console.log("Cargando comentarios del mazo:", mazoId);
+      async function abrirComentarios(mazoId) {
+    mazoActual = mazoId; // 🔥 guardamos el mazo actual
+    ventana.classList.remove("selector_comentarios");
+
+    const lista = document.getElementById("listaComentariosReal");
+    lista.innerHTML = "<p style='color:white'>Cargando comentarios...</p>";
+
+    try {
+        const res = await fetch(`http://localhost:3000/mazos/${mazoId}/comentarios`);
+
+        if (!res.ok) {
+            throw new Error("Error al obtener comentarios");
         }
+
+        const comentarios = await res.json();
+
+        if (comentarios.length === 0) {
+            lista.innerHTML = "<p style='color:white'>No hay comentarios todavía</p>";
+            return;
+        }
+
+        lista.innerHTML = comentarios.map(c => `
+            <div class="comentarios">
+                <b>${c.alias}</b>
+                <p>${c.texto}</p>
+                <small>${new Date(c.creado_en).toLocaleString()}</small>
+            </div>
+        `).join("");
+
+    } catch (err) {
+        console.error("Error cargando comentarios:", err);
+        lista.innerHTML = "<p style='color:red'>Error al cargar comentarios</p>";
+    }
+}
+
+
 
         barra_salida.onclick = () => {
             ventana.classList.add("selector_comentarios");
