@@ -236,6 +236,15 @@ app.get("/cartas/calidad/:tipo", async (req, res) => {
     }
 });
 
+app.post('/cartas', async (req, res) => {
+    try {
+        const nuevaCarta = await create_carta(req.body); 
+        res.status(201).json(nuevaCarta); 
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "No se pudo guardar la carta. Revisá los datos." });
+    }
+});
 
 // ----------------------------------------------------
 // endpoints de comentarios
