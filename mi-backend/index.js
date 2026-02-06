@@ -392,22 +392,18 @@ app.get('/usuarios/:id', async (req, res) => {
     }
 });
 
-// RUTA PARA EL FORO: Trae los mazos públicos con sus cartas y autor
+// RUTA PARA EL FORO: Trae los mazos con sus cartas y autor
 app.get('/mazos/publicos', async (req, res) => {
     try {
-        // 1. SELECT principal usando tus nombres: mazo_id, id (de usuario), promedio_elixir
         const query = `
             SELECT m.mazo_id, m.nombre, m.promedio_elixir, m.victorias_totales, 
                    u.alias as autor_nombre, u.trofeos as autor_trofeos
             FROM mazos m
             JOIN usuario u ON m.usuario_id = u.id
-            WHERE m.es_publico = true
             ORDER BY m.mazo_id DESC`; 
-
+        
         const result = await dbclient.query(query);
         const mazos = result.rows;
-
-        // 2. Buscamos las 8 cartas de cada mazo
         for (let mazo of mazos) {
             const cartasQuery = `
                 SELECT c.nombre, c.imagen 
@@ -417,13 +413,13 @@ app.get('/mazos/publicos', async (req, res) => {
                 ORDER BY mc.posicion ASC`;
             
             const cartasResult = await dbclient.query(cartasQuery, [mazo.mazo_id]);
-            mazo.cartas = cartasResult.rows;
+            mazo.cartas = cartasResult.rows; 
         }
 
-        res.json(mazos);
+        res.json(mazos); 
     } catch (err) {
-        console.error("Error real en el servidor:", err);
-        res.status(500).json({ error: "Error interno del servidor" });
+        console.error("Error en /mazos/publicos:", err);
+        res.status(500).json({ error: "Error al cargar el foro" });
     }
 });
 

@@ -1,13 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // El ID que definimos en Docker para las pruebas
-    const usuarioId = 1; 
+    const usuarioId = localStorage.getItem("usuarioId"); 
     
-    console.log("Iniciando carga de perfil para usuario:", usuarioId);
+    if (!usuarioId || usuarioId === "undefined") {
+        window.location.href = "iniciarSesion.html";
+        return;
+    }
     
-    // 1. Cargamos los datos personales (Nombre, Nivel, Trofeos)
     cargarDatosUsuario(usuarioId);
-    
-    // 2. Cargamos los mazos de la base de datos
     renderMazos(usuarioId);
 });
 
@@ -58,25 +57,22 @@ async function renderMazos(usuarioId) {
         }
 
         mazos.forEach((m) => {
-            cont.innerHTML += `
-                <div class="publicacion">
-                    <h3>${m.nombre}</h3>
-                    <div class="publicacion-cartas">
-                        ${m.cartas.map(c => `
-                            <div class="carta-m">
-                                <img src="${c.imagen}" alt="${c.nombre}" title="${c.nombre}">
-                            </div>
-                        `).join("")}
+        cont.innerHTML += `
+        <div class="publicacion">
+            <h3>${m.nombre}</h3>
+            <div class="publicacion-cartas">
+                ${m.cartas.map(c => `
+                    <div class="carta-m">
+                        <img src="${c.imagen}" alt="${c.nombre}" title="${c.nombre}">
                     </div>
-                    <div class="publicacion-botones">
-                        <button onclick="togglePriv(${m.id}, ${m.es_publico})" class="boton-priv ${m.es_publico ? '' : 'privado'}">
-                            ${m.es_publico ? "Público" : "Privado"}
-                        </button>
-                        <button onclick="verComentarios(${m.id})" class="boton-com">Comentarios</button>
-                    </div>
-                </div>
-            `;
-        });
+                `).join("")}
+            </div>
+            <div class="publicacion-botones">
+                <button onclick="verComentarios(${m.id})" class="boton-com">Comentarios</button>
+            </div>
+        </div>
+    `;
+});
     } catch (e) {
         console.error("Error al cargar mazos:", e);
         cont.innerHTML = "<p>Error al conectar con el servidor para traer los mazos.</p>";
