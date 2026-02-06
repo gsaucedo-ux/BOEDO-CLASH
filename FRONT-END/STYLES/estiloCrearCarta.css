@@ -115,14 +115,14 @@ input:focus, select:focus {
 
 .boton-volver-centrado {
     background: linear-gradient(180deg, #ffd700, #b8860b); 
-    color: black; /* Texto negro para que resalte sobre el dorado */
+    color: black;
     text-decoration: none;
     padding: 12px 30px;
     border-radius: 12px;
     font-weight: bold;
     font-size: 1.1em;
     border: 2px solid #000;
-    /* Sombra dorada oscura para mantener el estilo 3D */
+    
     box-shadow: 0 4px 0px #6b5600; 
     transition: 0.2s;
     display: inline-block;
