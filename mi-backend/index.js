@@ -394,16 +394,29 @@ app.get('/usuarios/:id', async (req, res) => {
 
 // RUTA PARA EL FORO: Trae los mazos con sus cartas y autor
 app.get('/mazos/publicos', async (req, res) => {
+    const { q } = req.query; // Capturamos el término de búsqueda si existe
     try {
-        const query = `
+        let query = `
             SELECT m.mazo_id, m.nombre, m.promedio_elixir, m.victorias_totales, 
                    u.alias as autor_nombre, u.trofeos as autor_trofeos
             FROM mazos m
             JOIN usuario u ON m.usuario_id = u.id
-            ORDER BY m.mazo_id DESC`; 
+            WHERE m.es_publico = TRUE
+        `;
         
-        const result = await dbclient.query(query);
+        const params = [];
+        if (q) {
+            // Añadimos el filtro: ILIKE es para buscar sin importar mayúsculas/minúsculas
+            query += ` AND (m.nombre ILIKE $1 OR u.alias ILIKE $1)`;
+            params.push(`%${q}%`);
+        }
+
+        query += ` ORDER BY m.mazo_id DESC`; 
+        
+        const result = await dbclient.query(query, params);
         const mazos = result.rows;
+
+        // Buscamos las cartas para cada mazo (tu lógica actual)
         for (let mazo of mazos) {
             const cartasQuery = `
                 SELECT c.nombre, c.imagen 
@@ -411,7 +424,6 @@ app.get('/mazos/publicos', async (req, res) => {
                 JOIN mazo_cartas mc ON c.carta_id = mc.carta_id
                 WHERE mc.mazo_id = $1
                 ORDER BY mc.posicion ASC`;
-            
             const cartasResult = await dbclient.query(cartasQuery, [mazo.mazo_id]);
             mazo.cartas = cartasResult.rows; 
         }
