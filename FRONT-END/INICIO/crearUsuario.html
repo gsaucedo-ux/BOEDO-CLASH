@@ -47,10 +47,7 @@
             box-shadow: 0 0 12px #ffd700;
         }
 
-        a {
-            color: #ffd700;
-            text-decoration: none;
-        }
+        a { color: #ffd700; text-decoration: none; }
     </style>
 </head>
 <body>
@@ -58,17 +55,71 @@
     <div class="contenedor-registro">
         <h2>Crear Usuario</h2>
 
-        <input type="text" placeholder="Nuevo usuario">
-        <input type="email" placeholder="Correo electrónico">
-        <input type="password" placeholder="Contraseña">
-        <input type="password" placeholder="Repetir contraseña">
+        <input type="text" id="regNombre" placeholder="Nombre completo">
+        <input type="text" id="regAlias" placeholder="Tu Alias (como te verán otros)">
+        <input type="email" id="regCorreo" placeholder="Correo electrónico">
+        <input type="password" id="regPass" placeholder="Contraseña">
+        <input type="password" id="regPass2" placeholder="Repetir contraseña">
 
-        <button class="boton-crear">Crear cuenta</button>
+        <button class="boton-crear" onclick="registrar()">Crear cuenta</button>
+
+        <p id="mensaje" style="margin-top:15px; font-size: 0.8em; color: #ffd700;"></p>
 
         <p style="margin-top:25px;">¿Ya tenés cuenta?
             <a href="iniciarSesion.html">Iniciar sesión</a>
         </p>
     </div>
     <a href="index.html" class="boton-volver-fijo">⮜ Volver</a>
+
+    <script>
+    async function registrar() {
+        const nombre = document.getElementById('regNombre').value;
+        const alias = document.getElementById('regAlias').value;
+        const correo = document.getElementById('regCorreo').value;
+        const pass = document.getElementById('regPass').value;
+        const pass2 = document.getElementById('regPass2').value;
+        const mensaje = document.getElementById('mensaje');
+
+        // 1. Validaciones locales
+        if (!nombre || !alias || !correo || !pass) {
+            mensaje.innerText = "⚠️ Por favor, completa todos los campos.";
+            return;
+        }
+
+        if (pass !== pass2) {
+            mensaje.innerText = "❌ Las contraseñas no coinciden.";
+            return;
+        }
+
+        try {
+            // 2. Llamada al servidor (Puerto 3000)
+            const response = await fetch('http://localhost:3000/usuario', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nombre,
+                    alias,
+                    correo,
+                    contraseña: pass,
+                    carta_favorita: "Ninguna" // Valor por defecto requerido por tu index.js
+                })
+            });
+
+            // 3. Manejo de respuesta JSON para evitar errores de comunicación
+            const data = await response.json(); // Cambiamos .text() por .json()
+
+            if (response.ok) {
+                alert("¡Cuenta creada con éxito! Bienvenido, " + alias);
+                window.location.href = "iniciarSesion.html";
+            } else {
+                // Mostramos el mensaje de error que configuramos en el backend
+                mensaje.innerText = "❌ " + (data.error || "Error al crear la cuenta");
+            }
+        } catch (err) {
+            console.error(err);
+            mensaje.innerText = "🔌 Error de conexión con el servidor.";
+        }
+    }
+</script>
 </body>
 </html>

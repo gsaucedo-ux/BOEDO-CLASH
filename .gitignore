@@ -1,0 +1,12 @@
+# Archivos y carpetas ignoradas
+
+# Dependencias de Node.js
+mi-backend/node_modules/
+mi-backend/package-lock.json
+
+# Volúmenes de datos de Docker
+# Esto ignora los datos internos de PostgreSQL que Git no puede leer.
+mi-backend/.volumes/
+
+# Archivos de configuración de entorno (variables secretas)
+mi-backend/.env

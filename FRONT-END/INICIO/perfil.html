@@ -4,96 +4,118 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil - Boedo Clash</title>
-
     <link rel="stylesheet" href="../STYLES/estiloPerfil.css">
+    <style>
+        /* Estilo rápido para el nuevo botón de cerrar sesión */
+        .boton-logout {
+            background-color: #d32f2f;
+            color: white;
+            border: 2px solid #fff;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .boton-logout:hover {
+            background-color: #b71c1c;
+            transform: scale(1.05);
+        }
+    </style>
 </head>
-
 <body>
 
 <div class="perfil-contenedor">
-
-    <!-- ENCABEZADO DEL PERFIL -->
     <div class="perfil-header">
         <img src="../../img/LogoDefinitivo.jpg" class="perfil-avatar">
-
         <div class="perfil-info">
-            <h1 id="nombreUsuario">Usuario</h1>
-            <p>Nivel: <span id="nivelUsuario">14</span></p>
-            <p>Trofeos: <span id="trofeosUsuario">5620</span></p>
-            <p>Años de servicio: <span id="aniosUsuario">3</span></p>
+            <h1 id="nombreUsuario">Cargando...</h1>
+            <p>Nivel: <span id="nivelUsuario">--</span></p>
+            <p>Trofeos: <span id="trofeosUsuario">--</span></p>
+            <p>Carta Favorita: <span id="cartaFavoritaUsuario">--</span></p> 
+            <button class="boton-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
         </div>
     </div>
 
     <button class="boton-crear-mazo" onclick="crearMazo()">+ Crear Mazo</button>
-
     <h2 class="perfil-subtitulo">Tus Mazos</h2>
-
-    <!-- PUBLICACIONES -->
-    <div id="contenedorMazos" class="publicaciones-grid">
-        <!-- Se llenará con los mazos reales del usuario -->
-    </div>
-
+    <div id="contenedorMazos" class="publicaciones-grid"></div>
 </div>
 
+<a href="index.html" style="position: fixed; bottom: 20px; left: 20px; color: gold; text-decoration: none;">⮜ Volver al Inicio</a>
+
 <script>
-    // Cargar nombre del usuario logueado
-    const nombre = localStorage.getItem("usuario") || "Jugador";
-    document.getElementById("nombreUsuario").textContent = nombre;
+    const usuarioId = localStorage.getItem("usuarioId");
 
-    // Cargar mazos del usuario (si hay)
-    const cont = document.getElementById("contenedorMazos");
+    if (!usuarioId) {
+        window.location.href = "iniciarSesion.html";
+    }
 
-    function renderMazos() {
-        const mazos = JSON.parse(localStorage.getItem("mazosUsuario") || "[]");
-        cont.innerHTML = "";
+    // FUNCIÓN PARA CERRAR SESIÓN
+    function cerrarSesion() {
+        localStorage.removeItem("usuarioId");
+        window.location.href = "iniciarSesion.html";
+    }
 
-        if (mazos.length === 0) {
-            cont.innerHTML = `<p class="texto-vacio">Todavía no creaste ningún mazo.</p>`;
-            return;
+    async function cargarDatosUsuario() {
+        try {
+            const response = await fetch(`http://localhost:3000/usuario/${usuarioId}`);
+            if (!response.ok) throw new Error("Error al obtener usuario");
+            
+            const data = await response.json();
+            
+            // Datos mapeados de tu tabla 'usuario'
+            document.getElementById("nombreUsuario").textContent = data.alias;
+            document.getElementById("nivelUsuario").textContent = data.nivel;
+            document.getElementById("trofeosUsuario").textContent = data.trofeos;
+            document.getElementById("cartaFavoritaUsuario").textContent = data.carta_favorita || "Ninguna";
+            
+        } catch (e) {
+            console.error("Error cargando datos:", e);
+            document.getElementById("nombreUsuario").textContent = "Error al cargar";
         }
+    }
 
-        mazos.forEach((m, index) => {
-            cont.innerHTML += `
-                <div class="publicacion">
-                    <h3>${m.titulo}</h3>
+    async function renderMazos() {
+        const cont = document.getElementById("contenedorMazos");
+        try {
+            const response = await fetch(`http://localhost:3000/usuarios/${usuarioId}/mazos`);
+            const mazos = await response.json();
+            
+            cont.innerHTML = "";
 
-                    <div class="publicacion-cartas">
-                        ${m.cartas.map(c => `
-                            <div class="carta-m">
-                                <img src="https://cdn.royaleapi.com/static/img/cards/${c}.png">
-                            </div>
-                        `).join("")}
+            if (!mazos || mazos.length === 0) {
+                cont.innerHTML = `<p style="color:white; grid-column: 1/-1;">Aún no has creado mazos. ¡Anímate!</p>`;
+                return;
+            }
+
+            mazos.forEach((m) => {
+                cont.innerHTML += `
+                    <div class="publicacion">
+                        <h3>${m.nombre}</h3>
+                        <div class="publicacion-cartas">
+                            ${m.cartas && m.cartas.length > 0 
+                                ? m.cartas.map(c => `<div class="carta-m"><img src="${c.imagen}" title="${c.nombre}"></div>`).join("")
+                                : '<p>Sin cartas</p>'}
+                        </div>
+                        <div class="publicacion-botones">
+                            <button onclick="verComentarios(${m.mazo_id})" class="boton-com">Comentarios</button>
+                        </div>
                     </div>
-
-                    <div class="publicacion-botones">
-                        <button onclick="togglePriv(${index})" class="boton-priv">
-                            ${m.publico ? "Público" : "Privado"}
-                        </button>
-                        <button onclick="verComentarios(${index})" class="boton-com">Comentarios</button>
-                    </div>
-                </div>
-            `;
-        });
+                `;
+            });
+        } catch (e) {
+            console.error("Error cargando mazos:", e);
+            cont.innerHTML = "<p style='color:white;'>Error al cargar tus mazos.</p>";
+        }
     }
 
-    function togglePriv(i) {
-        const mazos = JSON.parse(localStorage.getItem("mazosUsuario") || "[]");
-        mazos[i].publico = !mazos[i].publico;
-        localStorage.setItem("mazosUsuario", JSON.stringify(mazos));
-        renderMazos();
-    }
+    function verComentarios(idMazo) { window.location.href = "comentarios.html?mazo=" + idMazo; }
+    function crearMazo() { window.location.href = "crearMazo.html"; }
 
-    function verComentarios(i) {
-        window.location.href = "comentarios.html?mazo=" + i;
-    }
-
-    function crearMazo() {
-        window.location.href = "crearMazo.html";
-    }
-
-    // Render inicial
+    cargarDatosUsuario();
     renderMazos();
 </script>
-
 </body>
 </html>

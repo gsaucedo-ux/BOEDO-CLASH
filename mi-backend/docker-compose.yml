@@ -7,5 +7,6 @@ services:
       POSTGRES_DB: BoedoClash
     volumes:
       - ./.volumes/postgres/data:/var/lib/postgresql/data/
+      - ./scripts/db.sql:/docker-entrypoint-initdb.d/db.sql
     ports:
       - "5432:5432"

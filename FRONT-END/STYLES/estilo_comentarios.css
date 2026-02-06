@@ -1,0 +1,109 @@
+/* Estilo para el contenedor oculto de comentarios */
+.contenedor_oculto {
+    background: rgba(0,0,0,0.8);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right:0;
+    bottom:0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+      align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+}
+/* estilo para ocultar el contenedor */
+.selector_comentarios {
+    display: none;
+}
+.salida_comentarios {
+    width: 77%;
+    height: 80px;
+    display: flex;
+     align-items: center;
+    flex-direction: column;
+     border:solid 2px #0413e7;
+    border-radius: 20px;
+}
+.contenedor_comentarios{
+        border: solid 2px #0413e7;
+        background: #1c1c1c;
+        height: 90%;
+        width: 100%;
+        max-width:1000px;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top:10px;
+}
+.comentarios{
+        width:100%;
+        height:90%;
+        display: flex;
+        flex-direction: column;
+}
+
+.nuevo_comentario{
+        width: 100%;
+        height: 10%;
+         display: flex;
+       max-width: 900px;
+         align-items: center;          
+    justify-content: center;
+    gap:10px;
+    margin-bottom: 10px;
+}
+.comentar{
+        margin-bottom: 10px;
+        width: 60%;
+        height: 50%;
+        display: flex;
+        flex-direction: row;
+        align-items:center;
+        justify-content: center;
+}
+.boton_enviar_mensaje{
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 10px;
+        width: 40px;
+        height: 40px;
+}
+.imagen_usuario{
+        align-self: flex-start;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+        display: flex;
+        align-items:center;
+        justify-content: center;
+}
+.caja_comentario {
+    background: #000;        /* color del div */
+    padding: 10px 14px;
+    border-radius: 10px;
+    border:solid 2px rgb(10, 2, 29);    /* bordes redondeados opcional */
+    display: flex;           /* para que el input se ajuste */
+    align-items: center;
+    justify-content: center;
+}
+
+.caja_comentario .comentario {
+    background: transparent; /* importante para que se fusione con el div */
+    border: none;            /* sin borde */
+    outline: none;           /* sin borde al escribir */
+    color: #fff;             /* texto blanco */
+    font-size: 16px;
+    width: 500px;
+}
+.caja_comentario .comentario::placeholder {
+    color: #bbb;             /* placeholder clarito */
+}
+.comentarios{
+        overflow-y: auto;        /* barra de desplazamiento vertical */
+        word-wrap: break-word;   /* para que las palabras largas se ajusten */
+}

@@ -1,259 +1,167 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Cartas - Boedo Clash (121 cartas)</title>
-
-<!-- CSS EXTERNO -->
-<link rel="stylesheet" href="../STYLES/estiloCartas.css">
-
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cartas - Boedo Clash</title>
+    <link rel="stylesheet" href="../STYLES/estiloCartas.css">
 </head>
 <body>
 
 <div class="contenedor-cartas">
-  <h2>Cartas - Boedo Clash (121 oficiales)</h2>
+    
+    <div style="text-align: left; margin-bottom: 20px;">
+    <button onclick="window.location.href='index.html'" 
+            class="select-deck-button" 
+            style="background-color: #e67e22; 
+                   border: 2px solid #fff; 
+                   padding: 12px 25px; 
+                   font-size: 1.2em; 
+                   font-weight: bold; 
+                   cursor: pointer;">
+        ⮜ Volver
+    </button>
+    </div>
 
-  <div class="controls">
+    <h2>Cartas - Boedo Clash</h2>
 
-    <input id="buscador" class="buscador" placeholder="Buscar cartas (nombre en español)..." />
+    <div class="controls">
+        <input id="buscador" class="buscador" placeholder="Buscar por nombre de carta..." />
 
-    <select id="filtro-rarity">
-      <option value="todas">Rareza (todas)</option>
-      <option value="comun">Común</option>
-      <option value="especial">Especial</option>
-      <option value="epica">Épica</option>
-      <option value="legendaria">Legendaria</option>
-      <option value="campeon">Campeón</option>
-    </select>
+        <select id="filtro-rarity">
+            <option value="todas">Rareza (todas)</option>
+            <option value="comun">Común</option>
+            <option value="especial">Especial</option>
+            <option value="epica">Épica</option>
+            <option value="legendaria">Legendaria</option>
+            <option value="campeon">Campeón</option>
+        </select>
 
-    <select id="filtro-elixir">
-      <option value="todas">Elixir (todos)</option>
-      <option value="1">1</option><option value="2">2</option>
-      <option value="3">3</option><option value="4">4</option>
-      <option value="5">5</option><option value="6">6</option>
-      <option value="7">7</option><option value="8+">8+</option>
-    </select>
+        <select id="filtro-rol">
+            <option value="todos">Rol de Combate (todos)</option>
+            <option value="T">Tanque Lento (T)</option>
+            <option value="B">Tanque Rápido (B)</option>
+            <option value="DM">Daño de Muerte (DM)</option>
+            <option value="DS">Area Sostenido (DS)</option>
+            <option value="AS">Soporte Aéreo (AS)</option>
+            <option value="TS">Tirador Soporte (TS)</option>
+            <option value="EM">Enjambre Terrestre(EM)</option>
+            <option value="HD">Caza Tanques (HD)</option>
+            <option value="M">Control/Mecánica (M)</option>
+            <option value="TA">Tanque Aereo (TA)</option>
+            <option value="EA">Enjambre Aereo (EA)</option>
+            <option value="ED">Estructura Daño Área (ED)</option>
+            <option value="ET">Estructura Objetivo Único (ET)</option>
+            <option value="EC">Estructura Control (EC)</option>
+            <option value="EG">Estructura Generación (EG)</option>
+        </select>
 
-    <select id="filtro-type">
-      <option value="todas">Tipo (todas)</option>
-      <option value="tropa">Tropa</option>
-      <option value="hechizo">Hechizo</option>
-      <option value="estructura">Estructura</option>
-    </select>
+        <select id="filtro-elixir">
+            <option value="todas">Elixir (todos)</option>
+            <option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option>
+            <option value="5">5</option><option value="6">6</option>
+            <option value="7">7</option><option value="8+">8+</option>
+        </select>
+    </div>
 
-    <select id="filtro-attack">
-      <option value="todos">Ataque (todos)</option>
-      <option value="terrestre">Terrestre</option>
-      <option value="aereo">Aéreo</option>
-      <option value="mixto">Ambos</option>
-    </select>
-
-    <select id="filtro-role">
-      <option value="todos">Rol</option>
-      <option value="wincondition">Win condition</option>
-      <option value="tank">Tank</option>
-      <option value="support">Support</option>
-      <option value="swarm">Swarm</option>
-      <option value="defense">Defense</option>
-      <option value="spell">Spell</option>
-    </select>
-
-  </div>
-
-  <div id="grid" class="grid-cartas"></div>
+    <div id="grid" class="grid-cartas">Cargando cartas...</div>
 </div>
 
 <script>
-// 121 cartas oficiales (sin evoluciones) - Actualizado Noviembre 2025
-const cardsData = [
-  // Tropas (T, B, DM, DS, AS, TS, EM, HD, M)
-  { eng:"knight", esp:"Caballero", rarity:"comun", elixir:"3", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"media", role:"tank", combatRole:"T" },
-  { eng:"archers", esp:"Arqueras", rarity:"comun", elixir:"3", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"baja", role:"support", combatRole:"TS" },
-  { eng:"goblins", esp:"Duendes", rarity:"comun", elixir:"2", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"rapido", hp:"baja", role:"swarm", combatRole:"EM" },
-  { eng:"spear-goblins", esp:"Duendes con Lanza", rarity:"comun", elixir:"2", type:"tropa", attack:"mixto", range:"medio", speed:"rapido", attackSpeed:"medio", hp:"baja", role:"support", combatRole:"B" },
-  { eng:"minions", esp:"Esbirros", rarity:"comun", elixir:"3", type:"tropa", attack:"mixto", range:"medio", speed:"rapido", attackSpeed:"medio", hp:"baja", role:"swarm", combatRole:"EM" },
-  { eng:"minion-horde", esp:"Horda de Esbirros", rarity:"comun", elixir:"5", type:"tropa", attack:"mixto", range:"medio", speed:"rapido", attackSpeed:"medio", hp:"baja", role:"swarm", combatRole:"EM" },
-  { eng:"skeletons", esp:"Esqueletos", rarity:"comun", elixir:"1", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"rapido", hp:"baja", role:"swarm", combatRole:"EM" },
-  { eng:"giant", esp:"Gigante", rarity:"especial", elixir:"5", type:"tropa", attack:"terrestre", range:"corto", speed:"lento", attackSpeed:"medio", hp:"alta", role:"tank", combatRole:"T" },
-  { eng:"hog-rider", esp:"Montapuercos", rarity:"especial", elixir:"4", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"medio", hp:"media", role:"wincondition", combatRole:"B" },
-  { eng:"mini-pekka", esp:"Mini P.E.K.K.A.", rarity:"especial", elixir:"4", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"rapido", hp:"media", role:"tank", combatRole:"HD" },
-  { eng:"valkyrie", esp:"Valquiria", rarity:"especial", elixir:"4", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"DM" },
-  { eng:"musketeer", esp:"Mosquetera", rarity:"especial", elixir:"4", type:"tropa", attack:"mixto", range:"largo", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"AS" },
-  { eng:"baby-dragon", esp:"Bebé Dragón", rarity:"epica", elixir:"4", type:"tropa", attack:"mixto", range:"medio", speed:"rapido", attackSpeed:"medio", hp:"media", role:"support", combatRole:"DS" },
-  { eng:"prince", esp:"Príncipe", rarity:"epica", elixir:"5", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"medio", hp:"media", role:"wincondition", combatRole:"B" },
-  { eng:"wizard", esp:"Mago", rarity:"especial", elixir:"5", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"DM" },
-  { eng:"witch", esp:"Bruja", rarity:"epica", elixir:"5", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"DM" },
-  { eng:"dark-prince", esp:"Príncipe Oscuro", rarity:"epica", elixir:"4", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"medio", hp:"media", role:"support", combatRole:"DM" },
-  { eng:"pekka", esp:"P.E.K.K.A.", rarity:"epica", elixir:"7", type:"tropa", attack:"terrestre", range:"corto", speed:"lento", attackSpeed:"lento", hp:"alta", role:"tank", combatRole:"HD" },
-  { eng:"barbarians", esp:"Bárbaros", rarity:"comun", elixir:"5", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"media", role:"swarm", combatRole:"EM" },
-  { eng:"royal-giant", esp:"Gigante Noble", rarity:"comun", elixir:"6", type:"tropa", attack:"terrestre", range:"largo", speed:"lento", attackSpeed:"medio", hp:"alta", role:"wincondition", combatRole:"T" },
-  { eng:"elite-barbarians", esp:"Bárbaros de Élite", rarity:"especial", elixir:"6", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"medio", hp:"media", role:"wincondition", combatRole:"B" },
-  { eng:"royal-hogs", esp:"Puercos Reales", rarity:"especial", elixir:"5", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"medio", hp:"media", role:"wincondition", combatRole:"B" },
-  { eng:"three-musketeers", esp:"Trío de Mosqueteras", rarity:"especial", elixir:"9", type:"tropa", attack:"mixto", range:"largo", speed:"medio", attackSpeed:"medio", hp:"media", role:"wincondition", combatRole:"AS" },
-  { eng:"golem", esp:"Gólem", rarity:"epica", elixir:"8", type:"tropa", attack:"terrestre", range:"corto", speed:"lento", attackSpeed:"lento", hp:"alta", role:"tank", combatRole:"T" },
-  { eng:"lava-hound", esp:"Sabueso de Lava", rarity:"legendaria", elixir:"7", type:"tropa", attack:"aereo", range:"corto", speed:"lento", attackSpeed:"lento", hp:"alta", role:"tank", combatRole:"T" },
-  { eng:"balloon", esp:"Globo Bombástico", rarity:"epica", elixir:"5", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"lento", hp:"media", role:"wincondition", combatRole:"B" },
-  { eng:"miner", esp:"Minero", rarity:"legendaria", elixir:"3", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"media", role:"wincondition", combatRole:"M" },
-  { eng:"princess", esp:"Princesa", rarity:"legendaria", elixir:"3", type:"tropa", attack:"mixto", range:"largo", speed:"medio", attackSpeed:"medio", hp:"baja", role:"support", combatRole:"TS" },
-  { eng:"bandit", esp:"Bandida", rarity:"legendaria", elixir:"3", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"medio", hp:"media", role:"wincondition", combatRole:"B" },
-  { eng:"night-witch", esp:"Bruja Nocturna", rarity:"legendaria", elixir:"4", type:"tropa", attack:"terrestre", range:"medio", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"DM" },
-  { eng:"mega-knight", esp:"Mega Caballero", rarity:"legendaria", elixir:"7", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"alta", role:"tank", combatRole:"T" },
-  { eng:"ram-rider", esp:"Montacarneros", rarity:"legendaria", elixir:"5", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"medio", hp:"media", role:"wincondition", combatRole:"B" },
-  { eng:"royal-ghost", esp:"Fantasma Real", rarity:"legendaria", elixir:"3", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"TS" },
-  { eng:"fisherman", esp:"Pescador", rarity:"legendaria", elixir:"3", type:"tropa", attack:"terrestre", range:"largo", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"M" },
-  { eng:"magic-archer", esp:"Arquero Mágico", rarity:"legendaria", elixir:"4", type:"tropa", attack:"mixto", range:"largo", speed:"medio", attackSpeed:"medio", hp:"baja", role:"support", combatRole:"AS" },
-  { eng:"ice-wizard", esp:"Mago de Hielo", rarity:"legendaria", elixir:"3", type:"tropa", attack:"mixto", range:"medio", speed:"lento", attackSpeed:"medio", hp:"media", role:"support", combatRole:"M" },
-  { eng:"electro-wizard", esp:"Mago Eléctrico", rarity:"legendaria", elixir:"4", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"M" },
-  { eng:"inferno-dragon", esp:"Dragón Infernal", rarity:"legendaria", elixir:"4", type:"tropa", attack:"mixto", range:"medio", speed:"rapido", attackSpeed:"rampa", hp:"media", role:"defense", combatRole:"HD" },
-  { eng:"lumberjack", esp:"Leñador", rarity:"legendaria", elixir:"4", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"rapido", hp:"media", role:"support", combatRole:"HD" },
-  { eng:"sparky", esp:"Chispitas", rarity:"legendaria", elixir:"6", type:"tropa", attack:"terrestre", range:"largo", speed:"lento", attackSpeed:"lento", hp:"baja", role:"defense", combatRole:"DM" },
-  { eng:"mother-witch", esp:"Bruja Madre", rarity:"legendaria", elixir:"4", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"TS" },
-  { eng:"skeleton-army", esp:"Ejército de Esqueletos", rarity:"epica", elixir:"3", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"rapido", hp:"baja", role:"swarm", combatRole:"EM" },
-  { eng:"guards", esp:"Guardias", rarity:"epica", elixir:"3", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"media", role:"defense", combatRole:"T" },
-  { eng:"bowler", esp:"Lanzarrocas", rarity:"epica", elixir:"5", type:"tropa", attack:"terrestre", range:"medio", speed:"medio", attackSpeed:"medio", hp:"alta", role:"defense", combatRole:"DM" },
-  { eng:"executioner", esp:"Verdugo", rarity:"epica", elixir:"5", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"alta", role:"defense", combatRole:"DM" },
-  { eng:"giant-skeleton", esp:"Esqueleto Gigante", rarity:"epica", elixir:"6", type:"tropa", attack:"terrestre", range:"corto", speed:"lento", attackSpeed:"medio", hp:"alta", role:"tank", combatRole:"T" },
-  { eng:"hunter", esp:"Cazador", rarity:"epica", elixir:"4", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"media", role:"defense", combatRole:"HD" },
-  { eng:"cannon-cart", esp:"Carro Cañón", rarity:"epica", elixir:"5", type:"tropa", attack:"terrestre", range:"medio", speed:"medio", attackSpeed:"medio", hp:"media", role:"defense", combatRole:"E" },
-  { eng:"battle-ram", esp:"Ariete de Batalla", rarity:"especial", elixir:"4", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"media", role:"wincondition", combatRole:"B" },
-  { eng:"firecracker", esp:"Lanzafuegos", rarity:"comun", elixir:"3", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"baja", role:"support", combatRole:"DS" },
-  { eng:"ice-spirit", esp:"Espíritu de Hielo", rarity:"comun", elixir:"1", type:"tropa", attack:"mixto", range:"corto", speed:"rapido", attackSpeed:"rapido", hp:"baja", role:"support", combatRole:"M" },
-  { eng:"fire-spirit", esp:"Espíritu Ígneo", rarity:"comun", elixir:"1", type:"tropa", attack:"mixto", range:"corto", speed:"rapido", attackSpeed:"rapido", hp:"baja", role:"support", combatRole:"DM" },
-  { eng:"skeleton-barrel", esp:"Barril de Esqueletos", rarity:"comun", elixir:"3", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"medio", hp:"baja", role:"wincondition", combatRole:"EM" },
-  { eng:"goblin-gang", esp:"Pandilla de Duendes", rarity:"comun", elixir:"3", type:"tropa", attack:"mixto", range:"corto", speed:"rapido", attackSpeed:"medio", hp:"baja", role:"swarm", combatRole:"EM" },
-  { eng:"dart-goblin", esp:"Duende Lanzadardos", rarity:"especial", elixir:"3", type:"tropa", attack:"mixto", range:"largo", speed:"rapido", attackSpeed:"medio", hp:"baja", role:"support", combatRole:"TS" },
-  { eng:"mega-minion", esp:"Megaesbirro", rarity:"especial", elixir:"3", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"HD" },
-  { eng:"flying-machine", esp:"Máquina Voladora", rarity:"especial", elixir:"4", type:"tropa", attack:"mixto", range:"medio", speed:"rapido", attackSpeed:"medio", hp:"media", role:"support", combatRole:"AS" },
-  { eng:"royal-recruits", esp:"Reclutas Reales", rarity:"comun", elixir:"7", type:"tropa", attack:"terrestre", range:"medio", speed:"medio", attackSpeed:"medio", hp:"alta", role:"swarm", combatRole:"T" },
-  { eng:"electro-dragon", esp:"Dragón Eléctrico", rarity:"epica", elixir:"5", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"M" },
-  // Campeones 
-  { eng:"archer-queen", esp:"Reina Arquera", rarity:"campeon", elixir:"5", type:"tropa", attack:"mixto", range:"largo", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"AS" },
-  { eng:"golden-knight", esp:"Caballero Dorado", rarity:"campeon", elixir:"4", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"B" },
-  { eng:"skeleton-king", esp:"Rey Esqueleto", rarity:"campeon", elixir:"5", type:"tropa", attack:"terrestre", range:"medio", speed:"medio", attackSpeed:"medio", hp:"alta", role:"support", combatRole:"T" },
-  { eng:"monk", esp:"Monje", rarity:"campeon", elixir:"5", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"media", role:"support", combatRole:"M" },
-  { eng:"mighty-miner", esp:"Gran Minero", rarity:"campeon", elixir:"4", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"alta", role:"tank", combatRole:"HD" },
-  { eng:"goblinstein", esp:"Goblinstein", rarity:"legendaria", elixir:"5", type:"tropa", attack:"mixto", range:"medio", speed:"medio", attackSpeed:"medio", hp:"alta", role:"tank", combatRole:"T" },
-  { eng:"goblin-machine", esp:"Máquina de Duendes", rarity:"legendaria", elixir:"5", type:"tropa", attack:"terrestre", range:"corto", speed:"medio", attackSpeed:"medio", hp:"alta", role:"support", combatRole:"TS" },
-  { eng:"goblin-demolisher", esp:"Duende Demoledor", rarity:"epica", elixir:"4", type:"tropa", attack:"terrestre", range:"medio", speed:"medio", attackSpeed:"medio", hp:"media", role:"wincondition", combatRole:"DM" },
-  { eng:"boss-bandit", esp:"Bandida Líder", rarity:"campeon", elixir:"6", type:"tropa", attack:"terrestre", range:"corto", speed:"rapido", attackSpeed:"medio", hp:"alta", role:"wincondition", combatRole:"B" },
-  // Hechizos 
-  { eng:"goblin-barrel", esp:"Barril de Duendes", rarity:"epica", elixir:"3", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"DS" },
-  { eng:"graveyard", esp:"Cementerio", rarity:"legendaria", elixir:"5", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"DS" },
-  { eng:"freeze", esp:"Congelar", rarity:"epica", elixir:"4", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"M" },
-  { eng:"fireball", esp:"Bola de Fuego", rarity:"especial", elixir:"4", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"DM" },
-  { eng:"zap", esp:"Descarga", rarity:"comun", elixir:"2", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"M" },
-  { eng:"arrows", esp:"Flechas", rarity:"comun", elixir:"3", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"DM" },
-  { eng:"rocket", esp:"Cohete", rarity:"epica", elixir:"6", type:"hechizo", attack:"mixto", range:"largo", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"DM" },
-  { eng:"lightning", esp:"Rayo", rarity:"epica", elixir:"6", type:"hechizo", attack:"mixto", range:"largo", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"M" },
-  { eng:"poison", esp:"Veneno", rarity:"epica", elixir:"4", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"DS" },
-  { eng:"tornado", esp:"Tornado", rarity:"epica", elixir:"3", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"M" },
-  { eng:"clone", esp:"Clon", rarity:"epica", elixir:"3", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"M" },
-  { eng:"mirror", esp:"Espejo", rarity:"epica", elixir:"variable", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"M" },
-  { eng:"rage", esp:"Furia", rarity:"epica", elixir:"2", type:"hechizo", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"M" },
-  { eng:"barbarian-barrel", esp:"Barril de Bárbaro", rarity:"epica", elixir:"2", type:"hechizo", attack:"mixto", range:"corto", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"TS" },
-  { eng:"earthquake", esp:"Terremoto", rarity:"especial", elixir:"3", type:"hechizo", attack:"terrestre", range:"medio", speed:"n/a", attackSpeed:"n/a", hp:"n/a", role:"spell", combatRole:"DS" },
-  // Estructuras 
-  { eng:"cannon", esp:"Cañón", rarity:"comun", elixir:"3", type:"estructura", attack:"terrestre", range:"medio", speed:"n/a", attackSpeed:"medio", hp:"media", role:"defense", combatRole:"E" },
-  { eng:"mortar", esp:"Mortero", rarity:"comun", elixir:"4", type:"estructura", attack:"terrestre", range:"largo", speed:"n/a", attackSpeed:"medio", hp:"media", role:"defense", combatRole:"E" },
-  { eng:"inferno-tower", esp:"Torre Infernal", rarity:"especial", elixir:"5", type:"estructura", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"rampa", hp:"alta", role:"defense", combatRole:"HD" },
-  { eng:"bomb-tower", esp:"Torre Bombardera", rarity:"especial", elixir:"4", type:"estructura", attack:"terrestre", range:"medio", speed:"n/a", attackSpeed:"medio", hp:"alta", role:"defense", combatRole:"E" },
-  { eng:"barbarian-hut", esp:"Choza Bárbara", rarity:"especial", elixir:"7", type:"estructura", attack:"terrestre", range:"medio", speed:"n/a", attackSpeed:"lento", hp:"alta", role:"support", combatRole:"TS" },
-  { eng:"elixir-collector", esp:"Recolector de Elixir", rarity:"especial", elixir:"6", type:"estructura", attack:"n/a", range:"n/a", speed:"n/a", attackSpeed:"n/a", hp:"alta", role:"support", combatRole:"M" },
-  { eng:"furnace", esp:"Horno", rarity:"especial", elixir:"4", type:"estructura", attack:"terrestre", range:"medio", speed:"n/a", attackSpeed:"lento", hp:"media", role:"support", combatRole:"TS" },
-  { eng:"goblin-hut", esp:"Choza de Duendes", rarity:"especial", elixir:"5", type:"estructura", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"medio", hp:"media", role:"support", combatRole:"TS" },
-  { eng:"tombstone", esp:"Lápida", rarity:"especial", elixir:"3", type:"estructura", attack:"terrestre", range:"corto", speed:"n/a", attackSpeed:"medio", hp:"media", role:"defense", combatRole:"EM" },
-  { eng:"tesla", esp:"Torre Tesla", rarity:"especial", elixir:"4", type:"estructura", attack:"mixto", range:"medio", speed:"n/a", attackSpeed:"medio", hp:"media", role:"defense", combatRole:"E" },
-  { eng:"x-bow", esp:"Ballesta", rarity:"epica", elixir:"6", type:"estructura", attack:"mixto", range:"largo", speed:"n/a", attackSpeed:"medio", hp:"media", role:"defense", combatRole:"E" },
-  { eng:"goblin-drill", esp:"Excavadora de Duendes", rarity:"epica", elixir:"4", type:"estructura", attack:"terrestre", range:"corto", speed:"n/a", attackSpeed:"medio", hp:"media", role:"wincondition", combatRole:"B" },
-  { eng:"suspicious-bush", esp:"Arbusto Sospechoso", rarity:"especial", elixir:"2", type:"estructura", attack:"terrestre", range:"corto", speed:"n/a", attackSpeed:"medio", hp:"baja", role:"support", combatRole:"M" }
-];
-
+let cardsData = []; 
 const grid = document.getElementById('grid');
 
-function imageUrlFor(eng){
-  return `https://cdn.royaleapi.com/static/img/cards/${eng}.png?t=${Date.now()}`;
-}
-
-function renderCards(list){
-  grid.innerHTML = "";
-  list.forEach(c => {
-    const div = document.createElement('div');
-    div.className = 'carta';
-    div.setAttribute('data-name', c.esp.toLowerCase());
-    div.setAttribute('data-rarity', c.rarity);
-    div.setAttribute('data-elixir', c.elixir);
-    div.setAttribute('data-type', c.type);
-    div.setAttribute('data-attack', c.attack || 'mixto');
-    div.setAttribute('data-role', c.role || 'support');
-
-    const img = document.createElement('img');
-    img.src = imageUrlFor(c.eng);
-    img.alt = c.esp;
-    img.onerror = () => {
-      const fb = document.createElement('div');
-      fb.className = 'img-fallback';
-      fb.textContent = c.esp.substring(0,12);
-      img.replaceWith(fb);
-    };
-
-    const nameDiv = document.createElement('div');
-    nameDiv.className = 'nombre-carta';
-    nameDiv.textContent = c.esp;
-
-    const meta = document.createElement('div');
-    meta.className = 'meta';
-    meta.innerHTML = `Elixir: ${c.elixir} • ${c.rarity.charAt(0).toUpperCase() + c.rarity.slice(1)} • ${c.type}`;
-
-    div.appendChild(img);
-    div.appendChild(nameDiv);
-    div.appendChild(meta);
-    grid.appendChild(div);
-  });
-}
-
-const buscador = document.getElementById('buscador');
-const selects = {
-  rarity: document.getElementById('filtro-rarity'),
-  elixir: document.getElementById('filtro-elixir'),
-  type: document.getElementById('filtro-type'),
-  attack: document.getElementById('filtro-attack'),
-  role: document.getElementById('filtro-role')
-};
-
-function applyFilters(){
-  const text = buscador.value.trim().toLowerCase();
-  const sel = {
-    rarity: selects.rarity.value,
-    elixir: selects.elixir.value,
-    type: selects.type.value,
-    attack: selects.attack.value,
-    role: selects.role.value
-  };
-
-  const filtered = cardsData.filter(c => {
-    const matchesText = !text || c.esp.toLowerCase().includes(text) || c.eng.toLowerCase().includes(text);
-    const matchRarity = sel.rarity === 'todas' || c.rarity === sel.rarity;
-    const matchType = sel.type === 'todas' || c.type === sel.type;
-    const matchAttack = sel.attack === 'todos' || c.attack === sel.attack;
-    const matchRole = sel.role === 'todos' || c.role === sel.role;
-
-    let matchElixir = true;
-    if (sel.elixir !== 'todas') {
-      if (sel.elixir === '8+') matchElixir = parseInt(c.elixir) >= 8 || c.elixir === 'variable';
-      else matchElixir = c.elixir === sel.elixir;
+// 1. OBTENCIÓN DE DATOS DESDE EL BACKEND
+async function cargarCartasDesdeDB() {
+    try {
+        const respuesta = await fetch('http://localhost:3000/cartas'); // Endpoint de tu index.js
+        if (!respuesta.ok) throw new Error("Error en la respuesta de la red");
+        
+        cardsData = await respuesta.json(); // Se cargan los datos de la DB
+        renderCards(cardsData); 
+    } catch (error) {
+        console.error("Error al conectar con el servidor:", error);
+        grid.innerHTML = "<p style='color:red; grid-column: 1/-1;'>Error: Asegúrate de que el backend esté corriendo.</p>";
     }
-
-    return matchesText && matchRarity && matchType && matchAttack && matchRole && matchElixir;
-  });
-
-  renderCards(filtered);
 }
 
-buscador.addEventListener('input', applyFilters);
-Object.values(selects).forEach(s => s.addEventListener('change', applyFilters));
+// 2. RENDERIZADO DE CARTAS
+function renderCards(list) {
+    grid.innerHTML = "";
+    list.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'carta';
+        
+        const img = document.createElement('img');
+        img.src = c.imagen; // URL de imagen de tu SQL
+        img.alt = c.nombre;
+        img.onerror = () => { img.src = 'https://via.placeholder.com/150?text=No+Image'; };
 
-renderCards(cardsData);
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'nombre-carta';
+        nameDiv.textContent = c.nombre;
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        // Muestra costo, calidad y rol de combate
+        meta.innerHTML = `Elixir: ${c.costo_elixir} • ${c.calidad} • ${c.rol_combate || 'N/A'}`;
+
+        div.appendChild(img);
+        div.appendChild(nameDiv);
+        div.appendChild(meta);
+        grid.appendChild(div);
+    });
+}
+
+// 3. LÓGICA DE FILTRADO REFORZADA
+const buscador = document.getElementById('buscador');
+const filtroRarity = document.getElementById('filtro-rarity');
+const filtroElixir = document.getElementById('filtro-elixir');
+const filtroRol = document.getElementById('filtro-rol');
+
+function aplicarFiltros() {
+    const texto = buscador.value.trim().toLowerCase(); // Búsqueda más limpia
+    const rareza = filtroRarity.value;
+    const elixir = filtroElixir.value;
+    const rol = filtroRol.value;
+
+    const filtradas = cardsData.filter(c => {
+        // Solo busca coincidencias en el nombre de la carta
+        const coincideNombre = c.nombre.toLowerCase().includes(texto);
+        
+        // Filtra por calidad (común, épica, etc.)
+        const coincideRareza = rareza === 'todas' || c.calidad.toLowerCase() === rareza;
+        
+        // Filtra por rol de combate (T, AS, EM, etc.)
+        const coincideRol = rol === 'todos' || c.rol_combate === rol;
+        
+        // Filtra por costo de elixir
+        let coincideElixir = true;
+        if (elixir !== 'todas') {
+            if (elixir === '8+') coincideElixir = c.costo_elixir >= 8;
+            else coincideElixir = c.costo_elixir.toString() === elixir;
+        }
+
+        return coincideNombre && coincideRareza && coincideElixir && coincideRol;
+    });
+
+    // Manejo de resultados vacíos
+    if (filtradas.length === 0) {
+        grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>No se encontraron cartas.</p>";
+    } else {
+        renderCards(filtradas);
+    }
+}
+
+// Escucha de eventos para actualizaciones en tiempo real
+buscador.addEventListener('input', aplicarFiltros);
+filtroRarity.addEventListener('change', aplicarFiltros);
+filtroElixir.addEventListener('change', aplicarFiltros);
+filtroRol.addEventListener('change', aplicarFiltros);
+
+// Carga inicial
+cargarCartasDesdeDB();
 </script>
 
 </body>
