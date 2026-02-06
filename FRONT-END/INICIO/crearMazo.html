@@ -20,13 +20,6 @@
             <label>Nombre del mazo</label>
             <input id="nombreMazo" type="text" placeholder="Ejemplo: Ciclo Monta 2.6">
         </div>
-        <div class="form-grupo half">
-            <label>Privacidad</label>
-            <select id="privacidad">
-                <option value="publico">Público</option>
-                <option value="privado">Privado</option>
-            </select>
-        </div>
     </div>
 
     <h2 class="subtitulo">Cartas del Mazo (8)</h2>
@@ -130,7 +123,7 @@
         cerrarSelector(); 
         return;
     }
-    // 2. TU LÓGICA ORIGINAL
+    
     if (slotActual !== null) {
         deck[slotActual] = carta; // Guardamos el objeto de la carta en el slot
         document.querySelector(`[data-slot="${slotActual}"]`).innerHTML = 
@@ -150,7 +143,6 @@
         };
     });
 
-    // 3. GUARDAR EN DB (Usando tu nueva columna es_publico)
     async function guardarMazo() {
         const nombre = document.getElementById("nombreMazo").value;
         const priv = document.getElementById("privacidad").value;
