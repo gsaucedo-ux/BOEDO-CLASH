@@ -277,45 +277,25 @@ app.patch('/mazos/:id/visibilidad', async (req, res) => {
     }
 });
 app.post('/mazos', async (req, res) => {
-    const { nombre, usuario_id, es_publico, cartas } = req.body;
-    console.log("Recibido:", nombre);
-
+    const { nombre, usuario_id, cartas } = req.body; 
     try {
         await dbclient.query('BEGIN');
-
-        // 1. Buscamos los IDs de las cartas basándonos en sus nombres
-        const idsCartas = [];
-        for (const nombreCarta of cartas) {
-            const resCarta = await dbclient.query('SELECT carta_id FROM cartas WHERE nombre = $1', [nombreCarta]);
-            if (resCarta.rows.length > 0) {
-                idsCartas.push(resCarta.rows[0].carta_id);
-            }
-        }
-
-        if (idsCartas.length !== 8) {
-            throw new Error(`Solo encontramos ${idsCartas.length} de las 8 cartas. ¡Revisá los nombres!`);
-        }
-
-        // 2. Insertar mazo (OJO: Asegurate que el ID de usuario exista)
-        // Usamos un ID que sepamos que existe (cambia el 1 por el que encontraste en el Paso A)
-        const mazoQuery = 'INSERT INTO mazos (nombre, usuario_id, es_publico) VALUES ($1, $2, $3) RETURNING mazo_id';
-        const mazoResult = await dbclient.query(mazoQuery, [nombre, usuario_id || 1, es_publico]);
+        const mazoResult = await dbclient.query(
+            'INSERT INTO mazos (nombre, usuario_id, es_publico) VALUES ($1, $2, $3) RETURNING mazo_id',
+            [nombre, usuario_id, true]
+        );
         const nuevoMazoId = mazoResult.rows[0].mazo_id;
 
-        // 3. Insertar en mazo_cartas
-        for (let i = 0; i < idsCartas.length; i++) {
+        for (let i = 0; i < cartas.length; i++) {
             await dbclient.query(
                 'INSERT INTO mazo_cartas (mazo_id, carta_id, posicion) VALUES ($1, $2, $3)',
-                [nuevoMazoId, idsCartas[i], i + 1]
+                [nuevoMazoId, cartas[i], i + 1]
             );
         }
-
         await dbclient.query('COMMIT');
         res.status(201).json({ message: "¡Mazo guardado!" });
-
     } catch (err) {
         await dbclient.query('ROLLBACK');
-        console.error("ERROR REAL:", err.message);
         res.status(500).json({ error: err.message });
     }
 });
@@ -401,8 +381,7 @@ app.get('/mazos/publicos', async (req, res) => {
                    u.alias as autor_nombre, u.trofeos as autor_trofeos
             FROM mazos m
             JOIN usuario u ON m.usuario_id = u.id
-            WHERE m.es_publico = TRUE
-        `;
+            `;
         
         const params = [];
         if (q) {
