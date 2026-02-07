@@ -47,7 +47,10 @@ CREATE TABLE comentarios (
     puntuacion INT CHECK (puntuacion >= 1 AND puntuacion <= 5),
     creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
+INSERT INTO usuario (nombre, correo, contraseña, alias)
+VALUES
+('Gustavo', 'gustavo@mail.com', '123456', 'GusPro'),
+('Martina', 'martina@mail.com', '123456', 'MartuCR');
 INSERT INTO cartas (nombre, imagen, calidad, costo_elixir, tipo_ataque, tipo_carta, puntos_de_vida, daño, rol_combate)
 VALUES 
 -- 1. T (Tanque Lento): Unidades de alta salud que marcan el ritmo
@@ -179,10 +182,7 @@ VALUES
 
 INSERT INTO mazos (usuario_id, nombre, promedio_elixir)
 VALUES (1, 'Tanques Pesados', 5.6),
-       (2, 'Ataque Rápido', 4.2),
-       (3, 'Defensa Sólida', 5.0),
-       (4, 'Control de Mapa', 4.8),
-       (5, 'Enjambre Aéreo', 3.5);
+       (2, 'Ataque Rápido', 4.2);
 INSERT INTO mazo_cartas (mazo_id, carta_id, posicion)
 VALUES
   (1, 2, 1),  -- Gigante
@@ -204,8 +204,7 @@ VALUES
 
 INSERT INTO comentarios (mazo_id, usuario_id, texto, puntuacion)
 VALUES
-(1, 2, '¡Me encanta este mazo de tanques! Muy sólido en defensa y ataque.', 5),
-(1, 3, 'Funciona bien, pero a veces me cuesta contra mazos rápidos.', 4),
-(1, 1, 'El Montapuercos es mi carta favorita, ¡gran elección!', 5),
-(2, 4, 'Me gusta la velocidad de este mazo, pero me falta algo de defensa.', 4),
-(3, 5, 'Este mazo me ha salvado en muchas partidas',5);
+(1, 2, '¡Me encanta este mazo de tanques! Muy sólido.', 5),
+(1, 1, 'Funciona bien, pero sufre contra mazos rápidos.', 4),
+(2, 1, 'Muy rápido y agresivo, me gusta.', 4),
+(2, 2, 'Buen mazo pero le falta defensa aérea.', 3);

@@ -57,20 +57,22 @@
             <div><button class="barra">x</button></div>
             <div class="header_comentarios"><p>COMENTARIOS</p></div>
         </div>
-        <div class="contenedor_comentarios" id="listaComentariosReal">
-            <div class="comentarios">
-                <p>Usa el buscador para encontrar mazos específicos.</p>
-            </div>
-            <div class="nuevo_comentario">
-                <div class="imagen_usuario"><img src="../../img/LogoDefinitivo.jpg" /></div>
-                <div class="comentar">
-                    <div class="caja_comentario">
-                        <input type="text" class="comentario" placeholder="Únete a la conversación">
-                    </div>
-                </div>
-                <div class="boton_enviar_mensaje"><img src="../../img/boton_enviar_mensaje.png" /></div>
+        <div class="contenedor_comentarios" id="listaComentariosReal"> 
+        </div>
+         <div class="nuevo_comentario">
+        <div class="imagen_usuario">
+            <img src="../../img/LogoDefinitivo.jpg" />
+        </div>
+        <div class="comentar">
+            <div class="caja_comentario">
+                <input type="text" id="inputComentario" class="comentario"
+                    placeholder="Únete a la conversación">
             </div>
         </div>
+        <div class="boton_enviar_mensaje" onclick="enviarComentario()">
+            <img src="../../img/boton_enviar_mensaje.png" />
+        </div>
+    </div>
     </div>
 
      <script>
@@ -163,22 +165,63 @@
             return;
         }
 
-        lista.innerHTML = comentarios.map(c => `
-            <div class="comentarios">
-                <b>${c.alias}</b>
-                <p>${c.texto}</p>
-                <small>${new Date(c.creado_en).toLocaleString()}</small>
-            </div>
-        `).join("");
+       lista.innerHTML = `
+    ${comentarios.map(c => `
+        <div class="comentarios">
+            <b>${c.alias}</b>
+            <p>${c.texto}</p>
+            <small>${new Date(c.creado_en).toLocaleString()}</small>
+        </div>
+    `).join("")}
+`;
 
     } catch (err) {
         console.error("Error cargando comentarios:", err);
         lista.innerHTML = "<p style='color:red'>Error al cargar comentarios</p>";
     }
+
 }
 
 
+async function enviarComentario() {
+    const input = document.getElementById("inputComentario");
+    const texto = input.value.trim();
+    const usuarioId = localStorage.getItem("usuarioId");
 
+    if (!usuarioId) {
+        alert("Tenés que iniciar sesión para comentar");
+        return;
+    }
+
+    if (!texto) {
+        alert("El comentario no puede estar vacío");
+        return;
+    }
+
+    try {
+        const res = await fetch(`http://localhost:3000/mazos/${mazoActual}/comentarios`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                texto: texto,
+                usuario_id: usuarioId
+            })
+        });
+
+        if (!res.ok) {
+            throw new Error("Error al enviar comentario");
+        }
+
+        input.value = "";          // limpiamos input
+        abrirComentarios(mazoActual); // 🔥 recargamos comentarios
+
+    } catch (err) {
+        console.error("Error enviando comentario:", err);
+        alert("No se pudo enviar el comentario");
+    }
+}
         barra_salida.onclick = () => {
             ventana.classList.add("selector_comentarios");
         };

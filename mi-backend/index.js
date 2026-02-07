@@ -249,15 +249,56 @@ app.post('/cartas', async (req, res) => {
 // ----------------------------------------------------
 // endpoints de comentarios
 // ----------------------------------------------------
-app.get('/mazos', async (req, res) => {
-  
-try{
-        const comentarios= await getAllMazosConComentarios();
-        res.json(comentarios);
-} catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al obtener comentarios' });
-  }
+app.get('/mazos/:id/comentarios', async (req, res) => {
+    const mazoId = req.params.id;
+
+    try {
+        const query = `
+            SELECT 
+                c.comentario_id,
+                c.texto,
+                c.creado_en,
+                COALESCE(u.alias, 'Usuario eliminado') AS alias
+            FROM comentarios c
+            LEFT JOIN usuario u ON c.usuario_id = u.id
+            WHERE c.mazo_id = $1
+            ORDER BY c.creado_en DESC;
+        `;
+
+        const result = await dbclient.query(query, [mazoId]);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Error al obtener comentarios:", error.message);
+        res.status(500).json({ error: "Error al obtener comentarios" });
+    }
+});
+//para hacer un post en comentarios
+app.post("/mazos/:id/comentarios", async (req, res) => {
+    const mazoId = req.params.id;
+    const { texto, usuario_id } = req.body;
+
+    if (!texto || !usuario_id) {
+        return res.status(400).json({ error: "Faltan datos" });
+    }
+
+    try {
+        const query = `
+            INSERT INTO comentarios (mazo_id, usuario_id, texto)
+            VALUES ($1, $2, $3)
+            RETURNING *
+        `;
+
+        const values = [mazoId, usuario_id, texto];
+
+        const result = await dbclient.query(query, values);
+
+        res.status(201).json(result.rows[0]);
+
+    } catch (err) {
+        console.error("Error guardando comentario:", err);
+        res.status(500).json({ error: "Error del servidor" });
+    }
 });
 
 // endpoint para cambiar visibilidad del mazo
