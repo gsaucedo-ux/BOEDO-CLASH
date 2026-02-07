@@ -47,10 +47,6 @@ CREATE TABLE comentarios (
     puntuacion INT CHECK (puntuacion >= 1 AND puntuacion <= 5),
     creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-INSERT INTO usuario (nombre, correo, contraseña, alias)
-VALUES
-('Gustavo', 'gustavo@mail.com', '123456', 'GusPro'),
-('Martina', 'martina@mail.com', '123456', 'MartuCR');
 INSERT INTO cartas (nombre, imagen, calidad, costo_elixir, tipo_ataque, tipo_carta, puntos_de_vida, daño, rol_combate)
 VALUES 
 -- 1. T (Tanque Lento): Unidades de alta salud que marcan el ritmo
@@ -201,10 +197,3 @@ VALUES
   (2, 7, 6),  -- Rey Esqueleto
   (2, 8, 7),  -- Monje
   (2, 1, 8);  -- Caballero
-
-INSERT INTO comentarios (mazo_id, usuario_id, texto, puntuacion)
-VALUES
-(1, 2, '¡Me encanta este mazo de tanques! Muy sólido.', 5),
-(1, 1, 'Funciona bien, pero sufre contra mazos rápidos.', 4),
-(2, 1, 'Muy rápido y agresivo, me gusta.', 4),
-(2, 2, 'Buen mazo pero le falta defensa aérea.', 3);
