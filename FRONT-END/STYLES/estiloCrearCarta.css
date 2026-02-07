@@ -2,7 +2,8 @@
     --cr-dark: #222; 
     --cr-gold: #FFD700; 
     --cr-light: #F0F0F0; 
-    --cr-red: #D32F2F; 
+    --cr-orange: #ff8c00; /* Color naranja base */
+    --cr-orange-dark: #e67e00;
 }
 
 body {
@@ -12,6 +13,7 @@ body {
     margin: 0;
     padding: 20px;
     display: flex;
+    flex-direction: column; /* Cambiado para que el contenedor de volver se ponga debajo */
     justify-content: center;
     align-items: center;
     min-height: 100vh;
@@ -19,21 +21,23 @@ body {
 
 .crear-contenedor {
     width: 100%;
-    max-width: 1000px; /* Reducido un poco para mayor armonía */
-    background-color: #333;
-    border: 5px solid var(--cr-gold);
-    border-radius: 10px;
+    max-width: 900px; 
+    background-color: rgba(255, 255, 255, 0.1); /* Sutil transparencia como el de Usuario */
+    border: 4px solid var(--cr-gold);
+    border-radius: 20px;
     padding: 30px;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
     box-sizing: border-box;
+    backdrop-filter: blur(5px);
 }
 
 .titulo {
     color: var(--cr-gold);
     text-transform: uppercase;
+    text-align: center;
     margin-bottom: 5px;
     font-size: 2.5em;
-    text-shadow: 2px 2px 4px #000;
+    text-shadow: 3px 3px 6px #000;
 }
 
 .subtitulo {
@@ -56,11 +60,6 @@ body {
     text-align: left;
 }
 
-.inner-row {
-    display: flex;
-    gap: 10px;
-}
-
 label {
     display: block;
     color: var(--cr-gold);
@@ -71,44 +70,73 @@ label {
 input, select {
     width: 100%;
     padding: 12px;
-    border-radius: 8px;
-    border: none;
+    border-radius: 10px;
+    border: 2px solid #333;
     background: white;
     font-size: 1em;
     box-sizing: border-box;
+    transition: 0.2s;
 }
 
 input:focus, select:focus {
-    outline: 3px solid var(--cr-gold);
+    outline: none;
+    border-color: var(--cr-gold);
+    box-shadow: 0 0 8px var(--cr-gold);
 }
 
+/* Botón de Registrar (Azul Clash) */
 .boton-guardar {
-    background-color: #007bff; 
+    background: linear-gradient(180deg, #007bff, #0056b3);
     color: white;
     padding: 15px;
-    border: none;
-    border-radius: 8px;
+    border: 2px solid #000;
+    border-radius: 12px;
     cursor: pointer;
     font-size: 1.2em;
     font-weight: bold;
     width: 100%;
     margin-top: 20px;
-    transition: 0.2s;
+    transition: 0.3s;
+    text-transform: uppercase;
 }
 
 .boton-guardar:hover {
-    background-color: #0056b3;
-    transform: scale(1.01);
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
 }
 
-.boton-volver-estilizado {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    color: var(--cr-gold);
+/* --- BOTÓN VOLVER CENTRADO Y NARANJA --- */
+.contenedor-volver {
+    margin-top: 40px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.boton-volver-centrado {
+    background: linear-gradient(180deg, #ffd700, #b8860b); 
+    color: black;
     text-decoration: none;
+    padding: 12px 30px;
+    border-radius: 12px;
     font-weight: bold;
     font-size: 1.1em;
+    border: 2px solid #000;
+    
+    box-shadow: 0 4px 0px #6b5600; 
+    transition: 0.2s;
+    display: inline-block;
+}
+
+.boton-volver-centrado:hover {
+    transform: scale(1.1);
+    background: linear-gradient(180deg, #fff0a3, #ffd700);
+    box-shadow: 0 2px 0px #6b5600;
+}
+
+.boton-volver-centrado:active {
+    transform: translateY(2px);
+    box-shadow: none;
 }
 
 /* Evitar flechas en inputs numéricos */
