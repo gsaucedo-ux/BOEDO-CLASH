@@ -79,24 +79,6 @@ async function renderMazos(usuarioId) {
     }
 }
 
-// Cambiar visibilidad en tiempo real en la DB
-async function togglePriv(idMazo, estadoActual) {
-    try {
-        const nuevoEstado = !estadoActual;
-        const response = await fetch(`http://localhost:3000/mazos/${idMazo}/visibilidad`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ es_publico: nuevoEstado })
-        });
-        
-        if (response.ok) {
-            location.reload(); // Recarga para ver el cambio de etiqueta y color
-        }
-    } catch(err) { 
-        console.error("Error al cambiar visibilidad:", err); 
-    }
-}
-
 function verComentarios(idMazo) { 
     window.location.href = "comentarios.html?mazo=" + idMazo; 
 }

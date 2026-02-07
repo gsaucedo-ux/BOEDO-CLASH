@@ -5,29 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Batalla - Boedo Clash</title>
     <link rel="stylesheet" href="../STYLES/estiloBatallas.css">
+    <style>
+        .modo-toggle { margin: 10px; padding: 10px 20px; cursor: pointer; border-radius: 8px; font-weight: bold; border: 2px solid white; transition: 0.3s; }
+        .modo-manual { background-color: #2ecc71; color: white; }
+        .modo-copiar { background-color: #3498db; color: white; }
+        .search-item { padding: 10px; border-bottom: 1px solid #444; cursor: pointer; color: white; background: #333; }
+        .search-item:hover { background: #555; }
+        .oculto { display: none !important; }
+        .deck-name-label { color: #f1c40f; font-weight: bold; margin-top: 5px; }
+        /* Clases para el resaltado de victoria/derrota */
+        .ganador-highlight { border: 5px solid #2ecc71 !important; box-shadow: 0 0 20px #2ecc71; }
+        .perdedor-highlight { border: 5px solid #e74c3c !important; opacity: 0.7; }
+    </style>
 </head>
 <body>
 
     <div class="main-wrapper">
         <div id="battle-view" class="battle-container">
-            <div style="text-align: left; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <button onclick="window.location.href='index.html'" class="select-deck-button" style="background-color: #e67e22; border: 2px solid #fff;">
                     ⮜ Volver
                 </button>
+                
+                <button id="btn-modo" class="modo-toggle modo-copiar" onclick="toggleModo()">
+                    Modo: Copiar Mazos
+                </button>
             </div>
+
             <h1>BATALLA ÉPICA DE MAZOS!!</h1>
+            
             <div class="battle-grid-wrapper">
                 <div class="opponent-deck opponent-1">
                     <h2>JUGADOR 1</h2>
                     <div class="deck-grid">
-                        <div id="P1-S1" class="card-slot" onclick="openCardSelector('P1-S1')"></div>
-                        <div id="P1-S2" class="card-slot" onclick="openCardSelector('P1-S2')"></div>
-                        <div id="P1-S3" class="card-slot" onclick="openCardSelector('P1-S3')"></div>
-                        <div id="P1-S4" class="card-slot" onclick="openCardSelector('P1-S4')"></div>
-                        <div id="P1-S5" class="card-slot" onclick="openCardSelector('P1-S5')"></div>
-                        <div id="P1-S6" class="card-slot" onclick="openCardSelector('P1-S6')"></div>
-                        <div id="P1-S7" class="card-slot" onclick="openCardSelector('P1-S7')"></div>
-                        <div id="P1-S8" class="card-slot" onclick="openCardSelector('P1-S8')"></div>
+                        <div id="P1-S1" class="card-slot" onclick="handleSlotClick('P1-S1')"></div>
+                        <div id="P1-S2" class="card-slot" onclick="handleSlotClick('P1-S2')"></div>
+                        <div id="P1-S3" class="card-slot" onclick="handleSlotClick('P1-S3')"></div>
+                        <div id="P1-S4" class="card-slot" onclick="handleSlotClick('P1-S4')"></div>
+                        <div id="P1-S5" class="card-slot" onclick="handleSlotClick('P1-S5')"></div>
+                        <div id="P1-S6" class="card-slot" onclick="handleSlotClick('P1-S6')"></div>
+                        <div id="P1-S7" class="card-slot" onclick="handleSlotClick('P1-S7')"></div>
+                        <div id="P1-S8" class="card-slot" onclick="handleSlotClick('P1-S8')"></div>
                     </div>
                 </div>
 
@@ -36,21 +54,34 @@
                 <div class="opponent-deck opponent-2">
                     <h2>JUGADOR 2</h2>
                     <div class="deck-grid">
-                        <div id="P2-S1" class="card-slot" onclick="openCardSelector('P2-S1')"></div>
-                        <div id="P2-S2" class="card-slot" onclick="openCardSelector('P2-S2')"></div>
-                        <div id="P2-S3" class="card-slot" onclick="openCardSelector('P2-S3')"></div>
-                        <div id="P2-S4" class="card-slot" onclick="openCardSelector('P2-S4')"></div>
-                        <div id="P2-S5" class="card-slot" onclick="openCardSelector('P2-S5')"></div>
-                        <div id="P2-S6" class="card-slot" onclick="openCardSelector('P2-S6')"></div>
-                        <div id="P2-S7" class="card-slot" onclick="openCardSelector('P2-S7')"></div>
-                        <div id="P2-S8" class="card-slot" onclick="openCardSelector('P2-S8')"></div>
+                        <div id="P2-S1" class="card-slot" onclick="handleSlotClick('P2-S1')"></div>
+                        <div id="P2-S2" class="card-slot" onclick="handleSlotClick('P2-S2')"></div>
+                        <div id="P2-S3" class="card-slot" onclick="handleSlotClick('P2-S3')"></div>
+                        <div id="P2-S4" class="card-slot" onclick="handleSlotClick('P2-S4')"></div>
+                        <div id="P2-S5" class="card-slot" onclick="handleSlotClick('P2-S5')"></div>
+                        <div id="P2-S6" class="card-slot" onclick="handleSlotClick('P2-S6')"></div>
+                        <div id="P2-S7" class="card-slot" onclick="handleSlotClick('P2-S7')"></div>
+                        <div id="P2-S8" class="card-slot" onclick="handleSlotClick('P2-S8')"></div>
                     </div>
                 </div>
             </div>
             
+            <div id="seccion-buscadores" class="search-containers" style="display: flex; justify-content: space-around; margin-top: 20px;">
+                <div class="mini-buscador">
+                    <input type="text" id="search-p1" placeholder="Buscar mazo J1..." oninput="buscarMazos(1)">
+                    <div id="results-p1" class="results-box"></div>
+                    <p id="nombre-mazo-p1" class="deck-name-label">Selecciona Mazo 1</p>
+                </div>
+                <div class="mini-buscador">
+                    <input type="text" id="search-p2" placeholder="Buscar mazo J2..." oninput="buscarMazos(2)">
+                    <div id="results-p2" class="results-box"></div>
+                    <p id="nombre-mazo-p2" class="deck-name-label">Selecciona Mazo 2</p>
+                </div>
+            </div>
+
             <div class="control-area">
                 <button id="simulate-button" class="action-button">👑 SIMULAR BATALLA ⚔️</button>
-                <div id="battle-result" class="result-box">Selecciona tus cartas...</div>
+                <div id="battle-result" class="result-box">Carga tus mazos para pelear...</div>
             </div>
         </div>
 
@@ -59,8 +90,8 @@
                 <button onclick="closeCardSelector()" class="select-deck-button" style="background-color: #555; margin-bottom: 20px;">Volver</button>
                 <p>Slot actual: <strong id="current-slot-id"></strong></p>
             </div>
-            <div class="controls">
-                <input id="buscador" class="buscador" placeholder="Buscar por nombre..." />
+            <div class="controls" style="margin-bottom: 20px;">
+                <input id="buscador-cartas" class="buscador" placeholder="Buscar carta por nombre..." oninput="filtrarCartasManual()">
             </div>
             <div id="grid" class="grid-cartas"></div>
         </div>
@@ -69,13 +100,100 @@
     <script>
         let currentSlotId = null;
         let cardsData = []; 
+        let idDuenioP1 = null, idDuenioP2 = null;
+        let idMazoP1 = null, idMazoP2 = null;
+        let modoManual = false; 
+
+        // 1. MODOS
+        function toggleModo() {
+            modoManual = !modoManual;
+            const btn = document.getElementById('btn-modo');
+            const buscadores = document.getElementById('seccion-buscadores');
+            if (modoManual) {
+                btn.textContent = "Modo: Personalizado (1 a 1)";
+                btn.className = "modo-toggle modo-manual";
+                buscadores.classList.add('oculto');
+            } else {
+                btn.textContent = "Modo: Copiar Mazos";
+                btn.className = "modo-toggle modo-copiar";
+                buscadores.classList.remove('oculto');
+            }
+        }
+
+        function handleSlotClick(slotId) {
+            if (modoManual) openCardSelector(slotId);
+            else alert("Cambiá al 'Modo Personalizado' arriba para elegir cartas sueltas.");
+        }
+
+        // 2. BUSCADOR DE MAZOS
+        async function buscarMazos(player) {
+            const term = document.getElementById(`search-p${player}`).value;
+            const resBox = document.getElementById(`results-p${player}`);
+            if (term.length < 2) { resBox.innerHTML = ""; return; }
+
+            const res = await fetch(`http://localhost:3000/mazos/publicos?q=${term}`);
+            const mazos = await res.json();
+            
+            resBox.innerHTML = mazos.map(m => `
+                <div class="search-item" onclick='cargarMazoCompleto(${JSON.stringify(m)}, ${player})'>
+                    ${m.nombre} (de ${m.autor_nombre})
+                </div>
+            `).join('');
+        }
+
+        function cargarMazoCompleto(mazo, player) {
+            if (player === 1) { idDuenioP1 = mazo.usuario_id; idMazoP1 = mazo.mazo_id; }
+            else { idDuenioP2 = mazo.usuario_id; idMazoP2 = mazo.mazo_id; }
+
+            document.getElementById(`nombre-mazo-p${player}`).textContent = mazo.nombre;
+            document.getElementById(`results-p${player}`).innerHTML = "";
+
+            mazo.cartas.forEach((carta, index) => {
+                const slot = document.getElementById(`P${player}-S${index + 1}`);
+                colocarCartaEnSlot(slot, carta);
+            });
+        }
+
+        // 3. LLENAR SLOTS (IMAGEN + DATOS)
+        function colocarCartaEnSlot(slot, card) {
+            if (!slot) return;
+            slot.style.backgroundImage = `url('${card.imagen}')`;
+            slot.style.backgroundSize = "cover";
+            slot.classList.add('filled');
+            
+            // DATOS PARA LA SUMATORIA (Muy importante!)
+            slot.dataset.rol = (card.rol_combate || "").trim().toUpperCase(); 
+            slot.dataset.rarity = (card.calidad || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            slot.dataset.elixir = card.costo_elixir || 0;
+        }
+
+        // 4. BUSCADOR DE CARTAS MANUAL
+        function filtrarCartasManual() {
+            const t = document.getElementById('buscador-cartas').value.toLowerCase();
+            const filtradas = cardsData.filter(c => c.nombre.toLowerCase().includes(t));
+            renderCards(filtradas);
+        }
+
+        function selectCard(card) {
+            const slot = document.getElementById(currentSlotId);
+            colocarCartaEnSlot(slot, card);
+            closeCardSelector();
+        }
 
         async function fetchCartas() {
-            try {
-                const res = await fetch('http://localhost:3000/cartas');
-                cardsData = await res.json();
-                renderCards(cardsData);
-            } catch (err) { console.error("Error API:", err); }
+            const res = await fetch('http://localhost:3000/cartas');
+            cardsData = await res.json();
+            renderCards(cardsData);
+        }
+
+        function renderCards(list) {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = list.map(c => `
+                <div class="carta" onclick='selectCard(${JSON.stringify(c)})'>
+                    <img src="${c.imagen}">
+                    <div>${c.nombre}</div>
+                </div>
+            `).join('');
         }
 
         function openCardSelector(slotId) {
@@ -90,172 +208,71 @@
             document.getElementById('battle-view').classList.remove('hidden-view');
         }
 
-        function selectCard(card) {
-            const slot = document.getElementById(currentSlotId);
-            if (!slot) return;
-
-            slot.style.backgroundImage = `url('${card.imagen}')`;
-            slot.style.backgroundSize = "cover";
-            slot.classList.add('filled');
-            
-            // Guardamos datos con seguridad y forzamos Mayúsculas para la matriz
-            slot.dataset.rol = (card.rol_combate || "").trim().toUpperCase(); 
-            slot.dataset.rarity = (card.calidad || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-            slot.dataset.elixir = card.costo_elixir || 0;
-
-            closeCardSelector(); 
-        }
-
-        function renderCards(list) {
-            const grid = document.getElementById('grid');
-            grid.innerHTML = "";
-            list.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'carta';
-                div.onclick = () => selectCard(c); 
-                div.innerHTML = `
-                    <img src="${c.imagen}" alt="${c.nombre}">
-                    <div class="nombre-carta">${c.nombre}</div>
-                    <div class="meta">${c.costo_elixir || '?'}💧 • ${c.rol_combate || 'S/R'}</div>
-                `;
-                grid.appendChild(div);
-            });
-        }
-
-        // SIMULACION: Matriz de combate (15 roles de combate)
+        // 5. SIMULACIÓN (Puntos y Luces)
         document.getElementById('simulate-button').onclick = () => {
             let p1 = 0, p2 = 0;
-
-            const matriz = {
-                // T: Tanque Lento - Sufre ante las nuevas estructuras defensivas
-                'T':  { 'DM': 1,  'DS': -1, 'HD': -1, 'M': -1, 'B': -1, 'ED': -1, 'ET': -1, 'EC': -1, 'EG': 1, 'EM': -1 },
-
-                // B: Tanque Rápido - Vence a T, pero las estructuras lo distraen
-                'B':  { 'T': 1,   'TS': -1, 'HD': -1, 'EA': -1, 'ED': -1, 'ET': -1, 'EC': -1, 'EG': 1, 'EM': -1 },
-
-                // DM: Daño de Muerte - Muy efectivo contra estructuras de enjambre o generación
-                'DM': { 'T': -1,  'EM': 1,  'EA': 1,  'M': -1,  'ED': 1,  'ET': 1,  'EC': 1,  'EG': 1 },
-
-                // DS: Área Sostenida - Limpia tropas, pero sufre ante estructuras pesadas
-                'DS': { 'T': 1,   'DM': -1, 'TS': -1, 'EM': 1,  'EA': 1,  'M': 1,   'ED': -1, 'ET': -1, 'EC': 1 },
-
-                // AS: Soporte Aéreo - Vence a estructuras terrestres de daño de área
-                'AS': { 'B': 1,   'DM': -1, 'DS': 1,  'TS': -1, 'EM': 1,  'ED': 1,  'EC': -1 },
-
-                // TS: Tiradores - Clave contra unidades aéreas y estructuras de apoyo
-                'TS': { 'B': 1,   'DS': -1, 'AS': 1,  'EM': -1, 'EA': 1,  'TA': 1,  'ED': 1,  'EG': 1 },
-
-                // EM: Enjambre - Satura a la Torre Infernal (ET), pero cae ante la Bombardera (ED)
-                'EM': { 'T': 1,   'B': 1,   'DM': -1, 'DS': -1, 'AS': -1, 'TS': 1,  'HD': 1,  'M': -1,  'ET': 1, 'ED': -1 },
-
-                // HD: Destructor de Tanques - Su trabajo es demoler CUALQUIER estructura
-                'HD': { 'T': 1,   'B': 1,   'DM': -1, 'EM': -1, 'M': -1,  'ED': 1,  'ET': 1,  'EC': 1,  'EG': 1 },
-
-                // M: Control/Mecánica - Útil contra generadores y tanques, sufre ante aéreos
-                'M':  { 'T': 1,   'EM': 1,  'HD': 1,  'TA': -1, 'EA': -1, 'DS': -1, 'EG': -1, 'EC': -1 },
-
-                // TA: Tanque Aéreo - Inmune a estructuras de daño terrestre (ED)
-                'TA': { 'T': 1,   'HD': 1,  'TS': -1, 'M': 1,   'ED': 1,  'ET': -1 },
-
-                // EA: Enjambre Aéreo - Vence a estructuras terrestres lentas
-                'EA': { 'T': 1,   'B': 1,   'M': 1,   'TS': -1, 'DS': -1, 'DM': -1, 'ED': 1,  'ET': 1,  'EC': -1 },
-
-                // ED: Estructura Daño Área (Bombardera) - Counter de EM, pero no toca AS/TA/EA
-                'ED': { 'EM': 1,  'T': 1,   'B': 1,   'TA': -1, 'EA': -1, 'HD': -1, 'AS': -1, 'TS': -1, 'DM': -1, 'DS': 1 },
-
-                // ET: Estructura Única (Infernal) - Mata Tanques y Aéreos, pierde contra EM/EA
-                'ET': { 'T': 1,   'B': 1,   'TA': 1,  'HD': 1,  'EM': -1, 'EA': -1, 'DM': 1,  'DS': 1 },
-
-                // EC: Estructura Control (Tesla) - Muy equilibrada contra aéreos y rápidos
-                'EC': { 'B': 1,   'M': 1,   'AS': 1,  'EA': 1,  'HD': -1, 'T': 1,   'DM': -1, 'DS': -1 },
-
-                // EG: Estructura Generación (Recolector) - Vulnerable a todo lo que ataque estructuras
-                'EG': { 'HD': -1, 'T': -1,  'B': -1,  'M': 1,   'TS': -1, 'DM': -1 }
+            const matriz = 
+            { 
+            'T':{'DM':1, 'DS':-1, 'HD':-1, 'M':-1, 'B':-1, 'ED':-1, 'ET':-1, 'EC':-1, 'EG':1, 'EM':-1}, 
+            'B':{'T':1, 'TS':-1, 'HD':-1, 'EA':-1, 'ED':-1, 'ET':-1, 'EC':-1, 'EG':1, 'EM':-1}, 
+            'DM':{'T':-1, 'EM':1, 'EA':1, 'M':-1, 'ED':1, 'ET':1, 'EC':1, 'EG':1}, 
+            'DS':{'T':1, 'DM':-1, 'TS':-1, 'EM':1, 'EA':1, 'M':1, 'ED':-1, 'ET':-1, 'EC':1}, 
+            'AS':{'B':1, 'DM':-1, 'DS':1, 'TS':-1, 'EM':1, 'ED':1, 'EC':-1}, 
+            'TS':{'B':1, 'DS':-1, 'AS':1, 'EM':-1, 'EA':1, 'TA':1, 'ED':1, 'EG':1}, 
+            'EM':{'T':1, 'B':1, 'DM':-1, 'DS':-1, 'AS':-1, 'TS':1, 'HD':1, 'M':-1, 'ET':1, 'ED':-1}, 
+            'HD':{'T':1, 'B':1, 'DM':-1, 'EM':-1, 'M':-1, 'ED':1, 'ET':1, 'EC':1, 'EG':1}, 
+            'M':{'T':1, 'EM':1, 'HD':1, 'TA':-1, 'EA':-1, 'DS':-1, 'EG':-1, 'EC':-1}, 
+            'TA':{'T':1, 'HD':1, 'TS':-1, 'M':1, 'ED':1, 'ET':-1}, 
+            'EA':{'T':1, 'B':1, 'M':1, 'TS':-1, 'DS':-1, 'DM':-1, 'ED':1, 'ET':1, 'EC':-1}, 
+            'ED':{'EM':1, 'T':1, 'B':1, 'TA':-1, 'EA':-1, 'HD':-1, 'AS':-1, 'TS':-1, 'DM':-1, 'DS':1}, 
+            'ET':{'T':1, 'B':1, 'TA':1, 'HD':1, 'EM':-1, 'EA':-1, 'DM':1, 'DS':1}, 
+            'EC':{'B':1, 'M':1, 'AS':1, 'EA':1, 'HD':-1, 'T':1, 'DM':-1, 'DS':-1}, 
+            'EG':{'HD':-1, 'T':-1, 'B':-1, 'M':1, 'TS':-1, 'DM':-1} 
             };
-    
+            
             const multGeneral = { 'comun': 1, 'especial': 1.2, 'epica': 1.4, 'legendaria': 1.6, 'campeon': 1.8, 'docente': 2 };
             const multTanque = { 'comun': 1.2, 'especial': 1.4, 'epica': 1.8, 'legendaria': 2, 'campeon': 2.2, 'docente': 2.4 };
 
-            // Bucle principal: Todos contra Todos
             for (let i = 1; i <= 8; i++) {
                 const s1 = document.getElementById(`P1-S${i}`);
                 if (!s1 || !s1.classList.contains('filled')) continue;
-                const r1 = s1.dataset.rol;
-                const rar1 = s1.dataset.rarity;
-                const eli1 = parseInt(s1.dataset.elixir);
-
                 for (let j = 1; j <= 8; j++) {
                     const s2 = document.getElementById(`P2-S${j}`);
                     if (!s2 || !s2.classList.contains('filled')) continue;
-
-                    
-                    const r2 = s2.dataset.rol;
-                    const rar2 = s2.dataset.rarity;
-                    const eli2 = parseInt(s2.dataset.elixir);
-
-                    // LOGICA DE DUELO INDIVIDUAL
-
-                    // 1. ¿Gana P1?
-
-                    if (matriz[r1] && matriz[r1][r2] === 1) {
-                        // Los tanques reciben +0.2 extra al ganar
-                        let bonus = (r1 === 'T' || r1 === 'B') ? 0.2 : 0;
-                        let m = (r1 === 'T' || r1 === 'B') ? multTanque[rar1] : multGeneral[rar1];
-                        let f = ((r1 === 'DM' || r1 === 'M') && eli1 <= 3) ? 0.5 : 1.0;
-                        p1 += (1 * (m + bonus) * f);
-                    } 
-
-                    // 2. ¿Gana P2?
-                    else if (matriz[r2] && matriz[r2][r1] === 1) {
-                        let bonus = (r2 === 'T' || r2 === 'B') ? 0.2 : 0;
-                        let m = (r2 === 'T' || r2 === 'B') ? multTanque[rar2] : multGeneral[rar2];
-                        let f = ((r2 === 'DM' || r2 === 'M') && eli2 <= 3) ? 0.5 : 1.0;
-                        p2 += (1 * (m + bonus) * f);
-                    } 
-
-                    // 3. Caso de Empate o Neutralidad (0 en la matriz)
-
-                    else {
-                        // Si es un tanque, suma 0.3 por "Presencia en Arena" aunque no gane
-                        if (r1 === 'T' || r1 === 'B') p1 += 0.3;
-                        if (r2 === 'T' || r2 === 'B') p2 += 0.3;
-                    }
+                    const r1 = s1.dataset.rol, r2 = s2.dataset.rol;
+                    const rar1 = s1.dataset.rarity, rar2 = s2.dataset.rarity;
+                    if (matriz[r1] && matriz[r1][r2] === 1) p1 += (r1==='T'||r1==='B' ? multTanque[rar1] : multGeneral[rar1]);
+                    else if (matriz[r2] && matriz[r2][r1] === 1) p2 += (r2==='T'||r2==='B' ? multTanque[rar2] : multGeneral[rar2]);
                 }
             }
 
-            // Recolectores suman bonos de puntos al final ya que son debiles a la mayoria de cartas.
-            for (let i = 1; i <= 8; i++) {
-                if (document.getElementById(`P1-S${i}`)?.dataset.rol === 'EG') p1 += 2.5;
-                if (document.getElementById(`P2-S${i}`)?.dataset.rol === 'EG') p2 += 2.5;
-            }
-
-            // Mostrar resultados
             const resBox = document.getElementById('battle-result');
-            resBox.innerHTML = `P1: ${p1.toFixed(1)} - P2: ${p2.toFixed(1)}<br>` + 
-                (p1 > p2 ? "🏆 GANA JUGADOR 1" : p2 > p1 ? "🏆 GANA JUGADOR 2" : "BATALLA INCIERTA");
+            resBox.innerHTML = `P1: ${p1.toFixed(1)} - P2: ${p2.toFixed(1)}<br>` + (p1 > p2 ? "🏆 GANA JUGADOR 1" : p2 > p1 ? "🏆 GANA JUGADOR 2" : "EMPATE");
 
-            // Resaltado Visual
+            // LUCES VERDE Y ROJA
             const deck1 = document.querySelector('.opponent-1'); 
             const deck2 = document.querySelector('.opponent-2');
             deck1.classList.remove('ganador-highlight', 'perdedor-highlight');
             deck2.classList.remove('ganador-highlight', 'perdedor-highlight');
 
-            if (p1 > p2) {
-                deck1.classList.add('ganador-highlight');
-                deck2.classList.add('perdedor-highlight');
-            } else if (p2 > p1) {
-                deck2.classList.add('ganador-highlight');
-                deck1.classList.add('perdedor-highlight');
+            if (p1 > p2) { deck1.classList.add('ganador-highlight'); deck2.classList.add('perdedor-highlight'); }
+            else if (p2 > p1) { deck2.classList.add('ganador-highlight'); deck1.classList.add('perdedor-highlight'); }
+
+            // TROFEOS Y VICTORIAS
+            const ganadorId = p1 > p2 ? idDuenioP1 : p2 > p1 ? idDuenioP2 : null;
+            const perdedorId = p1 > p2 ? idDuenioP2 : p2 > p1 ? idDuenioP1 : null;
+            const mazoGanadorId = p1 > p2 ? idMazoP1 : p2 > p1 ? idMazoP2 : null;
+            
+            if (ganadorId || perdedorId || mazoGanadorId) {
+                fetch('http://localhost:3000/batalla/resultado', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ ganador_id: ganadorId, perdedor_id: perdedorId, ganador_mazo_id: mazoGanadorId })
+                });
             }
         };
 
-        window.onload = () => {
-            fetchCartas();
-            document.getElementById('buscador').oninput = (e) => {
-                const t = e.target.value.toLowerCase();
-                renderCards(cardsData.filter(c => c.nombre.toLowerCase().includes(t)));
-            };
-        };
+        window.onload = fetchCartas;
     </script>
 </body>
 </html>

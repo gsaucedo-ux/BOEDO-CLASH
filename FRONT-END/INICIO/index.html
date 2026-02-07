@@ -78,62 +78,78 @@
      <script>
             let mazoActual = null;
         document.addEventListener('DOMContentLoaded', () => {
-            const idLogueado = localStorage.getItem("usuarioId");
-            const btnSesion = document.getElementById("btnSesion");
-            const linksPrivados = document.querySelectorAll('.auth-required');
+    const idLogueado = localStorage.getItem("usuarioId");
+    const btnSesion = document.getElementById("btnSesion");
+    const linksPrivados = document.querySelectorAll('.auth-required');
 
-            if (idLogueado) {
-                btnSesion.textContent = "Mi Perfil";
-                btnSesion.href = "perfil.html";
-                linksPrivados.forEach(l => l.style.display = "flex");
-            } else {
-                btnSesion.textContent = "Crear/Iniciar Sesión";
-                btnSesion.href = "iniciarSesion.html";
-                linksPrivados.forEach(l => l.style.display = "none");
-            }
+    if (idLogueado && idLogueado !== "undefined") {
+        btnSesion.textContent = "Mi Perfil";
+        btnSesion.href = "perfil.html";
+        linksPrivados.forEach(l => l.style.display = "flex");
+    }
 
-            cargarForo();
-        });
+    // --- NUEVA LÓGICA DE BÚSQUEDA ---
+    const searchForm = document.getElementById("search-form");
+    const searchInput = document.getElementById("search-input");
 
-        async function cargarForo() {
-            const contenedor = document.getElementById("foroMazos");
-            try {
-                const res = await fetch('http://localhost:3000/mazos/publicos');
-                if (!res.ok) throw new Error("Error en el servidor");
-                const mazos = await res.json();
+    searchForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // Evita que la página se recargue
+        const termino = searchInput.value.trim();
+        cargarForo(termino); // Llamamos a la función con el filtro
+    });
 
-                if (mazos.length === 0) {
-                    contenedor.innerHTML = "<p style='color:white; margin:20px;'>No hay mazos públicos todavía. ¡Sé el primero!</p>";
-                    return;
-                }
+    cargarForo(); // Carga inicial
+});
 
-                contenedor.innerHTML = ""; // Limpiamos el texto de carga
+// Modificamos la función para que acepte el término
+async function cargarForo(busqueda = "") {
+    const contenedor = document.getElementById("foroMazos");
+    
+    // Mostramos un feedback de carga
+    contenedor.innerHTML = "<p style='color: white; padding: 20px;'>Buscando en la arena...</p>";
 
-                mazos.forEach(m => {
-                  contenedor.innerHTML += `
-                        <div class="mazo-publicado">
-                              <div class="cabecera_mazo">
-                                  <div class="costo_elixir">
-                                        <img src="../../img/gota_elixir.png" alt="elixir"/>
-                                        <span class="texto_superpuesto_elixir">${m.promedio_elixir || '0.0'}</span>
-                                  </div>
-                                  <p>${m.nombre}</p>
-                              </div>
-                              <div class="imagen_cartas">
-                                  ${m.cartas && m.cartas.length > 0 
-                                    ? m.cartas.map(c => `<div><img src="${c.imagen}" title="${c.nombre}" /></div>`).join('')
-                                    : '<p style="color:gray; font-size:10px;">Mazo sin cartas</p>'}
-                              </div>
-                              <div class="pie_mazo">
-                                  <div><p>Autor: <b>${m.autor_nombre}</b></p></div>
-                                  <div><p>🏆 ${m.victorias_totales || 0}</p></div>
-                              </div>
-                              <button class="comentarios_mazos" onclick="abrirComentarios(${m.mazo_id})"> 
-                                  comentarios
-                              </button>
+    try {
+        // Si hay búsqueda, añadimos el parámetro ?q= al fetch
+        const url = busqueda 
+            ? `http://localhost:3000/mazos/publicos?q=${encodeURIComponent(busqueda)}`
+            : 'http://localhost:3000/mazos/publicos';
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Error en el servidor");
+        const mazos = await res.json();
+
+        if (mazos.length === 0) {
+            contenedor.innerHTML = `<p style='color:white; margin:20px;'>No se encontraron mazos para "${busqueda}".</p>`;
+            return;
+        }
+
+        contenedor.innerHTML = ""; // Limpiamos
+
+        mazos.forEach(m => {
+            contenedor.innerHTML += `
+                <div class="mazo-publicado">
+                    <div class="cabecera_mazo">
+                        <div class="costo_elixir">
+                            <img src="../../img/gota_elixir.png" alt="elixir"/>
+                            <span class="texto_superpuesto_elixir">${m.promedio_elixir || '0.0'}</span>
                         </div>
-                  `;
-                });
+                        <p>${m.nombre}</p>
+                    </div>
+                    <div class="imagen_cartas">
+                        ${m.cartas && m.cartas.length > 0 
+                          ? m.cartas.map(c => `<div><img src="${c.imagen}" title="${c.nombre}" /></div>`).join('')
+                          : '<p style="color:gray; font-size:10px;">Mazo sin cartas</p>'}
+                    </div>
+                    <div class="pie_mazo">
+                        <div><p>Autor: <b>${m.autor_nombre}</b></p></div>
+                        <div><p>Victorias totales del mazo: ${m.victorias_totales || 0}</p></div>
+                    </div>
+                    <button class="comentarios_mazos" onclick="abrirComentarios(${m.mazo_id})"> 
+                        comentarios
+                    </button>
+                </div>
+            `;
+        });
 
             } catch (err) {
                 console.error("Error en foro:", err);

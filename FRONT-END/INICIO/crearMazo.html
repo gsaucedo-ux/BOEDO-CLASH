@@ -9,9 +9,13 @@
 <body>
 
 <div class="crear-contenedor">
-    <div style="text-align: left; margin-bottom: 20px;">
-        <button onclick="window.location.href='index.html'" class="select-deck-button">⮜ Volver</button>
+    <div class="volver-contenedor">
+    <button onclick="window.location.href='index.html'" class="boton-volver-centrado">
+        ⮜ Volver
+    </button>
     </div>
+
+
 
     <h1 class="titulo">Crear Nuevo Mazo</h1>
 
@@ -152,7 +156,7 @@
         const mazoData = {
             nombre: nombre,
             usuario_id: parseInt(usuarioId),
-            cartas: deck.map(c => c.nombre) // Guardamos nombres o IDs
+            cartas: deck.map(c => c.carta_id) // Guardamos nombres o IDs
         };
 
         try {

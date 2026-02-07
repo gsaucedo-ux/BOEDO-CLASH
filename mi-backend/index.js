@@ -3,6 +3,7 @@ const app = express();//aca tengo mi aplicacion
 const cors = require('cors'); 
 const { dbclient } = require('./db');
 const port = 3000; //puerto donde va a correr mi aplicacion
+const { actualizar_trofeos, sumar_victoria_mazo } = require('./dbase/usuarios');
 
 const {getallcartas,
      getcarta,
@@ -317,46 +318,40 @@ app.patch('/mazos/:id/visibilidad', async (req, res) => {
         res.status(500).send("Error al actualizar visibilidad");
     }
 });
-app.post('/mazos', async (req, res) => {
-    const { nombre, usuario_id, es_publico, cartas } = req.body;
-    console.log("Recibido:", nombre);
 
+app.post('/mazos', async (req, res) => {
+    const { nombre, usuario_id, cartas } = req.body; // 'cartas' es un array de IDs
     try {
         await dbclient.query('BEGIN');
 
-        // 1. Buscamos los IDs de las cartas basándonos en sus nombres
-        const idsCartas = [];
-        for (const nombreCarta of cartas) {
-            const resCarta = await dbclient.query('SELECT carta_id FROM cartas WHERE nombre = $1', [nombreCarta]);
-            if (resCarta.rows.length > 0) {
-                idsCartas.push(resCarta.rows[0].carta_id);
-            }
-        }
+        // BUSCAMOS EL ELIXIR DE LAS 8 CARTAS PARA CALCULAR EL PROMEDIO
+        const resElixir = await dbclient.query(
+            'SELECT costo_elixir FROM cartas WHERE carta_id = ANY($1)', 
+            [cartas]
+        );
+        
+        const sumaElixir = resElixir.rows.reduce((acc, row) => acc + row.costo_elixir, 0);
+        const promedio = sumaElixir / 8;
 
-        if (idsCartas.length !== 8) {
-            throw new Error(`Solo encontramos ${idsCartas.length} de las 8 cartas. ¡Revisá los nombres!`);
-        }
-
-        // 2. Insertar mazo (OJO: Asegurate que el ID de usuario exista)
-        // Usamos un ID que sepamos que existe (cambia el 1 por el que encontraste en el Paso A)
-        const mazoQuery = 'INSERT INTO mazos (nombre, usuario_id, es_publico) VALUES ($1, $2, $3) RETURNING mazo_id';
-        const mazoResult = await dbclient.query(mazoQuery, [nombre, usuario_id || 1, es_publico]);
+        // INSERTAMOS EL MAZO CON EL PROMEDIO REAL
+        const mazoResult = await dbclient.query(
+            'INSERT INTO mazos (nombre, usuario_id, es_publico, promedio_elixir) VALUES ($1, $2, $3, $4) RETURNING mazo_id',
+            [nombre, usuario_id, true, promedio]
+        );
         const nuevoMazoId = mazoResult.rows[0].mazo_id;
 
-        // 3. Insertar en mazo_cartas
-        for (let i = 0; i < idsCartas.length; i++) {
+        // INSERTAR EN MAZO_CARTAS
+        for (let i = 0; i < cartas.length; i++) {
             await dbclient.query(
                 'INSERT INTO mazo_cartas (mazo_id, carta_id, posicion) VALUES ($1, $2, $3)',
-                [nuevoMazoId, idsCartas[i], i + 1]
+                [nuevoMazoId, cartas[i], i + 1]
             );
         }
 
         await dbclient.query('COMMIT');
-        res.status(201).json({ message: "¡Mazo guardado!" });
-
+        res.status(201).json({ message: "¡Mazo guardado con promedio!", promedio });
     } catch (err) {
         await dbclient.query('ROLLBACK');
-        console.error("ERROR REAL:", err.message);
         res.status(500).json({ error: err.message });
     }
 });
@@ -435,19 +430,29 @@ app.get('/usuarios/:id', async (req, res) => {
 
 // RUTA PARA EL FORO: Trae los mazos con sus cartas y autor
 app.get('/mazos/publicos', async (req, res) => {
+    const { q } = req.query; 
     try {
-        const query = `
-            SELECT m.mazo_id, m.nombre, m.promedio_elixir, m.victorias_totales, 
+        let query = `
+            SELECT m.mazo_id, m.nombre, m.promedio_elixir, m.victorias_totales, m.usuario_id,
                    u.alias as autor_nombre, u.trofeos as autor_trofeos
             FROM mazos m
             JOIN usuario u ON m.usuario_id = u.id
-            ORDER BY m.mazo_id DESC`; 
+            WHERE 1=1
+        `; 
+        const params = [];
+        if (q) {
+            query += ` AND (m.nombre ILIKE $1 OR u.alias ILIKE $1)`;
+            params.push(`%${q}%`);
+        }
+
+        query += ` ORDER BY m.mazo_id DESC`; 
         
-        const result = await dbclient.query(query);
+        const result = await dbclient.query(query, params);
         const mazos = result.rows;
+
         for (let mazo of mazos) {
             const cartasQuery = `
-                SELECT c.nombre, c.imagen 
+                SELECT c.nombre, c.imagen, c.rol_combate, c.calidad, c.costo_elixir 
                 FROM cartas c
                 JOIN mazo_cartas mc ON c.carta_id = mc.carta_id
                 WHERE mc.mazo_id = $1
@@ -461,6 +466,30 @@ app.get('/mazos/publicos', async (req, res) => {
     } catch (err) {
         console.error("Error en /mazos/publicos:", err);
         res.status(500).json({ error: "Error al cargar el foro" });
+    }
+});
+
+// TROFEOS EN LAS BATALLAS y NUMERO DE VICTORIAS DE CADA MAZO
+
+
+app.post('/batalla/resultado', async (req, res) => {
+    // Recibimos los IDs de los jugadores Y el ID del mazo que ganó
+    const { ganador_id, perdedor_id, ganador_mazo_id } = req.body; 
+    
+    try {
+        // Actualizamos trofeos de los usuarios
+        if (ganador_id) await actualizar_trofeos(ganador_id, 5);
+        if (perdedor_id) await actualizar_trofeos(perdedor_id, -5);
+        
+        // Sumamos la victoria al mazo específico
+        if (ganador_mazo_id) {
+            await sumar_victoria_mazo(ganador_mazo_id);
+        }
+
+        res.json({ message: "Trofeos y victorias de mazo actualizados" });
+    } catch (err) {
+        console.error("Error al procesar resultados:", err);
+        res.status(500).json({ error: "Error en el servidor" });
     }
 });
 
