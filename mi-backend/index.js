@@ -3,7 +3,7 @@ const app = express();//aca tengo mi aplicacion
 const cors = require('cors'); 
 const { dbclient } = require('./db');
 const port = 3000; //puerto donde va a correr mi aplicacion
-const { actualizar_trofeos } = require('./dbase/usuarios');
+const { actualizar_trofeos, sumar_victoria_mazo } = require('./dbase/usuarios');
 
 const {getallcartas,
      getcarta,
@@ -428,18 +428,27 @@ app.get('/mazos/publicos', async (req, res) => {
     }
 });
 
-// TROFEOS EN LAS BATALLAS
+// TROFEOS EN LAS BATALLAS y NUMERO DE VICTORIAS DE CADA MAZO
 
 
 app.post('/batalla/resultado', async (req, res) => {
-    const { ganador_id, perdedor_id } = req.body;
+    // Recibimos los IDs de los jugadores Y el ID del mazo que ganó
+    const { ganador_id, perdedor_id, ganador_mazo_id } = req.body; 
+    
     try {
-        if (ganador_id) await actualizar_trofeos(ganador_id, 5); // Gana 5
-        if (perdedor_id) await actualizar_trofeos(perdedor_id, -5); // Pierde 5
-        res.json({ message: "Trofeos actualizados correctamente" });
+        // Actualizamos trofeos de los usuarios
+        if (ganador_id) await actualizar_trofeos(ganador_id, 5);
+        if (perdedor_id) await actualizar_trofeos(perdedor_id, -5);
+        
+        // Sumamos la victoria al mazo específico
+        if (ganador_mazo_id) {
+            await sumar_victoria_mazo(ganador_mazo_id);
+        }
+
+        res.json({ message: "Trofeos y victorias de mazo actualizados" });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Error al procesar trofeos" });
+        console.error("Error al procesar resultados:", err);
+        res.status(500).json({ error: "Error en el servidor" });
     }
 });
 
