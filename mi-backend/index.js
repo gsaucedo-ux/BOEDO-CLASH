@@ -3,6 +3,7 @@ const app = express();//aca tengo mi aplicacion
 const cors = require('cors'); 
 const { dbclient } = require('./db');
 const port = 3000; //puerto donde va a correr mi aplicacion
+const { actualizar_trofeos } = require('./dbase/usuarios');
 
 const {getallcartas,
      getcarta,
@@ -276,24 +277,38 @@ app.patch('/mazos/:id/visibilidad', async (req, res) => {
         res.status(500).send("Error al actualizar visibilidad");
     }
 });
+
 app.post('/mazos', async (req, res) => {
-    const { nombre, usuario_id, cartas } = req.body; 
+    const { nombre, usuario_id, cartas } = req.body; // 'cartas' es un array de IDs
     try {
         await dbclient.query('BEGIN');
+
+        // BUSCAMOS EL ELIXIR DE LAS 8 CARTAS PARA CALCULAR EL PROMEDIO
+        const resElixir = await dbclient.query(
+            'SELECT costo_elixir FROM cartas WHERE carta_id = ANY($1)', 
+            [cartas]
+        );
+        
+        const sumaElixir = resElixir.rows.reduce((acc, row) => acc + row.costo_elixir, 0);
+        const promedio = sumaElixir / 8;
+
+        // INSERTAMOS EL MAZO CON EL PROMEDIO REAL
         const mazoResult = await dbclient.query(
-            'INSERT INTO mazos (nombre, usuario_id, es_publico) VALUES ($1, $2, $3) RETURNING mazo_id',
-            [nombre, usuario_id, true]
+            'INSERT INTO mazos (nombre, usuario_id, es_publico, promedio_elixir) VALUES ($1, $2, $3, $4) RETURNING mazo_id',
+            [nombre, usuario_id, true, promedio]
         );
         const nuevoMazoId = mazoResult.rows[0].mazo_id;
 
+        // INSERTAR EN MAZO_CARTAS
         for (let i = 0; i < cartas.length; i++) {
             await dbclient.query(
                 'INSERT INTO mazo_cartas (mazo_id, carta_id, posicion) VALUES ($1, $2, $3)',
                 [nuevoMazoId, cartas[i], i + 1]
             );
         }
+
         await dbclient.query('COMMIT');
-        res.status(201).json({ message: "¡Mazo guardado!" });
+        res.status(201).json({ message: "¡Mazo guardado con promedio!", promedio });
     } catch (err) {
         await dbclient.query('ROLLBACK');
         res.status(500).json({ error: err.message });
@@ -415,23 +430,16 @@ app.get('/mazos/publicos', async (req, res) => {
 
 // TROFEOS EN LAS BATALLAS
 
-const { actualizar_trofeos } = require('./dbase/usuarios');
 
 app.post('/batalla/resultado', async (req, res) => {
     const { ganador_id, perdedor_id } = req.body;
     try {
-        const resultado = { ganador: null, perdedor: null };
-        
-        if (ganador_id) {
-            resultado.ganador = await actualizar_trofeos(ganador_id, 5);
-        }
-        if (perdedor_id) {
-            resultado.perdedor = await actualizar_trofeos(perdedor_id, -5);
-        }
-        
-        res.json({ message: "Trofeos actualizados", data: resultado });
+        if (ganador_id) await actualizar_trofeos(ganador_id, 5); // Gana 5
+        if (perdedor_id) await actualizar_trofeos(perdedor_id, -5); // Pierde 5
+        res.json({ message: "Trofeos actualizados correctamente" });
     } catch (err) {
-        res.status(500).json({ error: "Error al actualizar trofeos" });
+        console.error(err);
+        res.status(500).json({ error: "Error al procesar trofeos" });
     }
 });
 
