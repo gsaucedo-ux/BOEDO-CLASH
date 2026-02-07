@@ -374,18 +374,17 @@ app.get('/usuarios/:id', async (req, res) => {
 
 // RUTA PARA EL FORO: Trae los mazos con sus cartas y autor
 app.get('/mazos/publicos', async (req, res) => {
-    const { q } = req.query; // Capturamos el término de búsqueda si existe
+    const { q } = req.query; 
     try {
         let query = `
-            SELECT m.mazo_id, m.nombre, m.promedio_elixir, m.victorias_totales, 
+            SELECT m.mazo_id, m.nombre, m.promedio_elixir, m.victorias_totales, m.usuario_id,
                    u.alias as autor_nombre, u.trofeos as autor_trofeos
             FROM mazos m
             JOIN usuario u ON m.usuario_id = u.id
-            `;
-        
+            WHERE 1=1
+        `; 
         const params = [];
         if (q) {
-            // Añadimos el filtro: ILIKE es para buscar sin importar mayúsculas/minúsculas
             query += ` AND (m.nombre ILIKE $1 OR u.alias ILIKE $1)`;
             params.push(`%${q}%`);
         }
@@ -395,14 +394,14 @@ app.get('/mazos/publicos', async (req, res) => {
         const result = await dbclient.query(query, params);
         const mazos = result.rows;
 
-        // Buscamos las cartas para cada mazo (tu lógica actual)
         for (let mazo of mazos) {
             const cartasQuery = `
-                SELECT c.nombre, c.imagen 
+                SELECT c.nombre, c.imagen, c.rol_combate, c.calidad, c.costo_elixir 
                 FROM cartas c
                 JOIN mazo_cartas mc ON c.carta_id = mc.carta_id
                 WHERE mc.mazo_id = $1
                 ORDER BY mc.posicion ASC`;
+            
             const cartasResult = await dbclient.query(cartasQuery, [mazo.mazo_id]);
             mazo.cartas = cartasResult.rows; 
         }
@@ -411,6 +410,28 @@ app.get('/mazos/publicos', async (req, res) => {
     } catch (err) {
         console.error("Error en /mazos/publicos:", err);
         res.status(500).json({ error: "Error al cargar el foro" });
+    }
+});
+
+// TROFEOS EN LAS BATALLAS
+
+const { actualizar_trofeos } = require('./dbase/usuarios');
+
+app.post('/batalla/resultado', async (req, res) => {
+    const { ganador_id, perdedor_id } = req.body;
+    try {
+        const resultado = { ganador: null, perdedor: null };
+        
+        if (ganador_id) {
+            resultado.ganador = await actualizar_trofeos(ganador_id, 5);
+        }
+        if (perdedor_id) {
+            resultado.perdedor = await actualizar_trofeos(perdedor_id, -5);
+        }
+        
+        res.json({ message: "Trofeos actualizados", data: resultado });
+    } catch (err) {
+        res.status(500).json({ error: "Error al actualizar trofeos" });
     }
 });
 
