@@ -75,8 +75,20 @@ async function validar_login(correo, contraseña) {
     return respuesta.rows[0]; // Devuelve el usuario si coincide, o undefined si no
 }
 
+async function actualizar_trofeos(usuario_id, cantidad) {
+    // Si cantidad es negativa (perdedor), GREATEST asegura que no baje de 0
+    const query = `
+        UPDATE usuario 
+        SET trofeos = GREATEST(0, trofeos + $1) 
+        WHERE id = $2 
+        RETURNING trofeos, alias`;
+    const res = await dbclient.query(query, [cantidad, usuario_id]);
+    return res.rows[0];
+}
+
 module.exports={
         getallusuarios,getusuario,create_usuario,update_usuario,verificacion_correo,verificacion_correo_otros,alias_usuario,alias_usuario_otros,remove_usuario,
         update_visibilidad_mazo,
-        validar_login
+        validar_login,
+        actualizar_trofeos
 };
