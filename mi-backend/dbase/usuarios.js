@@ -58,7 +58,7 @@ async function remove_usuario(id_usuario){
         return respuesta.rows[0];
 }
 
-// NUEVA FUNCIÓN (Manteniendo tu estilo de promesas)
+
 async function update_visibilidad_mazo(mazo_id, estado) {
     const respuesta = await dbclient.query(
         'UPDATE mazos SET es_publico = $1 WHERE mazo_id = $2 RETURNING *',
@@ -75,8 +75,31 @@ async function validar_login(correo, contraseña) {
     return respuesta.rows[0]; // Devuelve el usuario si coincide, o undefined si no
 }
 
+async function actualizar_trofeos(usuario_id, cantidad) {
+    // Si cantidad es negativa (perdedor), GREATEST asegura que no baje de 0
+    const query = `
+        UPDATE usuario 
+        SET trofeos = GREATEST(0, trofeos + $1) 
+        WHERE id = $2 
+        RETURNING trofeos, alias`;
+    const res = await dbclient.query(query, [cantidad, usuario_id]);
+    return res.rows[0];
+}
+
+async function sumar_victoria_mazo(mazo_id) {
+    const query = `
+        UPDATE mazos 
+        SET victorias_totales = victorias_totales + 1 
+        WHERE mazo_id = $1 
+        RETURNING victorias_totales`;
+    const res = await dbclient.query(query, [mazo_id]);
+    return res.rows[0];
+}
+
 module.exports={
         getallusuarios,getusuario,create_usuario,update_usuario,verificacion_correo,verificacion_correo_otros,alias_usuario,alias_usuario_otros,remove_usuario,
         update_visibilidad_mazo,
-        validar_login
+        validar_login,
+        actualizar_trofeos,
+        sumar_victoria_mazo
 };

@@ -139,7 +139,7 @@ async function cargarForo(busqueda = "") {
                     </div>
                     <div class="pie_mazo">
                         <div><p>Autor: <b>${m.autor_nombre}</b></p></div>
-                        <div><p>🏆 ${m.victorias_totales || 0}</p></div>
+                        <div><p>Victorias totales del mazo: ${m.victorias_totales || 0}</p></div>
                     </div>
                     <button class="comentarios_mazos" onclick="abrirComentarios(${m.mazo_id})"> 
                         comentarios
