@@ -47,6 +47,12 @@ CREATE TABLE comentarios (
     puntuacion INT CHECK (puntuacion >= 1 AND puntuacion <= 5),
     creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+INSERT INTO usuario (nombre, correo, contraseña, nivel, trofeos, alias, carta_favorita)
+VALUES
+('Gustavo Saucedo', 'gus@mail.com', '1234', 6, 420, 'GusPro', 'Mega Caballero'),
+('Lucía Pérez', 'lucia@mail.com', '1234', 4, 260, 'LuFire', 'Valquiria'),
+('Martín López', 'martin@mail.com', '1234', 8, 680, 'MartoX', 'Chispitas'),
+('Sofía Díaz', 'sofia@mail.com', '1234', 3, 150, 'SofiPlay', 'Montapuercos');
 INSERT INTO cartas (nombre, imagen, calidad, costo_elixir, tipo_ataque, tipo_carta, puntos_de_vida, daño, rol_combate)
 VALUES 
 -- 1. T (Tanque Lento): Unidades de alta salud que marcan el ritmo
@@ -197,3 +203,12 @@ VALUES
   (2, 7, 6),  -- Rey Esqueleto
   (2, 8, 7),  -- Monje
   (2, 1, 8);  -- Caballero
+INSERT INTO comentarios (mazo_id, usuario_id, texto, puntuacion)
+VALUES
+(1, 1, 'Este mazo es durísimo, llegué a liga maestro fácil 💪', 5),
+(1, 2, 'Buen mazo, pero sufre bastante contra ciclo rápido', 4),
+(1, 3, 'Mega Caballero + Gólem es caro pero demoledor', 5),
+
+(2, 2, 'Muy divertido de jugar, ideal para presionar', 5),
+(2, 4, 'Le falta un poco de defensa aérea para mi gusto', 3),
+(2, 1, 'Buen promedio de elixir, se siente fluido', 4);
