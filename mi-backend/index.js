@@ -202,6 +202,16 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// nivel de usuario
+
+function calcularNivelActual(victorias) {
+    let v = victorias;
+    if (v <= 30) return 1 + Math.floor(v / 3); // Niv 1-10
+    if (v <= 105) return 10 + Math.floor((v - 30) / 5); // Niv 11-25
+    let nivel = 25 + Math.floor((v - 105) / 10); // Niv 26-100
+    return Math.min(nivel, 100);
+}
+
 // ----------------------------------------------------
 // endpoints de cartas
 // ----------------------------------------------------
@@ -432,23 +442,41 @@ app.get('/mazos/publicos', async (req, res) => {
 
 
 app.post('/batalla/resultado', async (req, res) => {
-    // Recibimos los IDs de los jugadores Y el ID del mazo que ganó
-    const { ganador_id, perdedor_id, ganador_mazo_id } = req.body; 
+    const { mazo_ganador_id, mazo_perdedor_id, usuario_jugando_id, gano_el_usuario } = req.body;
     
     try {
-        // Actualizamos trofeos de los usuarios
-        if (ganador_id) await actualizar_trofeos(ganador_id, 5);
-        if (perdedor_id) await actualizar_trofeos(perdedor_id, -5);
-        
-        // Sumamos la victoria al mazo específico
-        if (ganador_mazo_id) {
-            await sumar_victoria_mazo(ganador_mazo_id);
+        await dbclient.query('BEGIN');
+
+        // SIEMPRE: Sumar victoria al mazo (lo que hizo tu amigo)
+        if (mazo_ganador_id) {
+            await dbclient.query('UPDATE mazos SET victorias_totales = victorias_totales + 1 WHERE mazo_id = $1', [mazo_ganador_id]);
         }
 
-        res.json({ message: "Trofeos y victorias de mazo actualizados" });
+        // SOLO SI HAY USUARIO LOGUEADO: Gestionar su progreso
+        if (usuario_jugando_id) {
+            if (gano_el_usuario) {
+                // GANÓ: +5 trofeos y +1 victoria total para el nivel
+                const userRes = await dbclient.query(
+                    'UPDATE usuario SET trofeos = trofeos + 5, victorias_totales = victorias_totales + 1 WHERE id = $1 RETURNING victorias_totales',
+                    [usuario_jugando_id]
+                );
+                
+                const vTotales = userRes.rows[0].victorias_totales;
+                const nuevoNivel = calcularNivelActual(vTotales);
+                
+                await dbclient.query('UPDATE usuario SET nivel = $1 WHERE id = $2', [nuevoNivel, usuario_jugando_id]);
+            } else {
+                // PERDIÓ: -5 trofeos (el nivel no baja, solo los trofeos)
+                await dbclient.query('UPDATE usuario SET trofeos = GREATEST(0, trofeos - 5) WHERE id = $1', [usuario_jugando_id]);
+            }
+        }
+
+        await dbclient.query('COMMIT');
+        res.json({ message: "Base de datos actualizada con éxito" });
     } catch (err) {
-        console.error("Error al procesar resultados:", err);
-        res.status(500).json({ error: "Error en el servidor" });
+        await dbclient.query('ROLLBACK');
+        console.error(err);
+        res.status(500).json({ error: "Error procesando batalla" });
     }
 });
 

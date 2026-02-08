@@ -36,7 +36,7 @@
             
             <div class="battle-grid-wrapper">
                 <div class="opponent-deck opponent-1">
-                    <h2>JUGADOR 1</h2>
+                    <h2 id="nombre-j1">JUGADOR 1</h2>
                     <div class="deck-grid">
                         <div id="P1-S1" class="card-slot" onclick="handleSlotClick('P1-S1')"></div>
                         <div id="P1-S2" class="card-slot" onclick="handleSlotClick('P1-S2')"></div>
@@ -52,7 +52,7 @@
                 <div class="vs-text">VS</div>
 
                 <div class="opponent-deck opponent-2">
-                    <h2>JUGADOR 2</h2>
+                    <h2 id="nombre-j2">JUGADOR 2</h2>
                     <div class="deck-grid">
                         <div id="P2-S1" class="card-slot" onclick="handleSlotClick('P2-S1')"></div>
                         <div id="P2-S2" class="card-slot" onclick="handleSlotClick('P2-S2')"></div>
@@ -208,31 +208,31 @@
             document.getElementById('battle-view').classList.remove('hidden-view');
         }
 
-        // 5. SIMULACIÓN (Puntos y Luces)
+        // 5. SIMULACIÓN (Puntos, Luces y PROGRESO)
         document.getElementById('simulate-button').onclick = () => {
             let p1 = 0, p2 = 0;
-            const matriz = 
-            { 
-            'T':{'DM':1, 'DS':-1, 'HD':-1, 'M':-1, 'B':-1, 'ED':-1, 'ET':-1, 'EC':-1, 'EG':1, 'EM':-1}, 
-            'B':{'T':1, 'TS':-1, 'HD':-1, 'EA':-1, 'ED':-1, 'ET':-1, 'EC':-1, 'EG':1, 'EM':-1}, 
-            'DM':{'T':-1, 'EM':1, 'EA':1, 'M':-1, 'ED':1, 'ET':1, 'EC':1, 'EG':1}, 
-            'DS':{'T':1, 'DM':-1, 'TS':-1, 'EM':1, 'EA':1, 'M':1, 'ED':-1, 'ET':-1, 'EC':1}, 
-            'AS':{'B':1, 'DM':-1, 'DS':1, 'TS':-1, 'EM':1, 'ED':1, 'EC':-1}, 
-            'TS':{'B':1, 'DS':-1, 'AS':1, 'EM':-1, 'EA':1, 'TA':1, 'ED':1, 'EG':1}, 
-            'EM':{'T':1, 'B':1, 'DM':-1, 'DS':-1, 'AS':-1, 'TS':1, 'HD':1, 'M':-1, 'ET':1, 'ED':-1}, 
-            'HD':{'T':1, 'B':1, 'DM':-1, 'EM':-1, 'M':-1, 'ED':1, 'ET':1, 'EC':1, 'EG':1}, 
-            'M':{'T':1, 'EM':1, 'HD':1, 'TA':-1, 'EA':-1, 'DS':-1, 'EG':-1, 'EC':-1}, 
-            'TA':{'T':1, 'HD':1, 'TS':-1, 'M':1, 'ED':1, 'ET':-1}, 
-            'EA':{'T':1, 'B':1, 'M':1, 'TS':-1, 'DS':-1, 'DM':-1, 'ED':1, 'ET':1, 'EC':-1}, 
-            'ED':{'EM':1, 'T':1, 'B':1, 'TA':-1, 'EA':-1, 'HD':-1, 'AS':-1, 'TS':-1, 'DM':-1, 'DS':1}, 
-            'ET':{'T':1, 'B':1, 'TA':1, 'HD':1, 'EM':-1, 'EA':-1, 'DM':1, 'DS':1}, 
-            'EC':{'B':1, 'M':1, 'AS':1, 'EA':1, 'HD':-1, 'T':1, 'DM':-1, 'DS':-1}, 
-            'EG':{'HD':-1, 'T':-1, 'B':-1, 'M':1, 'TS':-1, 'DM':-1} 
+            const matriz = { 
+                'T':{'DM':1, 'DS':-1, 'HD':-1, 'M':-1, 'B':-1, 'ED':-1, 'ET':-1, 'EC':-1, 'EG':1, 'EM':-1}, 
+                'B':{'T':1, 'TS':-1, 'HD':-1, 'EA':-1, 'ED':-1, 'ET':-1, 'EC':-1, 'EG':1, 'EM':-1}, 
+                'DM':{'T':-1, 'EM':1, 'EA':1, 'M':-1, 'ED':1, 'ET':1, 'EC':1, 'EG':1}, 
+                'DS':{'T':1, 'DM':-1, 'TS':-1, 'EM':1, 'EA':1, 'M':1, 'ED':-1, 'ET':-1, 'EC':1}, 
+                'AS':{'B':1, 'DM':-1, 'DS':1, 'TS':-1, 'EM':1, 'ED':1, 'EC':-1}, 
+                'TS':{'B':1, 'DS':-1, 'AS':1, 'EM':-1, 'EA':1, 'TA':1, 'ED':1, 'EG':1}, 
+                'EM':{'T':1, 'B':1, 'DM':-1, 'DS':-1, 'AS':-1, 'TS':1, 'HD':1, 'M':-1, 'ET':1, 'ED':-1}, 
+                'HD':{'T':1, 'B':1, 'DM':-1, 'EM':-1, 'M':-1, 'ED':1, 'ET':1, 'EC':1, 'EG':1}, 
+                'M':{'T':1, 'EM':1, 'HD':1, 'TA':-1, 'EA':-1, 'DS':-1, 'EG':-1, 'EC':-1}, 
+                'TA':{'T':1, 'HD':1, 'TS':-1, 'M':1, 'ED':1, 'ET':-1}, 
+                'EA':{'T':1, 'B':1, 'M':1, 'TS':-1, 'DS':-1, 'DM':-1, 'ED':1, 'ET':1, 'EC':-1}, 
+                'ED':{'EM':1, 'T':1, 'B':1, 'TA':-1, 'EA':-1, 'HD':-1, 'AS':-1, 'TS':-1, 'DM':-1, 'DS':1}, 
+                'ET':{'T':1, 'B':1, 'TA':1, 'HD':1, 'EM':-1, 'EA':-1, 'DM':1, 'DS':1}, 
+                'EC':{'B':1, 'M':1, 'AS':1, 'EA':1, 'HD':-1, 'T':1, 'DM':-1, 'DS':-1}, 
+                'EG':{'HD':-1, 'T':-1, 'B':-1, 'M':1, 'TS':-1, 'DM':-1} 
             };
             
             const multGeneral = { 'comun': 1, 'especial': 1.2, 'epica': 1.4, 'legendaria': 1.6, 'campeon': 1.8, 'docente': 2 };
             const multTanque = { 'comun': 1.2, 'especial': 1.4, 'epica': 1.8, 'legendaria': 2, 'campeon': 2.2, 'docente': 2.4 };
 
+            // Cálculo de poder de los mazos
             for (let i = 1; i <= 8; i++) {
                 const s1 = document.getElementById(`P1-S${i}`);
                 if (!s1 || !s1.classList.contains('filled')) continue;
@@ -246,33 +246,75 @@
                 }
             }
 
-            const resBox = document.getElementById('battle-result');
-            resBox.innerHTML = `P1: ${p1.toFixed(1)} - P2: ${p2.toFixed(1)}<br>` + (p1 > p2 ? "🏆 GANA JUGADOR 1" : p2 > p1 ? "🏆 GANA JUGADOR 2" : "EMPATE");
+            // Determinamos ganadores
+            const ganoP1 = p1 > p2;
+            const ganoP2 = p2 > p1;
 
-            // LUCES VERDE Y ROJA
+            const resBox = document.getElementById('battle-result');
+            resBox.innerHTML = `P1: ${p1.toFixed(1)} - P2: ${p2.toFixed(1)}<br>` + 
+                               (ganoP1 ? "🏆 GANA JUGADOR 1" : ganoP2 ? "🏆 GANA JUGADOR 2" : "EMPATE");
+
+            // Feedback visual de victoria/derrota
             const deck1 = document.querySelector('.opponent-1'); 
             const deck2 = document.querySelector('.opponent-2');
             deck1.classList.remove('ganador-highlight', 'perdedor-highlight');
             deck2.classList.remove('ganador-highlight', 'perdedor-highlight');
 
-            if (p1 > p2) { deck1.classList.add('ganador-highlight'); deck2.classList.add('perdedor-highlight'); }
-            else if (p2 > p1) { deck2.classList.add('ganador-highlight'); deck1.classList.add('perdedor-highlight'); }
+            if (ganoP1) { deck1.classList.add('ganador-highlight'); deck2.classList.add('perdedor-highlight'); }
+            else if (ganoP2) { deck2.classList.add('ganador-highlight'); deck1.classList.add('perdedor-highlight'); }
 
-            // TROFEOS Y VICTORIAS
-            const ganadorId = p1 > p2 ? idDuenioP1 : p2 > p1 ? idDuenioP2 : null;
-            const perdedorId = p1 > p2 ? idDuenioP2 : p2 > p1 ? idDuenioP1 : null;
-            const mazoGanadorId = p1 > p2 ? idMazoP1 : p2 > p1 ? idMazoP2 : null;
-            
-            if (ganadorId || perdedorId || mazoGanadorId) {
+            // --- ENVÍO DE RESULTADOS AL BACKEND ---
+            const usuarioLogueadoId = localStorage.getItem("usuarioId");
+
+            if (usuarioLogueadoId && (ganoP1 || ganoP2)) {
+                // Creamos el paquete de datos
+                const datosARegistrar = {
+                    mazo_ganador_id: ganoP1 ? idMazoP1 : idMazoP2,
+                    usuario_jugando_id: usuarioLogueadoId, // TÚ eres el que está jugando
+                    gano_el_usuario: ganoP1 // Si gana el Mazo 1 (P1), significa que ganaste TÚ
+                };
+
                 fetch('http://localhost:3000/batalla/resultado', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ ganador_id: ganadorId, perdedor_id: perdedorId, ganador_mazo_id: mazoGanadorId })
-                });
+                    body: JSON.stringify(datosARegistrar)
+                })
+                .then(response => response.json())
+                .then(data => console.log("Progreso guardado:", data))
+                .catch(error => console.error("Error al reportar batalla:", error));
             }
         };
+        
+        function actualizarNombresPorSesion() {
+            const usuarioLogueadoId = localStorage.getItem("usuarioId");
+            const aliasUsuario = localStorage.getItem("usuario"); // El alias que guardamos en perfil.js
 
-        window.onload = fetchCartas;
+            const h2_j1 = document.getElementById('nombre-j1');
+            const h2_j2 = document.getElementById('nombre-j2');
+
+            if (usuarioLogueadoId && usuarioLogueadoId !== "undefined") {
+                // SI ESTÁ LOGUEADO: Vos sos el Prota, el otro es el Rival
+                h2_j1.textContent = aliasUsuario || "Tu Mazo";
+                h2_j1.style.color = "#2ecc71"; // Un verde fachero para tu nombre
+                
+                h2_j2.textContent = "RIVAL";
+                h2_j2.style.color = "#e74c3c"; // Un rojo para el oponente
+            } else {
+                // SI NO ESTÁ LOGUEADO (O CERRÓ SESIÓN): Volvemos al estándar
+                h2_j1.textContent = "JUGADOR 1";
+                h2_j1.style.color = "white";
+                
+                h2_j2.textContent = "JUGADOR 2";
+                h2_j2.style.color = "white";
+            }
+        }
+
+        // Llamamos a la función apenas carga la página
+        window.onload = () => {
+            fetchCartas();
+            actualizarNombresPorSesion();
+        };
+
     </script>
 </body>
 </html>
