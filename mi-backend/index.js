@@ -268,6 +268,7 @@ app.get('/mazos/:id/comentarios', async (req, res) => {
             SELECT 
                 c.comentario_id,
                 c.texto,
+                c.puntuacion,
                 c.creado_en,
                 COALESCE(u.alias, 'Usuario eliminado') AS alias
             FROM comentarios c
