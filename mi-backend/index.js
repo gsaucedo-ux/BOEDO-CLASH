@@ -287,25 +287,24 @@ app.get('/mazos/:id/comentarios', async (req, res) => {
 //para hacer un post en comentarios
 app.post("/mazos/:id/comentarios", async (req, res) => {
     const mazoId = req.params.id;
-    const { texto, usuario_id } = req.body;
+    const { texto, usuario_id, puntuacion } = req.body; // Agregamos puntuacion
 
-    if (!texto || !usuario_id) {
-        return res.status(400).json({ error: "Faltan datos" });
+    // Validar que vengan los datos y que la puntuación sea válida
+    if (!texto || !usuario_id || !puntuacion) {
+        return res.status(400).json({ error: "Faltan datos (texto, usuario o puntuación)" });
     }
 
     try {
         const query = `
-            INSERT INTO comentarios (mazo_id, usuario_id, texto)
-            VALUES ($1, $2, $3)
+            INSERT INTO comentarios (mazo_id, usuario_id, texto, puntuacion)
+            VALUES ($1, $2, $3, $4)
             RETURNING *
         `;
 
-        const values = [mazoId, usuario_id, texto];
-
+        const values = [mazoId, usuario_id, texto, puntuacion];
         const result = await dbclient.query(query, values);
 
         res.status(201).json(result.rows[0]);
-
     } catch (err) {
         console.error("Error guardando comentario:", err);
         res.status(500).json({ error: "Error del servidor" });

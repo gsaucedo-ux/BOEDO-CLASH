@@ -48,6 +48,7 @@ CREATE TABLE comentarios (
     puntuacion INT CHECK (puntuacion >= 1 AND puntuacion <= 5),
     creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
 INSERT INTO usuario (nombre, correo, contraseña, nivel, trofeos, alias, carta_favorita)
 VALUES
 ('Gustavo Saucedo', 'gus@mail.com', '1234', 6, 420, 'GusPro', 'Mega Caballero'),

@@ -60,19 +60,25 @@
         <div class="contenedor_comentarios" id="listaComentariosReal"> 
         </div>
          <div class="nuevo_comentario">
-        <div class="imagen_usuario">
-            <img src="../../img/LogoDefinitivo.jpg" />
-        </div>
-        <div class="comentar">
-            <div class="caja_comentario">
-                <input type="text" id="inputComentario" class="comentario"
-                    placeholder="Únete a la conversación">
+            <div class="imagen_usuario">
+                <img src="../../img/LogoDefinitivo.jpg" />
             </div>
-        </div>
-        <div class="boton_enviar_mensaje" onclick="enviarComentario()">
-            <img src="../../img/boton_enviar_mensaje.png" />
-        </div>
-    </div>
+            <div class="comentar">
+                <div class="caja_comentario">
+                    <select id="puntuacionInput" style="background: #333; color: gold; border: 1px solid #555; border-radius: 5px; margin-bottom: 5px; width: 100%;">
+                        <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                        <option value="4">⭐⭐⭐⭐ (4)</option>
+                        <option value="3">⭐⭐⭐ (3)</option>
+                        <option value="2">⭐⭐ (2)</option>
+                        <option value="1">⭐ (1)</option>
+                    </select>
+                    <input type="text" id="inputComentario" class="comentario" placeholder="Únete a la conversación">
+                </div>
+            </div>
+            <div class="boton_enviar_mensaje" onclick="enviarComentario()">
+                <img src="../../img/boton_enviar_mensaje.png" />
+            </div>
+            </div>
     </div>
 
      <script>
@@ -161,7 +167,7 @@ async function cargarForo(busqueda = "") {
         const barra_salida = document.querySelector(".salida_comentarios");
 
       async function abrirComentarios(mazoId) {
-    mazoActual = mazoId; // 🔥 guardamos el mazo actual
+    mazoActual = mazoId;
     ventana.classList.remove("selector_comentarios");
 
     const lista = document.getElementById("listaComentariosReal");
@@ -169,40 +175,40 @@ async function cargarForo(busqueda = "") {
 
     try {
         const res = await fetch(`http://localhost:3000/mazos/${mazoId}/comentarios`);
-
-        if (!res.ok) {
-            throw new Error("Error al obtener comentarios");
-        }
+        if (!res.ok) throw new Error("Error al obtener comentarios");
 
         const comentarios = await res.json();
-
         if (comentarios.length === 0) {
             lista.innerHTML = "<p style='color:white'>No hay comentarios todavía</p>";
             return;
         }
 
-       lista.innerHTML = `
-    ${comentarios.map(c => `
-        <div class="comentarios">
-            <b>${c.alias}</b>
-            <p>${c.texto}</p>
-            <small>${new Date(c.creado_en).toLocaleString()}</small>
-        </div>
-    `).join("")}
-`;
+        lista.innerHTML = `
+            ${comentarios.map(c => `
+                <div class="comentarios" style="border-bottom: 1px solid #444; margin-bottom: 10px; padding-bottom: 5px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <b>${c.alias}</b>
+                        <span style="color: gold;">${generarEstrellas(c.puntuacion)}</span>
+                    </div>
+                    <p>${c.texto}</p>
+                    <small style="color: gray; font-size: 0.8em;">${new Date(c.creado_en).toLocaleString()}</small>
+                </div>
+            `).join("")}
+        `;
 
     } catch (err) {
         console.error("Error cargando comentarios:", err);
         lista.innerHTML = "<p style='color:red'>Error al cargar comentarios</p>";
     }
-
 }
 
 
 async function enviarComentario() {
     const input = document.getElementById("inputComentario");
+    const puntuacionInput = document.getElementById("puntuacionInput"); // 🔥 Capturamos el select
     const texto = input.value.trim();
     const usuarioId = localStorage.getItem("usuarioId");
+    const puntuacion = puntuacionInput.value; // 🔥 Obtenemos el valor (1-5)
 
     if (!usuarioId) {
         alert("Tenés que iniciar sesión para comentar");
@@ -222,7 +228,8 @@ async function enviarComentario() {
             },
             body: JSON.stringify({
                 texto: texto,
-                usuario_id: usuarioId
+                usuario_id: usuarioId,
+                puntuacion: parseInt(puntuacion) // 🔥 Enviamos la puntuación al backend
             })
         });
 
@@ -231,13 +238,19 @@ async function enviarComentario() {
         }
 
         input.value = "";          // limpiamos input
-        abrirComentarios(mazoActual); // 🔥 recargamos comentarios
+        abrirComentarios(mazoActual); // 🔥 recargamos la lista
 
     } catch (err) {
         console.error("Error enviando comentario:", err);
         alert("No se pudo enviar el comentario");
     }
 }
+
+function generarEstrellas(n) {
+    if (!n) return "Sin puntuación";
+    return "⭐".repeat(n);
+}
+
         barra_salida.onclick = () => {
             ventana.classList.add("selector_comentarios");
         };
