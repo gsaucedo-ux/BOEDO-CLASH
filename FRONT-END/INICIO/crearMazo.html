@@ -57,14 +57,47 @@
             </select>
 
             <select id="filtro-rol">
-                <option value="todos">Rol (todos)</option>
-                <option value="T">Tanque (T)</option>
-                <option value="B">Rápido (B)</option>
-                <option value="DM">Daño Muerte (DM)</option>
-                <option value="TS">Tirador (TS)</option>
-                <option value="HD">Caza Tanques (HD)</option>
-                </select>
-        </div>
+                    <option value="todos">Rol de Combate (todos)</option>
+                    <option value="T">Tanque Lento (T)</option>
+                    <option value="B">Tanque Rápido (B)</option>
+                    <option value="DM">Daño de Muerte (DM)</option>
+                    <option value="DS">Area Sostenido (DS)</option>
+                    <option value="AS">Soporte Aéreo (AS)</option>
+                    <option value="TS">Tirador Soporte (TS)</option>
+                    <option value="EM">Enjambre Terrestre(EM)</option>
+                    <option value="HD">Caza Tanques (HD)</option>
+                    <option value="M">Control/Mecánica (M)</option>
+                    <option value="TA">Tanque Aereo (TA)</option>
+                    <option value="EA">Enjambre Aereo (EA)</option>
+                    <option value="ED">Estructura Daño Área (ED)</option>
+                    <option value="ET">Estructura Objetivo Único (ET)</option>
+                    <option value="EC">Estructura Control (EC)</option>
+                    <option value="EG">Estructura Generación (EG)</option>
+            </select>
+
+            <select id="filtro-elixir">
+            <option value="todas">Elixir (todos)</option>
+            <option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option>
+            <option value="5">5</option><option value="6">6</option>
+            <option value="7">7</option><option value="8+">8+</option>
+            </select>
+
+            <select id="filtro-vida">
+                <option value="todas">Vida (todas)</option>
+                <option value="baja">Baja (-500)</option>
+                <option value="media">Media (500-1500)</option>
+                <option value="alta">Alta (1500+)</option>
+            </select>
+
+            <select id="filtro-danio">
+                <option value="todas">Daño (todos)</option>
+                <option value="bajo">Bajo (-100)</option>
+                <option value="medio">Medio (100-300)</option>
+                <option value="alto">Alto (300+)</option>
+            </select>
+            
+            </div>
 
         <div id="gridCartas" class="selector-grid">Cargando cartas de la DB...</div>
     </div>
@@ -105,18 +138,41 @@
 
     // 2. FILTRADO (Lógica de cartas.html)
     function aplicarFiltros() {
-        const texto = document.getElementById('buscador').value.toLowerCase();
-        const rareza = document.getElementById('filtro-rarity').value;
-        const rol = document.getElementById('filtro-rol').value;
+    const texto = document.getElementById('buscador').value.toLowerCase();
+    const rareza = document.getElementById('filtro-rarity').value;
+    const rol = document.getElementById('filtro-rol').value;
+    const elixir = document.getElementById('filtro-elixir').value;
+    const vida = document.getElementById('filtro-vida').value;
+    const danio = document.getElementById('filtro-danio').value;
 
-        const filtradas = allCards.filter(c => {
-            const matchNombre = c.nombre.toLowerCase().includes(texto);
-            const matchRareza = rareza === 'todas' || c.calidad.toLowerCase() === rareza;
-            const matchRol = rol === 'todos' || c.rol_combate === rol;
-            return matchNombre && matchRareza && matchRol;
-        });
-        renderSelector(filtradas);
-    }
+    const filtradas = allCards.filter(c => {
+        const matchNombre = c.nombre.toLowerCase().includes(texto);
+        const matchRareza = rareza === 'todas' || c.calidad.toLowerCase() === rareza;
+        const matchRol = rol === 'todos' || c.rol_combate === rol;
+        
+        // Filtro de Elixir
+        let matchElixir = true;
+        if (elixir !== 'todas') {
+            matchElixir = elixir === '8+' ? c.costo_elixir >= 8 : c.costo_elixir.toString() === elixir;
+        }
+
+        // Filtro de Vida
+        let matchVida = true;
+        if (vida === 'baja') matchVida = c.puntos_de_vida < 500;
+        else if (vida === 'media') matchVida = c.puntos_de_vida >= 500 && c.puntos_de_vida <= 1500;
+        else if (vida === 'alta') matchVida = c.puntos_de_vida > 1500;
+
+        // Filtro de Daño
+        let matchDanio = true;
+        if (danio === 'bajo') matchDanio = c.daño < 100;
+        else if (danio === 'medio') matchDanio = c.daño >= 100 && c.daño <= 300;
+        else if (danio === 'alto') matchDanio = c.daño > 300;
+
+        return matchNombre && matchRareza && matchRol && matchElixir && matchVida && matchDanio;
+    });
+    
+    renderSelector(filtradas);
+}
 
     function seleccionarCarta(carta) {
     // 1. REVISIÓN DE DUPLICADOS
@@ -176,6 +232,9 @@
     document.getElementById('buscador').addEventListener('input', aplicarFiltros);
     document.getElementById('filtro-rarity').addEventListener('change', aplicarFiltros);
     document.getElementById('filtro-rol').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtro-elixir').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtro-vida').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtro-danio').addEventListener('change', aplicarFiltros);
 
     cargarCartas();
 </script>
