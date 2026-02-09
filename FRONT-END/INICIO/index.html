@@ -197,30 +197,34 @@ async function cargarForo(busqueda = "") {
             return;
         }
 
-        lista.innerHTML = `
-            ${comentarios.map(c => {
-                // Verificamos si el dueño del comentario es quien está logueado
-                const esMio = String(c.usuario_id) === String(localStorage.getItem("usuarioId"));
+        // Dentro de abrirComentarios en index.html
+        lista.innerHTML = comentarios.map(c => {
+            const esMio = String(c.usuario_id) === String(localStorage.getItem("usuarioId"));
 
-                return `
-                    <div class="comentarios" style="position: relative; border-bottom: 1px solid #444; padding: 10px 0;">
-                        <div style="display: flex; justify-content: space-between;">
-                            <b>${c.alias}</b>
-                            <span style="color: gold;">${generarEstrellas(c.puntuacion)}</span>
-                        </div>
-                        <p>${c.texto}</p>
-                        <small style="color: gray;">${new Date(c.creado_en).toLocaleString()}</small>
-                        
-                        ${esMio ? `
+            return `
+                <div class="comentarios" style="position: relative; border-bottom: 1px solid #444; padding: 10px 0;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <b>${c.alias}</b>
+                        <span style="color: gold;">${generarEstrellas(c.puntuacion)}</span>
+                    </div>
+                    <p id="texto-comentario-${c.comentario_id}">${c.texto}</p>
+                    <small style="color: gray;">${new Date(c.creado_en).toLocaleString()}</small>
+                    
+                    ${esMio ? `
+                        <div style="position: absolute; bottom: 5px; right: 5px; display: flex; gap: 10px;">
+                            <button onclick="prepararEdicion(${c.comentario_id})" 
+                                    style="background: none; border: none; color: gold; cursor: pointer; font-size: 0.8em;">
+                                ✎ Editar
+                            </button>
                             <button onclick="borrarComentario(${c.comentario_id})" 
-                                    style="position: absolute; bottom: 5px; right: 5px; background: none; border: none; color: #ff4d4d; cursor: pointer; font-weight: bold;">
+                                    style="background: none; border: none; color: #ff4d4d; cursor: pointer; font-size: 0.8em;">
                                 Borrar X
                             </button>
-                        ` : ''}
-                    </div>
-                `;
-                }).join("")}
+                        </div>
+                    ` : ''}
+                </div>
             `;
+        }).join("");
 
     } catch (err) {
         console.error("Error cargando comentarios:", err);
@@ -297,6 +301,46 @@ async function borrarComentario(idComentario) {
         }
     } catch (err) {
         console.error("Error al borrar:", err);
+    }
+}
+
+    async function prepararEdicion(idComentario) {
+    const parrafoTexto = document.getElementById(`texto-comentario-${idComentario}`);
+    const textoActual = parrafoTexto.innerText;
+    
+    // Pedimos el nuevo texto
+    const nuevoTexto = prompt("Edita tu comentario:", textoActual);
+    if (nuevoTexto === null) return; // Cancelado
+
+    // Pedimos la nueva puntuación
+    const nuevaPuntuacion = prompt("Nueva puntuación (1 al 5):", "5");
+    if (nuevaPuntuacion === null) return; // Cancelado
+
+    const puntuacionNum = parseInt(nuevaPuntuacion);
+
+    // Validación básica de rango
+    if (isNaN(puntuacionNum) || puntuacionNum < 1 || puntuacionNum > 5) {
+        alert("La puntuación debe ser un número entre 1 y 5");
+        return;
+    }
+
+    try {
+        const res = await fetch(`http://localhost:3000/comentarios/${idComentario}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                texto: nuevoTexto.trim(),
+                puntuacion: puntuacionNum 
+            })
+        });
+
+        if (res.ok) {
+            abrirComentarios(mazoActual);
+        } else {
+            alert("Error al intentar editar.");
+        }
+    } catch (err) {
+        console.error("Error en la edición:", err);
     }
 }
 

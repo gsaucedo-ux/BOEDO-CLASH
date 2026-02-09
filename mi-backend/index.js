@@ -596,6 +596,32 @@ app.delete('/comentarios/:id', async (req, res) => {
     }
 });
 
+app.patch('/comentarios/:id', async (req, res) => {
+    const { id } = req.params;
+    const { texto, puntuacion } = req.body; // Recibimos ambos campos
+
+    try {
+        // Actualizamos ambos campos en la DB
+        const query = `
+            UPDATE comentarios 
+            SET texto = COALESCE($1, texto), 
+                puntuacion = COALESCE($2, puntuacion) 
+            WHERE comentario_id = $3 
+            RETURNING *`;
+        
+        const result = await dbclient.query(query, [texto, puntuacion, id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Comentario no encontrado" });
+        }
+
+        res.json({ message: "Comentario actualizado", comentario: result.rows[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Error al actualizar" });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor corriendo en http://localhost:" + PORT);
