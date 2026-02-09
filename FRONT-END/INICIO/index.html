@@ -118,7 +118,7 @@
             window.history.replaceState({}, document.title, "index.html");
         }, 500);
     }
-    
+
     });
 
 // Modificamos la función para que acepte el término
@@ -198,23 +198,35 @@ async function cargarForo(busqueda = "") {
         }
 
         lista.innerHTML = `
-            ${comentarios.map(c => `
-                <div class="comentarios" style="border-bottom: 1px solid #444; margin-bottom: 10px; padding-bottom: 5px;">
-                    <div style="display: flex; justify-content: space-between;">
-                        <b>${c.alias}</b>
-                        <span style="color: gold;">${generarEstrellas(c.puntuacion)}</span>
+            ${comentarios.map(c => {
+                // Verificamos si el dueño del comentario es quien está logueado
+                const esMio = String(c.usuario_id) === String(localStorage.getItem("usuarioId"));
+
+                return `
+                    <div class="comentarios" style="position: relative; border-bottom: 1px solid #444; padding: 10px 0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <b>${c.alias}</b>
+                            <span style="color: gold;">${generarEstrellas(c.puntuacion)}</span>
+                        </div>
+                        <p>${c.texto}</p>
+                        <small style="color: gray;">${new Date(c.creado_en).toLocaleString()}</small>
+                        
+                        ${esMio ? `
+                            <button onclick="borrarComentario(${c.comentario_id})" 
+                                    style="position: absolute; bottom: 5px; right: 5px; background: none; border: none; color: #ff4d4d; cursor: pointer; font-weight: bold;">
+                                Borrar X
+                            </button>
+                        ` : ''}
                     </div>
-                    <p>${c.texto}</p>
-                    <small style="color: gray; font-size: 0.8em;">${new Date(c.creado_en).toLocaleString()}</small>
-                </div>
-            `).join("")}
-        `;
+                `;
+                }).join("")}
+            `;
 
     } catch (err) {
         console.error("Error cargando comentarios:", err);
         lista.innerHTML = "<p style='color:red'>Error al cargar comentarios</p>";
     }
-}
+    }
 
 
 async function enviarComentario() {
@@ -268,6 +280,26 @@ function generarEstrellas(n) {
         barra_salida.onclick = () => {
             ventana.classList.add("selector_comentarios");
         };
+
+async function borrarComentario(idComentario) {
+    if (!confirm("¿Seguro que quieres borrar este comentario?")) return;
+
+    try {
+        const res = await fetch(`http://localhost:3000/comentarios/${idComentario}`, {
+            method: "DELETE"
+        });
+
+        if (res.ok) {
+            // Refrescamos los comentarios del mazo actual
+            abrirComentarios(mazoActual);
+        } else {
+            alert("No se pudo borrar el comentario");
+        }
+    } catch (err) {
+        console.error("Error al borrar:", err);
+    }
+}
+
     </script>
 </body>
 </html>

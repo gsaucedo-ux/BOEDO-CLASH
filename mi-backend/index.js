@@ -269,6 +269,7 @@ app.get('/mazos/:id/comentarios', async (req, res) => {
                 c.comentario_id,
                 c.texto,
                 c.puntuacion,
+                c.usuario_id,
                 c.creado_en,
                 COALESCE(u.alias, 'Usuario eliminado') AS alias
             FROM comentarios c
@@ -575,6 +576,23 @@ app.delete('/mazos/:id', async (req, res) => {
     } catch (err) {
         console.error("Error al borrar mazo:", err);
         res.status(500).json({ error: "Error interno del servidor" });
+    }
+});
+
+app.delete('/comentarios/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const query = 'DELETE FROM comentarios WHERE comentario_id = $1 RETURNING *';
+        const result = await dbclient.query(query, [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Comentario no encontrado" });
+        }
+
+        res.json({ message: "Comentario borrado con éxito" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Error al borrar comentario" });
     }
 });
 
