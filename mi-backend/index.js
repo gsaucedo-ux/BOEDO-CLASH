@@ -622,6 +622,39 @@ app.patch('/comentarios/:id', async (req, res) => {
     }
 });
 
+app.put('/mazos/:id', async (req, res) => {
+    const mazoId = req.params.id;
+    const { nombre, cartas } = req.body; // 'cartas' es el array de 8 IDs
+    
+    try {
+        await dbclient.query('BEGIN');
+
+        // 1. Actualizar nombre y recalcular promedio elixir
+        const resElixir = await dbclient.query('SELECT costo_elixir FROM cartas WHERE carta_id = ANY($1)', [cartas]);
+        const promedio = resElixir.rows.reduce((acc, row) => acc + row.costo_elixir, 0) / 8;
+
+        await dbclient.query('UPDATE mazos SET nombre = $1, promedio_elixir = $2 WHERE mazo_id = $3', [nombre, promedio, mazoId]);
+
+        // 2. Borrar cartas viejas del mazo
+        await dbclient.query('DELETE FROM mazo_cartas WHERE mazo_id = $1', [mazoId]);
+
+        // 3. Insertar las 8 cartas nuevas
+        for (let i = 0; i < cartas.length; i++) {
+            await dbclient.query(
+                'INSERT INTO mazo_cartas (mazo_id, carta_id, posicion) VALUES ($1, $2, $3)',
+                [mazoId, cartas[i], i + 1]
+            );
+        }
+
+        await dbclient.query('COMMIT');
+        res.json({ message: "Mazo editado correctamente" });
+    } catch (err) {
+        await dbclient.query('ROLLBACK');
+        console.error(err);
+        res.status(500).json({ error: "Error al editar mazo" });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor corriendo en http://localhost:" + PORT);

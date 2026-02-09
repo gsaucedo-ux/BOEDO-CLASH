@@ -63,6 +63,20 @@
             <option value="5">5</option><option value="6">6</option>
             <option value="7">7</option><option value="8+">8+</option>
         </select>
+
+        <select id="filtro-vida">
+        <option value="todas">Vida (todas)</option>
+        <option value="baja">Baja (-500)</option>
+        <option value="media">Media (500-1500)</option>
+        <option value="alta">Alta (1500+)</option>
+        </select>
+
+        <select id="filtro-danio">
+        <option value="todas">Daño (todos)</option>
+        <option value="bajo">Bajo (-100)</option>
+        <option value="medio">Medio (100-300)</option>
+        <option value="alto">Alto (300+)</option>
+        </select>
     </div>
 
     <div id="grid" class="grid-cartas">Cargando cartas...</div>
@@ -104,8 +118,14 @@ function renderCards(list) {
 
         const meta = document.createElement('div');
         meta.className = 'meta';
-        // Muestra costo, calidad y rol de combate
-        meta.innerHTML = `Elixir: ${c.costo_elixir} • ${c.calidad} • ${c.rol_combate || 'N/A'}`;
+
+        // Muestra costo, calidad, daño, vida y rol de combate
+        meta.innerHTML = `
+            <div>Elixir: ${c.costo_elixir} • ${c.calidad}</div>
+            <div style="font-size: 0.85em; margin-top: 5px; color: #ffd700;">
+                HP: ${c.puntos_de_vida} | Daño: ${c.daño} | ${c.rol_combate || 'N/A'}
+            </div>
+        `;
 
         div.appendChild(img);
         div.appendChild(nameDiv);
@@ -119,12 +139,16 @@ const buscador = document.getElementById('buscador');
 const filtroRarity = document.getElementById('filtro-rarity');
 const filtroElixir = document.getElementById('filtro-elixir');
 const filtroRol = document.getElementById('filtro-rol');
+const filtroVida = document.getElementById('filtro-vida'); // Nuevo
+const filtroDanio = document.getElementById('filtro-danio'); // Nuevo
 
 function aplicarFiltros() {
     const texto = buscador.value.trim().toLowerCase(); // Búsqueda más limpia
     const rareza = filtroRarity.value;
     const elixir = filtroElixir.value;
     const rol = filtroRol.value;
+    const vida = filtroVida.value;
+    const danio = filtroDanio.value;
 
     const filtradas = cardsData.filter(c => {
         // Solo busca coincidencias en el nombre de la carta
@@ -143,7 +167,19 @@ function aplicarFiltros() {
             else coincideElixir = c.costo_elixir.toString() === elixir;
         }
 
-        return coincideNombre && coincideRareza && coincideElixir && coincideRol;
+        // Filtro Vida (Lógica de rangos)
+        let coincideVida = true;
+        if (vida === 'baja') coincideVida = c.puntos_de_vida < 500;
+        else if (vida === 'media') coincideVida = c.puntos_de_vida >= 500 && c.puntos_de_vida <= 1500;
+        else if (vida === 'alta') coincideVida = c.puntos_de_vida > 1500;
+
+        // Filtro Daño (Lógica de rangos)
+        let coincideDanio = true;
+        if (danio === 'bajo') coincideDanio = c.daño < 100;
+        else if (danio === 'medio') coincideDanio = c.daño >= 100 && c.daño <= 300;
+        else if (danio === 'alto') coincideDanio = c.daño > 300;
+
+        return coincideNombre && coincideRareza && coincideElixir && coincideRol && coincideVida && coincideDanio;
     });
 
     // Manejo de resultados vacíos
@@ -159,6 +195,8 @@ buscador.addEventListener('input', aplicarFiltros);
 filtroRarity.addEventListener('change', aplicarFiltros);
 filtroElixir.addEventListener('change', aplicarFiltros);
 filtroRol.addEventListener('change', aplicarFiltros);
+filtroVida.addEventListener('change', aplicarFiltros);
+filtroDanio.addEventListener('change', aplicarFiltros);
 
 // Carga inicial
 cargarCartasDesdeDB();
