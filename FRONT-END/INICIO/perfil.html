@@ -33,7 +33,14 @@
             <h1 id="nombreUsuario">Cargando...</h1>
             <p>Nivel: <span id="nivelUsuario">--</span></p>
             <p>Trofeos: <span id="trofeosUsuario">--</span></p>
-            <p>Carta Favorita: <span id="cartaFavoritaUsuario">--</span></p> 
+            <p>Carta Favorita: <span id="cartaFavoritaUsuario">--</span>
+                <button onclick="mostrarSelectorCartas()" id="btnEditarCarta" style="margin-left:10px; cursor:pointer; background:none; border:1px solid gold; color:gold; border-radius:5px; padding:2px 5px; font-size:0.8em;">✎ Editar</button>
+            </p>
+            <div id="selectorContainer" style="display:none; margin-top:10px;">
+                    <select id="selectCartas" style="padding:5px; border-radius:5px;"></select>
+                    <button onclick="guardarCartaFavorita()" style="padding:5px 10px; background:green; color:white; border:none; border-radius:5px; cursor:pointer; margin-left:5px;">Guardar</button>
+                    <button onclick="cancelarEdicion()" style="padding:5px 10px; background:gray; color:white; border:none; border-radius:5px; cursor:pointer; margin-left:5px;">Cancelar</button>
+            </div>
             <button class="boton-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
         </div>
     </div>
@@ -116,6 +123,52 @@
 
     cargarDatosUsuario();
     renderMazos();
+
+    async function mostrarSelectorCartas() {
+    const select = document.getElementById("selectCartas");
+    const container = document.getElementById("selectorContainer");
+    
+    try {
+        // Aprovechamos tu endpoint existente de /cartas
+        const response = await fetch('http://localhost:3000/cartas');
+        const cartas = await response.json();
+        
+        // Llenamos el select con los nombres
+        select.innerHTML = cartas.map(c => `<option value="${c.nombre}">${c.nombre}</option>`).join("");
+        
+        container.style.display = "block";
+        document.getElementById("btnEditarCarta").style.display = "none";
+    } catch (e) {
+        alert("Error al cargar las cartas");
+    }
+}
+
+async function guardarCartaFavorita() {
+    const nuevaCarta = document.getElementById("selectCartas").value;
+    
+    try {
+        const response = await fetch(`http://localhost:3000/usuario/${usuarioId}/carta-favorita`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ carta_favorita: nuevaCarta })
+        });
+
+        if (response.ok) {
+            // Reset de la página para ver los cambios como pediste
+            window.location.reload();
+        } else {
+            alert("No se pudo actualizar");
+        }
+    } catch (e) {
+        console.error(e);
+        alert("Error de conexión");
+    }
+}
+
+function cancelarEdicion() {
+    document.getElementById("selectorContainer").style.display = "none";
+    document.getElementById("btnEditarCarta").style.display = "inline";
+}
 </script>
 </body>
 </html>

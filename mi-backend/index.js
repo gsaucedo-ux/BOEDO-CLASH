@@ -544,6 +544,23 @@ app.get("/comentarios", async (req, res) => {
     }
 });
 
+app.patch('/usuario/:id/carta-favorita', async (req, res) => {
+    const { id } = req.params;
+    const { carta_favorita } = req.body;
+
+    try {
+        const { update_carta_favorita } = require('./dbase/usuarios'); // Import directo para evitar líos
+        const resultado = await update_carta_favorita(id, carta_favorita);
+        
+        if (!resultado) return res.status(404).json({ error: "Usuario no encontrado" });
+        
+        res.json({ message: "Carta favorita actualizada", carta: resultado.carta_favorita });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Error al actualizar carta favorita" });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor corriendo en http://localhost:" + PORT);

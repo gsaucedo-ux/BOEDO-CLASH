@@ -96,10 +96,17 @@ async function sumar_victoria_mazo(mazo_id) {
     return res.rows[0];
 }
 
+async function update_carta_favorita(usuario_id, nombre_carta) {
+    const query = 'UPDATE usuario SET carta_favorita = $1 WHERE id = $2 RETURNING carta_favorita';
+    const res = await dbclient.query(query, [nombre_carta, usuario_id]);
+    return res.rows[0];
+}
+
 module.exports={
         getallusuarios,getusuario,create_usuario,update_usuario,verificacion_correo,verificacion_correo_otros,alias_usuario,alias_usuario_otros,remove_usuario,
         update_visibilidad_mazo,
         validar_login,
         actualizar_trofeos,
-        sumar_victoria_mazo
+        sumar_victoria_mazo,
+        update_carta_favorita
 };
