@@ -521,6 +521,29 @@ app.post('/batalla/resultado', async (req, res) => {
     }
 });
 
+// ----------
+
+app.get("/mazos", async (req, res) => {
+    try {
+        const result = await dbclient.query("SELECT * FROM mazos");
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error al obtener mazos");
+    }
+});
+
+// Ruta para ver todos los comentarios directamente
+app.get("/comentarios", async (req, res) => {
+    try {
+        const result = await dbclient.query("SELECT * FROM comentarios");
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error al obtener comentarios");
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor corriendo en http://localhost:" + PORT);
