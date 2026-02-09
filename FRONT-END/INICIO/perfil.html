@@ -22,6 +22,30 @@
             background-color: #b71c1c;
             transform: scale(1.05);
         }
+
+        .btn-borrar-mazo {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #ff4d4d;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, color 0.2s;
+            line-height: 1;
+        }
+
+        .btn-borrar-mazo:hover {
+            color: #ff0000;
+            transform: scale(1.3);
+        }
+
+        /* Aseguramos que el contenedor del mazo permita posicionamiento absoluto */
+        .publicacion {
+            position: relative; 
+        }
     </style>
 </head>
 <body>
@@ -97,21 +121,21 @@
                 return;
             }
 
-            mazos.forEach((m) => {
-                cont.innerHTML += `
-                    <div class="publicacion">
-                        <h3>${m.nombre}</h3>
-                        <div class="publicacion-cartas">
-                            ${m.cartas && m.cartas.length > 0 
-                                ? m.cartas.map(c => `<div class="carta-m"><img src="${c.imagen}" title="${c.nombre}"></div>`).join("")
-                                : '<p>Sin cartas</p>'}
-                        </div>
-                        <div class="publicacion-botones">
-                            <button onclick="verComentarios(${m.id})" class="boton-com">Comentarios</button>
-                        </div>
+        mazos.forEach((m) => {
+            cont.innerHTML += `
+                <div class="publicacion">
+                    <button class="btn-borrar-mazo" onclick="confirmarBorrado(${m.id})" title="Borrar mazo">×</button>
+                    
+                    <h3>${m.nombre}</h3>
+                    <div class="publicacion-cartas">
+                        ${m.cartas.map(c => `<div class="carta-m"><img src="${c.imagen}" title="${c.nombre}"></div>`).join("")}
                     </div>
-                `;
-            });
+                    <div class="publicacion-botones">
+                        <button onclick="verComentarios(${m.id})" class="boton-com">Comentarios</button>
+                    </div>
+                </div>
+            `;
+        });
         } catch (e) {
             console.error("Error cargando mazos:", e);
             cont.innerHTML = "<p style='color:white;'>Error al cargar tus mazos.</p>";
@@ -172,6 +196,29 @@ function cancelarEdicion() {
     document.getElementById("selectorContainer").style.display = "none";
     document.getElementById("btnEditarCarta").style.display = "inline";
 }
+
+async function confirmarBorrado(idMazo) {
+    const confirmar = confirm("¿Estás seguro de que querés borrar este mazo? No hay vuelta atrás.");
+    
+    if (confirmar) {
+        try {
+            const response = await fetch(`http://localhost:3000/mazos/${idMazo}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                // Recargamos para que desaparezca del perfil
+                window.location.reload();
+            } else {
+                alert("Hubo un problema al borrar el mazo.");
+            }
+        } catch (e) {
+            console.error("Error:", e);
+            alert("Error de conexión con el servidor.");
+        }
+    }
+}
+
 </script>
 </body>
 </html>

@@ -561,6 +561,23 @@ app.patch('/usuario/:id/carta-favorita', async (req, res) => {
     }
 });
 
+app.delete('/mazos/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const query = 'DELETE FROM mazos WHERE mazo_id = $1 RETURNING *';
+        const result = await dbclient.query(query, [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Mazo no encontrado" });
+        }
+
+        res.json({ message: "Mazo eliminado con éxito", mazo: result.rows[0] });
+    } catch (err) {
+        console.error("Error al borrar mazo:", err);
+        res.status(500).json({ error: "Error interno del servidor" });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor corriendo en http://localhost:" + PORT);
