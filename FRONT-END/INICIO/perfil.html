@@ -107,7 +107,7 @@
                                 : '<p>Sin cartas</p>'}
                         </div>
                         <div class="publicacion-botones">
-                            <button onclick="verComentarios(${m.mazo_id})" class="boton-com">Comentarios</button>
+                            <button onclick="verComentarios(${m.id})" class="boton-com">Comentarios</button>
                         </div>
                     </div>
                 `;
@@ -118,7 +118,10 @@
         }
     }
 
-    function verComentarios(idMazo) { window.location.href = "comentarios.html?mazo=" + idMazo; }
+    function verComentarios(idMazo) { 
+    window.location.href = "index.html?abrirMazo=" + idMazo; 
+    }
+
     function crearMazo() { window.location.href = "crearMazo.html"; }
 
     cargarDatosUsuario();

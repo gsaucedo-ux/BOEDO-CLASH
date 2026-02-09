@@ -81,7 +81,8 @@
             </div>
     </div>
 
-     <script>
+    <script>
+
             let mazoActual = null;
         document.addEventListener('DOMContentLoaded', () => {
     const idLogueado = localStorage.getItem("usuarioId");
@@ -105,7 +106,20 @@
     });
 
     cargarForo(); // Carga inicial
-});
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const mazoParaAbrir = urlParams.get('abrirMazo');
+
+    if (mazoParaAbrir) {
+        // Le damos un mini respiro para que cargue todo y abrimos
+        setTimeout(() => {
+            abrirComentarios(mazoParaAbrir);
+            // Limpiamos la URL para que no se reabra si el usuario refresca
+            window.history.replaceState({}, document.title, "index.html");
+        }, 500);
+    }
+    
+    });
 
 // Modificamos la función para que acepte el término
 async function cargarForo(busqueda = "") {
