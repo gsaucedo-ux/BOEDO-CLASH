@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil - Boedo Clash</title>
+    <link rel="stylesheet" href="../STYLES/estiloPaginaCrearIniciar.css">
+    <style>
+        .contenedor-registro {
+            width: 100%;
+            max-width: 520px;
+            margin: 120px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 22px;
+            box-shadow: 0 0 18px rgba(255, 215, 0, 0.35);
+            color: white;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        input {
+            width: 92%;
+            padding: 16px;
+            margin-top: 20px;
+            border-radius: 12px;
+            border: none;
+            outline: none;
+            font-size: 1.1em;
+        }
+        .boton-crear {
+            width: 92%;
+            padding: 16px;
+            margin-top: 30px;
+            border-radius: 12px;
+            background: #ffd700;
+            border: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .boton-crear:hover { transform: scale(1.05); box-shadow: 0 0 12px #ffd700; }
+        a { color: #ffd700; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor-registro">
+        <h2 id="tituloPagina">Editando Perfil</h2>
+
+        <input type="text" id="regNombre" placeholder="Nombre completo">
+        <input type="text" id="regAlias" placeholder="Tu Alias">
+        <input type="email" id="regCorreo" placeholder="Correo electrónico">
+        <input type="password" id="regPass" placeholder="Nueva contraseña (opcional)">
+        <input type="password" id="regPass2" placeholder="Repetir nueva contraseña">
+
+        <button class="boton-crear" onclick="actualizar()">Confirmar Cambios</button>
+        <p id="mensaje" style="margin-top:15px; font-size: 0.8em; color: #ffd700;"></p>
+    </div>
+
+    <a href="perfil.html" class="boton-volver-fijo">⮜ Volver</a>
+
+    <script>
+    const usuarioId = localStorage.getItem("usuarioId");
+
+    // 1. CARGAR DATOS ACTUALES
+    async function cargarDatos() {
+        try {
+            const res = await fetch(`http://localhost:3000/usuario/${usuarioId}`);
+            const user = await res.json();
+
+            if (res.ok) {
+                document.getElementById('regNombre').value = user.nombre;
+                document.getElementById('regAlias').value = user.alias;
+                document.getElementById('regCorreo').value = user.correo;
+                // No cargamos la contraseña por seguridad, queda vacía si no la quieren cambiar
+            }
+        } catch (err) { console.error("Error al cargar perfil:", err); }
+    }
+
+    // 2. ENVIAR ACTUALIZACIÓN (PUT)
+    async function actualizar() {
+        const nombre = document.getElementById('regNombre').value;
+        const alias = document.getElementById('regAlias').value;
+        const correo = document.getElementById('regCorreo').value;
+        const pass = document.getElementById('regPass').value;
+        const pass2 = document.getElementById('regPass2').value;
+        const mensaje = document.getElementById('mensaje');
+
+        if (pass && pass !== pass2) {
+            mensaje.innerText = "❌ Las contraseñas no coinciden.";
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000/usuario/${usuarioId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nombre,
+                    alias,
+                    correo,
+                    contraseña: pass || undefined 
+                })
+            });
+
+            if (response.ok) {
+                alert("¡Perfil actualizado!");
+                window.location.href = "perfil.html";
+            } else {
+                mensaje.innerText = "❌ Error al actualizar.";
+            }
+        } catch (err) { mensaje.innerText = "🔌 Error de conexión."; }
+    }
+
+    cargarDatos();
+    </script>
+</body>
+</html>

@@ -672,6 +672,29 @@ app.delete('/usuarios/:id', async (req, res) => {
     }
 });
 
+app.put('/usuario/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nombre, alias, correo, contraseña } = req.body;
+    try {
+        // Si hay contraseña nueva, la actualizamos; si no, solo los otros campos
+        let query;
+        let params;
+
+        if (contraseña) {
+            query = 'UPDATE usuario SET nombre=$1, alias=$2, correo=$3, contraseña=$4 WHERE id=$5';
+            params = [nombre, alias, correo, contraseña, id];
+        } else {
+            query = 'UPDATE usuario SET nombre=$1, alias=$2, correo=$3 WHERE id=$4';
+            params = [nombre, alias, correo, id];
+        }
+
+        await dbclient.query(query, params);
+        res.json({ message: "Usuario actualizado" });
+    } catch (err) {
+        res.status(500).json({ error: "Error al actualizar usuario" });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor corriendo en http://localhost:" + PORT);
