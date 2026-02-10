@@ -5,48 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil - Boedo Clash</title>
     <link rel="stylesheet" href="../STYLES/estiloPerfil.css">
-    <style>
-        /* Estilo rápido para el nuevo botón de cerrar sesión */
-        .boton-logout {
-            background-color: #d32f2f;
-            color: white;
-            border: 2px solid #fff;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: 0.3s;
-        }
-        .boton-logout:hover {
-            background-color: #b71c1c;
-            transform: scale(1.05);
-        }
-
-        .btn-borrar-mazo {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: #ff4d4d;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, color 0.2s;
-            line-height: 1;
-        }
-
-        .btn-borrar-mazo:hover {
-            color: #ff0000;
-            transform: scale(1.3);
-        }
-
-        /* Aseguramos que el contenedor del mazo permita posicionamiento absoluto */
-        .publicacion {
-            position: relative; 
-        }
-    </style>
 </head>
 <body>
 
@@ -74,7 +32,10 @@
     <div id="contenedorMazos" class="publicaciones-grid"></div>
 </div>
 
-<a href="index.html" style="position: fixed; bottom: 20px; left: 20px; color: gold; text-decoration: none;">⮜ Volver al Inicio</a>
+<a href="index.html" class="btn-volver-home">
+    ⮜ Volver al Inicio
+</a>
+
 
 <script>
     const usuarioId = localStorage.getItem("usuarioId");
@@ -125,9 +86,9 @@
             cont.innerHTML += `
                 <div class="publicacion">
                     
-                    <div style="position: absolute; top: 10px; right: 15px; display: flex; gap: 10px;">
-                    <button onclick="editarMazo(${m.id})" style="background:none; border:none; color:gold; font-size:20px; cursor:pointer;">✎</button>
-                    <button class="btn-borrar-mazo" onclick="confirmarBorrado(${m.id})">X</button>
+                    <div class="acciones-mazo">
+                    <button onclick="editarMazo(${m.id})" class="btn-editar-m" title="Editar">✎</button>
+                    <button onclick="confirmarBorrado(${m.id})" class="btn-borrar-m" title="Borrar">X</button>
                     </div>
 
                     <h3>${m.nombre}</h3>
