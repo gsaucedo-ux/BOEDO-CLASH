@@ -10,15 +10,18 @@
 
 <div class="perfil-contenedor">
     <div class="perfil-header" style="position: relative;">
-        <button onclick="window.location.href='editarPerfil.html'" 
-            style="background-color: #ffd700; color: black; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.85em; transition: 0.3s;">
-            ✎ Editar Perfil
-        </button>
+        
+        <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; align-items: center;">
+            <button onclick="window.location.href='editarPerfil.html'" 
+                style="background-color: #ffd700; color: black; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.85em; transition: 0.3s;">
+                ✎ Editar Perfil
+            </button>
 
-        <button onclick="eliminarMiPerfil()" 
-            style="position: absolute; top: 10px; right: 10px; background-color: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.8em;">
-            Borrar Perfil
-        </button>
+            <button onclick="eliminarMiPerfil()" 
+                style="background-color: #ff4d4d; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.8em;">
+                Borrar Perfil
+            </button>
+        </div>
 
         <img src="../../img/LogoDefinitivo.jpg" class="perfil-avatar">
         <div class="perfil-info">
