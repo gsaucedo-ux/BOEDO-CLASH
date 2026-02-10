@@ -144,6 +144,32 @@ select {
     color: #fff;
 }
 
+.btn-volver-home {
+    position: fixed;
+    top: 40px;
+    left: 40px;
+    background: rgba(12, 30, 44, 0.9); /* Fondo oscuro a juego */
+    color: #ffd700;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 15px 18px;
+    border: 2px solid #ffd700;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+    z-index: 2000; /* Para que esté por encima de todo */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.btn-volver-home:hover {
+    background: #ffd700;
+    color: #0c1e2c;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #ffd700;
+}
+
 /* ------------------------------ */
 /*      RESPONSIVE                */
 /* ------------------------------ */
