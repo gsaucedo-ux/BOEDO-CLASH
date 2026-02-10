@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Cartas - Boedo Clash</title>
+    <link rel="stylesheet" href="../STYLES/estiloCrearCarta.css">
+    <link rel="stylesheet" href="../STYLES/estiloCrearMazo.css">
+    <style>
+        /* Ajuste para que el slot tenga un tamaño normal de carta */
+        .slot-admin {
+            width: 120px; 
+            height: 170px; 
+            margin: 20px auto;
+            border: 3px dashed #ffd700;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(255,255,255,0.05);
+        }
+        .slot-admin img {
+            width: 100%;
+            height: 100%;
+            border-radius: 7px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="volver-contenedor">
+    <button onclick="window.location.href='index.html'" class="boton-volver-centrado">
+        ⮜ Volver
+    </button>
+    </div>
+
+    <div class="crear-contenedor" style="display: flex; gap: 30px; align-items: flex-start; max-width: 900px;">    
+        <div style="flex-shrink: 0; width: 200px; text-align: center;">
+            <h3 class="subtitulo">Seleccionar</h3>
+            <div class="slot-admin" id="slotUnico" onclick="abrirSelector()">
+                <span id="placeholder-icon" style="font-size: 40px; color: #ffd700;">+</span>
+            </div>
+            <p style="font-size: 0.8em; color: gray;">Toca para elegir una carta</p>
+        </div>
+
+        <div style="flex-grow: 1;">
+            <h1 class="titulo">MENU SECRETO - EDITAR Y BORRAR CARTAS</h1>
+            <form id="formAdminCarta">
+                <input type="hidden" name="id" id="input_id">
+                
+                <h3 class="subtitulo">Información General</h3>
+                <div class="form-row">
+                    <div class="form-grupo half">
+                        <label>Nombre</label>
+                        <input type="text" name="nombre" id="edit_nombre" required>
+                    </div>
+                    <div class="form-grupo half">
+                        <label>Imagen (URL)</label>
+                        <input type="url" name="imagen" id="edit_img">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-grupo half">
+                        <label>Calidad</label>
+                        <select name="calidad" id="edit_calidad" required>
+                            <option value="comun">Común</option>
+                            <option value="especial">Especial</option>
+                            <option value="epica">Épica</option>
+                            <option value="legendaria">Legendaria</option>
+                            <option value="campeon">Campeón</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo half">
+                        <label>Costo de Elixir</label>
+                        <input type="number" name="costo_elixir" id="edit_elixir" min="1" max="10" required>
+                    </div>
+                </div>
+
+                <h3 class="subtitulo">Estadísticas y Rol</h3>
+                <div class="form-row">
+                    <div class="form-grupo half">
+                        <label>Vida / Daño</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" name="puntos_de_vida" id="edit_vida" placeholder="Vida" required>
+                            <input type="number" name="daño" id="edit_daño" placeholder="Daño" required>
+                        </div>
+                    </div>
+                    <div class="form-grupo half">
+                        <label>Rol de Combate</label>
+                        <select name="rol_combate" id="edit_rol" required>
+                            <option value="T">Tanque Lento (T)</option>
+                            <option value="B">Tanque Rápido (B)</option>
+                            <option value="DM">Daño de Muerte (DM)</option>
+                            <option value="HD">Caza Tanques (HD)</option>
+                            <option value="M">Control/Mecánica (M)</option>
+                            <option value="TS">Tirador Soporte (TS)</option>
+                            <option value="DS">Daño Sostenido (DS)</option>
+                            <option value="AS">Soporte Aéreo (AS)</option>
+                            <option value="ED">Estructura Área (ED)</option>
+                            <option value="ET">Estructura Única (ET)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 20px; margin-top: 30px;">
+                    <button type="button" class="boton-guardar" style="background: #27ae60; flex: 1;" onclick="actualizarCarta()">CONFIRMAR CAMBIOS</button>
+                    <button type="button" class="boton-guardar" style="background: #c0392b; flex: 1;" onclick="eliminarCarta()">ELIMINAR CARTA</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="selectorCartas" class="selector oculto">
+        <div class="selector-header">
+            <h3>Elegir carta para editar</h3>
+            <button onclick="cerrarSelector()">X</button>
+        </div>
+        <input id="buscador" class="buscador" oninput="aplicarFiltrosAdmin()" placeholder="Buscar carta...">
+        <div id="gridCartas" class="selector-grid"></div>
+    </div>
+
+    <script>
+        let allCards = [];
+
+        async function cargarCartas() {
+            const res = await fetch('http://localhost:3000/cartas');
+            allCards = await res.json();
+            renderSelector(allCards);
+        }
+
+        function renderSelector(list) {
+            const grid = document.getElementById("gridCartas");
+            grid.innerHTML = list.map(c => `
+                <div class="card-item" onclick='seleccionarCarta(${JSON.stringify(c)})'>
+                    <img src="${c.imagen}">
+                    <span>${c.nombre}</span>
+                </div>
+            `).join("");
+        }
+
+        function seleccionarCarta(carta) {
+            // Llenar el slot visual
+            document.getElementById("slotUnico").innerHTML = `<img src="${carta.imagen}">`;
+            
+            // Auto-completar el formulario con los datos actuales
+            document.getElementById("input_id").value = carta.carta_id;
+            document.getElementById("edit_nombre").value = carta.nombre;
+            document.getElementById("edit_img").value = carta.imagen;
+            document.getElementById("edit_calidad").value = carta.calidad;
+            document.getElementById("edit_elixir").value = carta.costo_elixir;
+            document.getElementById("edit_vida").value = carta.puntos_de_vida;
+            document.getElementById("edit_daño").value = carta.daño;
+            document.getElementById("edit_rol").value = carta.rol_combate || "T";
+            
+            cerrarSelector();
+        }
+
+        async function actualizarCarta() {
+            const id = document.getElementById("input_id").value;
+            if(!id) return alert("Por favor, selecciona una carta primero.");
+
+            const data = {
+                nombre: document.getElementById("edit_nombre").value,
+                imagen: document.getElementById("edit_img").value,
+                calidad: document.getElementById("edit_calidad").value,
+                costo_elixir: parseInt(document.getElementById("edit_elixir").value),
+                puntos_de_vida: parseInt(document.getElementById("edit_vida").value),
+                daño: parseInt(document.getElementById("edit_daño").value),
+                rol_combate: document.getElementById("edit_rol").value,
+                // Agregamos valores por defecto para los tipos si no los editamos
+                tipo_ataque: "terrestre", 
+                tipo_carta: "tropa"
+            };
+
+            const res = await fetch(`http://localhost:3000/cartas/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            if(res.ok) { alert("¡Carta actualizada con éxito! ⚔️"); location.reload(); }
+        }
+
+        async function eliminarCarta() {
+            const id = document.getElementById("input_id").value;
+            if(!id || !confirm("¿Estás seguro de eliminar esta carta? Esto podría afectar a los mazos existentes.")) return;
+
+            const res = await fetch(`http://localhost:3000/cartas/${id}`, { method: 'DELETE' });
+            if(res.ok) { alert("Carta eliminada correctamente."); location.reload(); }
+            else { alert("Error: No se puede eliminar una carta que está siendo usada en un mazo."); }
+        }
+
+        function aplicarFiltrosAdmin() {
+            const texto = document.getElementById('buscador').value.toLowerCase();
+            
+            const filtradas = allCards.filter(c => 
+                c.nombre.toLowerCase().includes(texto)
+            );
+            
+            renderSelector(filtradas);
+        }
+
+        function abrirSelector() { document.getElementById("selectorCartas").classList.remove("oculto"); }
+        function cerrarSelector() { document.getElementById("selectorCartas").classList.add("oculto"); }
+
+        cargarCartas();
+    </script>
+</body>
+</html>

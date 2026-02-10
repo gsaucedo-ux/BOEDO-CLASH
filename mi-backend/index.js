@@ -695,6 +695,29 @@ app.put('/usuario/:id', async (req, res) => {
     }
 });
 
+// EDITAR CARTA
+app.put('/cartas/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nombre, imagen, calidad, costo_elixir, tipo_ataque, tipo_carta, puntos_de_vida, daño, rol_combate } = req.body;
+    try {
+        const query = `
+            UPDATE cartas 
+            SET nombre=$1, imagen=$2, calidad=$3, costo_elixir=$4, tipo_ataque=$5, tipo_carta=$6, puntos_de_vida=$7, daño=$8, rol_combate=$9 
+            WHERE carta_id=$10`;
+        await dbclient.query(query, [nombre, imagen, calidad, costo_elixir, tipo_ataque, tipo_carta, puntos_de_vida, daño, rol_combate, id]);
+        res.json({ message: "Carta actualizada" });
+    } catch (err) { res.status(500).json({ error: "Error al editar carta" }); }
+});
+
+// ELIMINAR CARTA
+app.delete('/cartas/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await dbclient.query('DELETE FROM cartas WHERE carta_id = $1', [id]);
+        res.json({ message: "Carta eliminada" });
+    } catch (err) { res.status(500).json({ error: "No se puede eliminar: la carta está en uso en algún mazo" }); }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor corriendo en http://localhost:" + PORT);
