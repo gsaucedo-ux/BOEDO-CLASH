@@ -49,12 +49,6 @@ CREATE TABLE comentarios (
     creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO usuario (nombre, correo, contraseña, nivel, trofeos, alias, carta_favorita)
-VALUES
-('Gustavo Saucedo', 'gus@mail.com', '1234', 6, 420, 'GusPro', 'Mega Caballero'),
-('Lucía Pérez', 'lucia@mail.com', '1234', 4, 260, 'LuFire', 'Valquiria'),
-('Martín López', 'martin@mail.com', '1234', 8, 680, 'MartoX', 'Chispitas'),
-('Sofía Díaz', 'sofia@mail.com', '1234', 3, 150, 'SofiPlay', 'Montapuercos');
 INSERT INTO cartas (nombre, imagen, calidad, costo_elixir, tipo_ataque, tipo_carta, puntos_de_vida, daño, rol_combate)
 VALUES 
 -- 1. T (Tanque Lento): Unidades de alta salud que marcan el ritmo
@@ -182,7 +176,28 @@ VALUES
 ('Horno', 'https://cdn.royaleapi.com/static/img/cards/furnace.png', 'especial', 4, 'terrestre', 'estructura', 850, 0, 'EG'),
 ('Choza de Duendes', 'https://cdn.royaleapi.com/static/img/cards/goblin-hut.png', 'especial', 5, 'mixto', 'estructura', 800, 0, 'EG'),
 ('Lápida', 'https://cdn.royaleapi.com/static/img/cards/tombstone.png', 'especial', 3, 'terrestre', 'estructura', 440, 0, 'EG'),
-('Excavadora de Duendes', 'https://cdn.royaleapi.com/static/img/cards/goblin-drill.png', 'epica', 4, 'terrestre', 'estructura', 950, 0, 'EG');
+('Excavadora de Duendes', 'https://cdn.royaleapi.com/static/img/cards/goblin-drill.png', 'epica', 4, 'terrestre', 'estructura', 950, 0, 'EG'),
+
+-- DOCENTES
+('Camejo', 'https://intro-camejo.github.io/web/assets/images/manu1-43964b1b104fa4143a0a9308d942328c.jpeg', 'campeon', 7, 'terrestre', 'tropa', 2500, 600, 'B'),
+('Gonza Gigachad', 'https://intro-camejo.github.io/web/assets/images/gonza-d1358d1c4d46ee9a6af0b0f72ef01994.jpeg', 'campeon', 4, 'terrestre', 'tropa', 950, 600, 'TS'),
+('Nico', 'https://intro-camejo.github.io/web/assets/images/nico2-49b155c5a4d8bcbbf3642c51d5d888ec.jpg', 'campeon', 5, 'mixto', 'tropa', 1000, 50, 'DS'),
+('Peke', 'https://intro-camejo.github.io/web/assets/images/peke2-feed2a15d3236b206bae68054a2c0d1d.jpeg', 'campeon', 2, 'terrestre', 'tropa', 1250, 14, 'EM'),
+('Sofi', 'https://intro-camejo.github.io/web/assets/images/sofi2-73de966792e70f2f8e28f9207bef7b58.jpeg', 'campeon', 4, 'terrestre', 'tropa', 50, 500, 'M'),
+('Pedro', 'https://intro-camejo.github.io/web/assets/images/pedroimg-7d47e7e3a381e3620fcb963c397e2a93.jpeg', 'campeon', 4, 'mixto', 'tropa', 1400, 25, 'DS'),
+('Bilbao Pro', 'https://intro-camejo.github.io/web/assets/images/manub-070116722104de66d4a17ad59a38195f.jpg', 'campeon', 6, 'terrestre', 'mixto', 700, 823, 'TS'),
+('Manu R', 'https://intro-camejo.github.io/web/assets/images/manur-f5bbdf84b7e5a56b17f8776d0c7c01be.jpeg', 'campeon', 7, 'terrestre', 'tropa', 400, 1000, 'HD'),
+('Lara', 'https://intro-camejo.github.io/web/assets/images/lara-959bf9854ae0bd276ffc4badd3392ca0.jpeg', 'campeon', 3, 'terrestre', 'tropa', 800, 250, 'M'),
+('Perro de Peke', 'https://intro-camejo.github.io/web/assets/images/peke-a4f60f70ff3b8c2d57578e5146db200d.jpeg', 'campeon', 10, 'terrestre', 'tropa', 9999, 999, 'T'),
+('Brazo de Gonza', 'https://thumbs.dreamstime.com/b/brazo-herido-40022554.jpg', 'epica', 10, 'terrestre', 'tropa', 9999, 9999, 'DM');
+
+INSERT INTO usuario (nombre, correo, contraseña, nivel, trofeos, alias, carta_favorita)
+VALUES
+('Gustavo Saucedo', 'gus@gmail.com', '123', 6, 420, 'GusPro', 'Mega Caballero'),
+('Tobias Costanzo', 'tobi@gmail.com', '123', 4, 260, 'KoalaFeo', 'Camejo'),
+('Santiago Cucchiaro', 'santi@gmail.com', '123', 8, 680, 'Cukero', 'Chispitas'),
+('El Carreador 3000', 'promastercheff@gmail.com', '123', 99, 999, 'El Carreador 3000', 'Monje')
+;
 
 INSERT INTO mazos (usuario_id, nombre, promedio_elixir)
 VALUES (1, 'Tanques Pesados', 5.6),
@@ -205,6 +220,7 @@ VALUES
   (2, 7, 6),  -- Rey Esqueleto
   (2, 8, 7),  -- Monje
   (2, 1, 8);  -- Caballero
+
 INSERT INTO comentarios (mazo_id, usuario_id, texto, puntuacion)
 VALUES
 (1, 1, 'Este mazo es durísimo, llegué a liga maestro fácil 💪', 5),
