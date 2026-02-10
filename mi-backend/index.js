@@ -655,6 +655,23 @@ app.put('/mazos/:id', async (req, res) => {
     }
 });
 
+app.delete('/usuarios/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const query = 'DELETE FROM usuario WHERE id = $1 RETURNING *';
+        const result = await dbclient.query(query, [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+
+        res.json({ message: "Perfil eliminado con éxito" });
+    } catch (err) {
+        console.error("Error al eliminar perfil:", err);
+        res.status(500).json({ error: "Error interno del servidor" });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor corriendo en http://localhost:" + PORT);

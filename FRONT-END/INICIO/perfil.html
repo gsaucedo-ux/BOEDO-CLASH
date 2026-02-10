@@ -9,7 +9,11 @@
 <body>
 
 <div class="perfil-contenedor">
-    <div class="perfil-header">
+    <div class="perfil-header" style="position: relative;">
+        <button onclick="eliminarMiPerfil()" 
+            style="position: absolute; top: 10px; right: 10px; background-color: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.8em;">
+        Borrar Perfil
+        </button>
         <img src="../../img/LogoDefinitivo.jpg" class="perfil-avatar">
         <div class="perfil-info">
             <h1 id="nombreUsuario">Cargando...</h1>
@@ -183,6 +187,36 @@ async function confirmarBorrado(idMazo) {
             }
         } catch (e) {
             console.error("Error:", e);
+            alert("Error de conexión con el servidor.");
+        }
+    }
+}
+
+async function eliminarMiPerfil() {
+    const usuarioId = localStorage.getItem("usuarioId");
+    
+    const confirmacion = confirm("⚠️ ¿ESTÁS SEGURO? Esta acción es irreversible. Se borrarán tus mazos, comentarios y progreso.");
+    
+    if (confirmacion) {
+        const segundaConfirmacion = confirm("¿Realmente quieres decir adiós a Boedo Clash? :(");
+        if (!segundaConfirmacion) return;
+
+        try {
+            const res = await fetch(`http://localhost:3000/usuarios/${usuarioId}`, {
+                method: 'DELETE'
+            });
+
+            if (res.ok) {
+                alert("Tu perfil ha sido eliminado. ¡Esperamos volver a verte!");
+                // Limpiamos la sesión
+                localStorage.clear();
+                // Redirigimos al index
+                window.location.href = "index.html";
+            } else {
+                alert("Hubo un error al intentar eliminar el perfil.");
+            }
+        } catch (err) {
+            console.error("Error:", err);
             alert("Error de conexión con el servidor.");
         }
     }
