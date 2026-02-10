@@ -1,111 +1,207 @@
-/* Estilo para el contenedor oculto de comentarios */
+/* =============================================
+   CONTENEDOR GLOBAL (MODAL)
+   ============================================= */
 .contenedor_oculto {
-    background: rgba(0,0,0,0.8);
+    background: rgba(2, 10, 24, 0.9);
     position: fixed;
-    top: 0;
-    left: 0;
-    right:0;
-    bottom:0;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    padding: 20px;
+}
+
+.selector_comentarios {
+    display: none !important;
+}
+
+/* =============================================
+   CABECERA DEL MODAL
+   ============================================= */
+.salida_comentarios {
+    width: 100%;
+    max-width: 800px;
+    background: linear-gradient(180deg, #1C5CCF 0%, #0A2A66 100%);
+    border: 3px solid #ffd700;
+    border-bottom: none;
+    border-radius: 20px 20px 0 0;
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+}
+
+.header_comentarios p {
+    color: white;
+    font-size: 24px;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-shadow: 2px 2px #000;
+    margin: 0;
+}
+
+.barra {
+    background: #ff4a68;
+    border: 2px solid #000;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 5px 12px;
+    transition: 0.3s;
+}
+
+.barra:hover {
+    transform: scale(1.1);
+    background: #cf1c49;
+}
+
+/* =============================================
+   LISTA DE COMENTARIOS (CONTENEDOR)
+   ============================================= */
+.contenedor_comentarios {
+    background: #0c1e2c;
+    border: 3px solid #ffd700;
+    width: 100%;
+    max-width: 800px;
+    height: 60vh;
+    overflow-y: auto;
     padding: 20px;
     display: flex;
     flex-direction: column;
-      align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(4px);
-    z-index: 1000;
-}
-/* estilo para ocultar el contenedor */
-.selector_comentarios {
-    display: none;
-}
-.salida_comentarios {
-    width: 77%;
-    height: 80px;
-    display: flex;
-     align-items: center;
-    flex-direction: column;
-     border:solid 2px #0413e7;
-    border-radius: 20px;
-}
-.contenedor_comentarios{
-        border: solid 2px #0413e7;
-        background: #1c1c1c;
-        height: 90%;
-        width: 100%;
-        max-width:1000px;
-        border-radius: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top:10px;
-        overflow-y: auto;        /* barra de desplazamiento vertical */
-}
-.comentarios{
-        width:100%;
-        height:70%;
-        max-height: 100px;
-        min-heigth: 100px;
-        display: flex;
-        flex-direction: column;
+    gap: 15px;
 }
 
-.nuevo_comentario{
-        width: 100%;
-        height: 10%;
-         display: flex;
-       max-width: 900px;
-         align-items: center;          
-    justify-content: center;
-    gap:10px;
-    margin-bottom: 10px;
+/* Estilo de cada burbuja de comentario */
+.comentarios {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    /* SEPARACIÓN AUMENTADA: 45px a la izquierda */
+    padding: 18px 20px 18px 45px; 
+    border-left: 6px solid #4AA3FF;
+    transition: 0.3s;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
 }
-.comentar{
-        margin-bottom: 10px;
-        width: 60%;
-        height: 50%;
-        display: flex;
-        flex-direction: row;
-        align-items:center;
-        justify-content: center;
+
+.comentarios:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
-.boton_enviar_mensaje{
-        display: flex;
-        flex-direction: row;
-        margin-bottom: 10px;
-        width: 40px;
-        height: 40px;
+
+/* Nombre del usuario: Más grande, dorado y separado de la izquierda */
+.comentarios b {
+    color: #ffd700;
+    font-size: 1.5em; /* Un toque más grande aún */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+    margin-left: 5px; 
+    display: block;
 }
-.imagen_usuario{
-        align-self: flex-start;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 10px;
-        display: flex;
-        align-items:center;
-        justify-content: center;
+
+/* Texto del comentario */
+.comentarios p {
+    margin: 0;
+    margin-left: 5px; /* Alineado con el nombre */
+    font-size: 1.1em;
+    line-height: 1.5;
 }
-.caja_comentario {
-    background: #000;        /* color del div */
-    padding: 10px 14px;
+
+/* Fecha y botones inferiores */
+.comentarios small {
+    color: #6a96c1;
+    margin-top: 6px;
+    margin-left: 5px;
+    display: block;
+}
+
+/* Personalizar Scrollbar */
+.contenedor_comentarios::-webkit-scrollbar {
+    width: 8px;
+}
+.contenedor_comentarios::-webkit-scrollbar-track {
+    background: #022846;
+}
+.contenedor_comentarios::-webkit-scrollbar-thumb {
+    background: #1C5CCF;
     border-radius: 10px;
-    border:solid 2px rgb(10, 2, 29);    /* bordes redondeados opcional */
-    display: flex;           /* para que el input se ajuste */
+}
+
+/* =============================================
+   ÁREA DE NUEVO COMENTARIO (INPUT)
+   ============================================= */
+.nuevo_comentario {
+    width: 100%;
+    max-width: 800px;
+    background: #022846;
+    border: 3px solid #ffd700;
+    border-top: none;
+    border-radius: 0 0 20px 20px;
+    padding: 20px;
+    display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 15px;
+}
+
+.imagen_usuario img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #ffd700;
+    object-fit: cover;
+}
+
+.comentar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.caja_comentario {
+    background: #001a33;
+    border: 2px solid #4AA3FF;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .caja_comentario .comentario {
-    background: transparent; /* importante para que se fusione con el div */
-    border: none;            /* sin borde */
-    outline: none;           /* sin borde al escribir */
-    color: #fff;             /* texto blanco */
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
     font-size: 16px;
-    width: 500px;
+    padding: 8px;
 }
-.caja_comentario .comentario::placeholder {
-    color: #bbb;             /* placeholder clarito */
+
+#puntuacionInput {
+    background: #0c1e2c !important;
+    color: #ffd700 !important;
+    border: 1px solid #4AA3FF !important;
+    cursor: pointer;
+    font-weight: bold;
 }
-.comentarios{
-        word-wrap: break-word;   /* para que las palabras largas se ajusten */
+
+.boton_enviar_mensaje {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.boton_enviar_mensaje:hover {
+    transform: scale(1.1) rotate(-10deg);
+    filter: brightness(1.2);
+}
+
+.boton_enviar_mensaje img {
+    width: 100%;
+    height: 100%;
 }

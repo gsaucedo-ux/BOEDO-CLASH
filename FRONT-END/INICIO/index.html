@@ -54,7 +54,7 @@
 
     <div id="ventana_comentarios" class="contenedor_oculto selector_comentarios">
         <div class="salida_comentarios">
-            <div><button class="barra">x</button></div>
+            <div><button class="barra">CERRAR X</button></div>
             <div class="header_comentarios"><p>COMENTARIOS</p></div>
         </div>
         <div class="contenedor_comentarios" id="listaComentariosReal"> 
@@ -105,13 +105,23 @@
         cargarForo(termino); // Llamamos a la función con el filtro
     });
 
+    // Funcionalidad de Enter al input de comentarios
+    const inputComentario = document.getElementById("inputComentario");
+    if (inputComentario) {
+        inputComentario.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault(); // Evita el salto de línea
+                enviarComentario(); 
+            }
+        });
+    }
+
     cargarForo(); // Carga inicial
 
     const urlParams = new URLSearchParams(window.location.search);
     const mazoParaAbrir = urlParams.get('abrirMazo');
 
     if (mazoParaAbrir) {
-        // Le damos un mini respiro para que cargue todo y abrimos
         setTimeout(() => {
             abrirComentarios(mazoParaAbrir);
             // Limpiamos la URL para que no se reabra si el usuario refresca
