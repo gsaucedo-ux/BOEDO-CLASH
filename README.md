@@ -1,8 +1,8 @@
 # Como correr el Backend?
 ```
 cd backend
-make deps
-make start
+make db
+make stop
 ```
 la base de datos se inician con datos de prueba
 
