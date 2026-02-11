@@ -4,7 +4,7 @@ cd backend
 make deps
 make start
 ```
-Cabe aclarar que se deben crear las tablas en postgres para poder acceder de forma correcta desde el frontend.
+la base de datos se inician con datos de prueba
 
 # Como correr el Frontend?
 ```
