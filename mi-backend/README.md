@@ -30,7 +30,7 @@ docker ps
 Las tablas de ejemplo se encuentran en la carpeta `script`.  
 El archivo `db.sql` se carga automáticamente al levantar el contenedor.
 
-### Ingresar a la base de datos
+### Acceder ah la db mediante el contenedor.
 
 ```bash
 docker exec -it mi-backend-db-1 psql -U postgres
@@ -39,7 +39,7 @@ Selecciono mi db:
 ```bash
 \c BoedoClash;
 ```
-veo todas mis columas:
+veo todas mis tablas:
 ```bash
 \dt
 ```
