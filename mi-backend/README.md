@@ -35,7 +35,14 @@ El archivo `db.sql` se carga automáticamente al levantar el contenedor.
 ```bash
 docker exec -it mi-backend-db-1 psql -U postgres
 ```
-
+Selecciono mi db:
+```bash
+\c BoedoClash;
+```
+veo todas mis columas:
+```bash
+\dt
+```
 ---
 
 ## 3️⃣ Iniciar el backend
