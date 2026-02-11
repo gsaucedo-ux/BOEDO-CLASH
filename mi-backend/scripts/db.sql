@@ -43,7 +43,7 @@ CREATE TABLE mazo_cartas (
 CREATE TABLE comentarios (
     comentario_id SERIAL PRIMARY KEY,
     mazo_id INT REFERENCES mazos(mazo_id) ON DELETE CASCADE,
-    usuario_id INT REFERENCES usuario(id) ON DELETE SET NULL,
+    usuario_id INT REFERENCES usuario(id) ON DELETE CASCADE,
     texto TEXT NOT NULL,
     puntuacion INT CHECK (puntuacion >= 1 AND puntuacion <= 5),
     creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -191,42 +191,82 @@ VALUES
 ('Perro de Peke', 'https://intro-camejo.github.io/web/assets/images/peke-a4f60f70ff3b8c2d57578e5146db200d.jpeg', 'campeon', 10, 'terrestre', 'tropa', 9999, 999, 'T'),
 ('Brazo de Gonza', 'https://thumbs.dreamstime.com/b/brazo-herido-40022554.jpg', 'epica', 10, 'terrestre', 'tropa', 9999, 9999, 'DM');
 
-INSERT INTO usuario (nombre, correo, contraseña, nivel, trofeos, alias, carta_favorita)
+-- =================================================================
+-- 1. USUARIOS (Tus originales, victorias en 0)
+-- =================================================================
+INSERT INTO usuario (nombre, correo, contraseña, nivel, trofeos, victorias_totales, alias, carta_favorita)
 VALUES
-('Gustavo Saucedo', 'gus@gmail.com', '123', 6, 420, 'GusPro', 'Mega Caballero'),
-('Tobias Costanzo', 'tobi@gmail.com', '123', 4, 260, 'KoalaFeo', 'Camejo'),
-('Santiago Cucchiaro', 'santi@gmail.com', '123', 8, 680, 'Cukero', 'Chispitas'),
-('El Carreador 3000', 'promastercheff@gmail.com', '123', 99, 999, 'El Carreador 3000', 'Monje')
-;
+('Gustavo Saucedo', 'gus@gmail.com', '123', 6, 420, 0, 'GusPro', 'Mega Caballero'),
+('Tobias Costanzo', 'tobi@gmail.com', '123', 4, 260, 0, 'KoalaFeo', 'Camejo'),
+('Santiago Cucchiaro', 'santi@gmail.com', '123', 8, 680, 0, 'Cukero', 'Chispitas'),
+('El Carreador 3000', 'promastercheff@gmail.com', '123', 99, 999, 0, 'El Carreador 3000', 'Monje');
 
-INSERT INTO mazos (usuario_id, nombre, promedio_elixir)
-VALUES (1, 'Tanques Pesados', 5.6),
-       (2, 'Ataque Rápido', 4.2);
-INSERT INTO mazo_cartas (mazo_id, carta_id, posicion)
-VALUES
-  (1, 2, 1),  -- Gigante
-  (1, 4, 2),  -- Gólem
-  (1, 5, 3),  -- Mega Caballero
-  (1, 3, 4),  -- Gigante Noble
-  (1, 6, 5),  -- Esqueleto Gigante
-  (1, 7, 6),  -- Rey Esqueleto
-  (1, 8, 7),  -- Monje
-  (1, 1, 8),  -- Caballero
- (2, 10, 1),  -- Gigante
-  (2, 4, 2),  -- Gólem
-  (2, 5, 3),  -- Mega Caballero
-  (2, 3, 4),  -- Gigante Noble
-  (2, 6, 5),  -- Esqueleto Gigante
-  (2, 7, 6),  -- Rey Esqueleto
-  (2, 8, 7),  -- Monje
-  (2, 1, 8);  -- Caballero
+-- =================================================================
+-- 2. MAZOS (Tus 2 originales + 10 nuevos para completar 3 c/u)
+-- =================================================================
+-- 3. INSERT DE MAZOS (3 por usuario = 12 mazos)
+INSERT INTO mazos (mazo_id, usuario_id, nombre, promedio_elixir)
+VALUES 
+(1, 1, 'Tanques Pesados', 5.6),
+(2, 2, 'Ataque Rápido', 4.2),
+(3, 1, 'Mega-Docente Heavy', 5.2),
+(4, 1, 'Bridge Spam Docente', 3.8),
+(5, 2, 'Log Bait Clásico', 3.3),
+(6, 2, 'Camejo-Control Pro', 3.6),
+(7, 3, 'Chispitas Explosivo', 4.5),
+(8, 3, 'Torre Infernal Bait', 3.4),
+(9, 3, 'Peke-Defensa Sólida', 3.2),
+(10, 4, 'Hog Cycle 2.6 Clásico', 2.6),
+(11, 4, 'Pekka Bridge Spam', 3.9),
+(12, 4, 'LavaLoon Docente', 4.3);
 
+-- 4. INSERT UNIFICADO DE CARTAS (Corregido con tus IDs reales)
+INSERT INTO mazo_cartas (mazo_id, carta_id, posicion) VALUES
+-- Mazo 1: Tanques Pesados (Gustavo)
+(1,2,1), (1,4,2), (1,5,3), (1,3,4), (1,6,5), (1,7,6), (1,8,7), (1,1,8),
+-- Mazo 2: Ataque Rápido (Tobias)
+(2,10,1), (2,4,2), (2,5,3), (2,3,4), (2,6,5), (2,7,6), (2,8,7), (2,1,8),
+-- Mazo 3: Mega-Docente Heavy (Corregido: Camejo 98, Gonza 99, Perro Peke 107)
+(3,5,1), (3,98,2), (3,99,3), (3,107,4), (3,23,5), (3,34,6), (3,53,7), (3,75,8),
+-- Mazo 4: Bridge Spam Docente (Camejo 98, Gonza 99)
+(4,98,1), (4,15,2), (4,17,3), (4,27,4), (4,99,5), (4,32,6), (4,75,7), (4,38,8),
+-- Mazo 5: Log Bait (Barril 57, Princesa 26, T. Infernal 88)
+(5,57,1), (5,26,2), (5,55,3), (5,88,4), (5,1,5), (5,71,6), (5,36,7), (5,35,8),
+-- Mazo 6: Camejo-Control (Camejo 98, Peke 101, Lara 106)
+(6,98,1), (6,101,2), (6,106,3), (6,62,4), (6,15,5), (6,77,6), (6,40,7), (6,32,8),
+-- Mazo 7: Chispitas (Santiago)
+(7,29,1), (7,2,2), (7,69,3), (7,75,4), (7,23,5), (7,40,6), (7,1,7), (7,34,8),
+-- Mazo 8: Torre Infernal Bait (T. Infernal 88)
+(8,88,1), (8,57,2), (8,26,3), (8,55,4), (8,1,5), (8,36,6), (8,75,7), (8,71,8),
+-- Mazo 9: Peke-Defensa (Peke 101, Cañón 89)
+(9,101,1), (9,1,2), (9,42,3), (9,89,4), (9,51,5), (9,71,6), (9,34,7), (9,35,8),
+-- Mazo 10: Hog Cycle 2.6 (Monta 11, Cañón 89)
+(10,11,1), (10,42,2), (10,1,3), (10,89,4), (10,71,5), (10,51,6), (10,34,7), (10,75,8),
+-- Mazo 11: Pekka Bridge Spam (Pekka 59)
+(11,59,1), (11,17,2), (11,15,3), (11,61,4), (11,27,5), (11,34,6), (11,75,7), (11,28,8),
+-- Mazo 12: LavaLoon Docente (Perro Peke 107, Sofi 102, Manu R 105)
+(12,81,1), (12,82,2), (12,107,3), (12,102,4), (12,105,5), (12,34,6), (12,75,7), (12,77,8);
+
+-- 5. INSERT UNIFICADO DE COMENTARIOS
 INSERT INTO comentarios (mazo_id, usuario_id, texto, puntuacion)
 VALUES
 (1, 1, 'Este mazo es durísimo, llegué a liga maestro fácil 💪', 5),
 (1, 2, 'Buen mazo, pero sufre bastante contra ciclo rápido', 4),
 (1, 3, 'Mega Caballero + Gólem es caro pero demoledor', 5),
-
 (2, 2, 'Muy divertido de jugar, ideal para presionar', 5),
 (2, 4, 'Le falta un poco de defensa aérea para mi gusto', 3),
-(2, 1, 'Buen promedio de elixir, se siente fluido', 4);
+(2, 1, 'Buen promedio de elixir, se siente fluido', 4),
+(10, 1, 'El Carreador es un pro, no le puedo entrar a ese 2.6', 5),
+(10, 2, 'Aprendí a usar el cañón mirando este mazo.', 4),
+(5, 3, 'Tobias me ganó 3 veces seguidas con el Log Bait, increíble.', 5),
+(3, 4, 'Gustavo lleva a Camejo y a Gonza, es un mazo de puro respeto.', 5),
+(7, 1, 'Chispitas con Gigante es una pesadilla si no tienes rayo.', 4),
+(12, 3, 'El mazo de Manu R y Sofi está rotísimo por aire.', 5),
+(6, 1, 'Tobias, ese combo de Camejo con Peke es imbatible en defensa.', 5),
+(11, 1, 'Pekka Bridge Spam es mi debilidad, muy bien jugado.', 4),
+(3, 2, 'Gus, el Perro de Peke tiene demasiada vida, ¡nerfeen eso! 😂', 4),
+(8, 2, 'Santiago, tu torre infernal me arruinó el ataque de tanques.', 5),
+(4, 3, 'Me encanta como Gustavo integró a Gonza Gigachad en el Bridge Spam.', 5),
+(10, 3, 'El 2.6 es un clásico, pero hay que tener manos para jugarlo como El Carreador.', 4),
+(9, 4, 'Santi, probé tu mazo de Peke-Defensa y es sólido contra montas.', 4),
+(12, 4, 'Este mazo con Manu R y Sofi es el verdadero meta de este año.', 5);
