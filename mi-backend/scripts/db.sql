@@ -270,3 +270,7 @@ VALUES
 (10, 3, 'El 2.6 es un clásico, pero hay que tener manos para jugarlo como El Carreador.', 4),
 (9, 4, 'Santi, probé tu mazo de Peke-Defensa y es sólido contra montas.', 4),
 (12, 4, 'Este mazo con Manu R y Sofi es el verdadero meta de este año.', 5);
+
+SELECT setval('usuario_id_seq', (SELECT MAX(id) FROM usuario));
+SELECT setval('mazos_mazo_id_seq', (SELECT MAX(mazo_id) FROM mazos));
+SELECT setval('comentarios_comentario_id_seq', (SELECT MAX(comentario_id) FROM comentarios));
