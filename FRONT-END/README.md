@@ -8,15 +8,6 @@ La plataforma está pensada como un espacio colaborativo para debatir estrategia
 
 ---
 
-## Objetivo del Proyecto
-
-- Permitir a los jugadores crear y compartir mazos personalizados.
-- Facilitar el intercambio de opiniones mediante comentarios y puntuaciones.
-- Mostrar estadísticas relevantes de usuarios y mazos.
-- Fomentar la interacción dentro de una comunidad inspirada en Clash Royale.
-
----
-
 ##  Entidades del Sistema
 
 ###  Usuarios
@@ -71,7 +62,7 @@ Tabla intermedia que relaciona cartas con mazos y define su posición.
 
 ---
 
-### 💬 Comentarios
+### Comentarios
 Permite a los usuarios comentar y puntuar mazos de otros jugadores.
 
 - comentario_id  
@@ -139,7 +130,6 @@ Permite a los usuarios comentar y puntuar mazos de otros jugadores.
 - Visualización automática de:
   - Promedio de elixir
 - Opciones:
-  - Marcar mazo como público o privado
   - Editar solo mazos propios
 
 ---
