@@ -1,23 +1,29 @@
-# Como correr el Backend?
+# ¿Cómo correr el Proyecto? (Full Docker, en la carpeta raiz del proyecto)
+```bash
+sudo docker compose up --build -d
 ```
-cd backend
-make db
-make stop
+# ¿Cómo acceder a la aplicación?
+```bash
+http://localhost:5500/FRONT-END/INICIO/index.html
 ```
-la base de datos se inician con datos de prueba
+(Servido por Nginx en el puerto 5500).
+# Ruta de BackEnd (API)
+```bash
+    http://localhost:3000/mazos
+```
+NOTA: se puede ingresar a cualquiera de las tablas de la base de datos (no solo a mazos).
 
-# Como correr el Frontend?
-```
-cd FRONT-END
-http-server
-```
-Ruta de frontend:
-```
-http://172.18.0.1:8080/FRONT-END/INICIO/
-```
+(Corriendo en Node.js sobre el puerto 3000).
 
+# Gestión de Datos y Persistencia
+La base de datos se inicia automáticamente con los datos de prueba del archivo db.sql.
 
-
+Si necesitás reiniciar con datos limpios:
+```bash
+    sudo docker compose down -v
+    sudo rm -rf mi-backend/.volumes
+    sudo docker compose up -d
+```
 
 # INDEX (sin iniciar sesion)
 ![alt text](image.png)
