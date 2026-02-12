@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: BoedoClash
+    volumes:
+      - ./.volumes/postgres/data:/var/lib/postgresql/data/
+      - ./mi-backend/scripts/db.sql:/docker-entrypoint-initdb.d/db.sql
+    ports:
+      - "5432:5432"
+
+  mi-backend:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/BoedoClash
+    depends_on:
+      - db
+
+  front-end:
+    image: nginx:alpine
+    ports:
+      - "5500:80"
+    volumes:
+    - .:/usr/share/nginx/html
+
+      
