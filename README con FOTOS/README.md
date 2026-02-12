@@ -1,7 +1,9 @@
-# ¿Cómo correr el Proyecto? (Full Docker, en la carpeta raiz del proyecto)
+# ¿Cómo correr el Proyecto la primera vez? (Full Docker, en la carpeta raiz del proyecto)
 ```bash
 sudo docker compose up --build -d
 ```
+Despues las proximas veces no es necesario usar el --build a no ser que se resete la base de datos.
+
 # ¿Cómo acceder a la aplicación?
 ```bash
 http://localhost:5500/FRONT-END/INICIO/index.html
